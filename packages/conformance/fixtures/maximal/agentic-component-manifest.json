@@ -1,0 +1,418 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/DataGrid.tsx",
+      "declarations": [
+        {
+          "name": "DataGrid",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/grid",
+            "export": "DataGrid"
+          },
+          "description": "Enterprise data grid with virtualization, selection, sorting, and cell editing.",
+          "inputs": [
+            {
+              "name": "rows",
+              "description": "Row data to display.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "name": "Row",
+                    "module": "@acme/grid",
+                    "kind": "reference"
+                  }
+                },
+                "raw": "Row[]"
+              },
+              "required": true
+            },
+            {
+              "name": "columns",
+              "description": "Column definitions.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "name": "ColumnDef",
+                    "module": "@acme/grid",
+                    "kind": "reference"
+                  }
+                },
+                "raw": "ColumnDef[]"
+              },
+              "required": true
+            },
+            {
+              "name": "selectionMode",
+              "description": "Row selection behavior.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "none"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "single"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "multiple"
+                    }
+                  ]
+                },
+                "raw": "'none' | 'single' | 'multiple'"
+              },
+              "default": "'none'"
+            },
+            {
+              "name": "sortState",
+              "description": "Current sort state; supports two-way binding.",
+              "type": {
+                "structured": {
+                  "name": "SortState",
+                  "module": "@acme/grid",
+                  "kind": "reference"
+                },
+                "raw": "SortState"
+              },
+              "twoWay": true
+            },
+            {
+              "name": "rowHeight",
+              "description": "Fixed row height in pixels.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "32"
+            },
+            {
+              "name": "virtualized",
+              "description": "Enables windowed rendering for large row sets.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "name": "loading",
+              "description": "Shows the loading state overlay.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "emptyMessage",
+              "description": "Message shown when rows is empty.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "'No data'"
+            },
+            {
+              "name": "getRowId",
+              "description": "Derives a stable id for each row.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "Row",
+                      "module": "@acme/grid",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(row: Row) => string"
+              }
+            },
+            {
+              "name": "density",
+              "description": "Visual density preset.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "compact"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "comfortable"
+                    }
+                  ]
+                },
+                "raw": "'compact' | 'comfortable'"
+              },
+              "default": "'comfortable'"
+            }
+          ],
+          "events": [
+            {
+              "name": "selectionChange",
+              "description": "Fired with the selected row ids.",
+              "payload": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  }
+                },
+                "raw": "string[]"
+              }
+            },
+            {
+              "name": "sortChange",
+              "description": "Fired when the sort state changes.",
+              "payload": {
+                "structured": {
+                  "name": "SortState",
+                  "module": "@acme/grid",
+                  "kind": "reference"
+                },
+                "raw": "SortState"
+              }
+            },
+            {
+              "name": "rowActivate",
+              "description": "Fired when a row is activated (double-click or Enter).",
+              "payload": {
+                "structured": {
+                  "kind": "object",
+                  "fields": [
+                    {
+                      "name": "rowId",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    },
+                    {
+                      "name": "index",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "number"
+                      }
+                    }
+                  ]
+                },
+                "raw": "{ rowId: string; index: number }"
+              }
+            },
+            {
+              "name": "cellEdit",
+              "description": "Fired when a cell edit is committed.",
+              "payload": {
+                "structured": {
+                  "kind": "object",
+                  "fields": [
+                    {
+                      "name": "rowId",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    },
+                    {
+                      "name": "columnId",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    },
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "unknown"
+                      }
+                    }
+                  ]
+                },
+                "raw": "{ rowId: string; columnId: string; value: unknown }"
+              }
+            },
+            {
+              "name": "scrollEnd",
+              "description": "Fired when the viewport reaches the last row."
+            }
+          ],
+          "slots": [
+            {
+              "name": "toolbar",
+              "description": "Toolbar row above the header."
+            },
+            {
+              "name": "empty",
+              "description": "Rendered when rows is empty."
+            },
+            {
+              "name": "cell",
+              "description": "Custom cell renderer; receives the cell context.",
+              "scopedPayload": {
+                "structured": {
+                  "kind": "object",
+                  "fields": [
+                    {
+                      "name": "row",
+                      "type": {
+                        "name": "Row",
+                        "module": "@acme/grid",
+                        "kind": "reference"
+                      }
+                    },
+                    {
+                      "name": "columnId",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    },
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "unknown"
+                      }
+                    }
+                  ]
+                },
+                "raw": "{ row: Row; columnId: string; value: unknown }"
+              }
+            }
+          ],
+          "methods": [
+            {
+              "name": "scrollToRow",
+              "description": "Scrolls the viewport to the given row index.",
+              "parameters": [
+                {
+                  "name": "index",
+                  "description": "Zero-based row index.",
+                  "type": {
+                    "structured": {
+                      "kind": "primitive",
+                      "primitive": "number"
+                    },
+                    "raw": "number"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "exportCsv",
+              "description": "Exports the current view as CSV.",
+              "parameters": [
+                {
+                  "name": "options",
+                  "type": {
+                    "structured": {
+                      "name": "CsvOptions",
+                      "module": "@acme/grid",
+                      "kind": "reference"
+                    },
+                    "raw": "CsvOptions"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<string>"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-grid-row-height",
+              "description": "Row height override.",
+              "default": "32px",
+              "syntax": "<length>"
+            },
+            {
+              "name": "--acme-grid-border-color",
+              "description": "Border color for grid lines.",
+              "default": "#d0d0d0",
+              "syntax": "<color>"
+            },
+            {
+              "name": "--acme-grid-header-bg",
+              "description": "Header background.",
+              "default": "#f5f5f5",
+              "syntax": "<color>"
+            },
+            {
+              "name": "--acme-grid-zebra-bg",
+              "description": "Zebra striping background for odd rows.",
+              "default": "transparent",
+              "syntax": "<color>"
+            }
+          ],
+          "semantics": {
+            "term": "grid",
+            "notes": "Interactive tabular data with row selection and cell editing."
+          },
+          "examples": [
+            {
+              "title": "Basic grid",
+              "lang": "tsx",
+              "source": "import { DataGrid } from '@acme/grid';\nexport const Report = ({ rows, columns }: any) => (\n  <DataGrid rows={rows} columns={columns} selectionMode=\"multiple\" />\n);"
+            },
+            {
+              "title": "Programmatic export",
+              "lang": "ts",
+              "source": "import type { DataGridHandle } from '@acme/grid';\nexport async function download(grid: DataGridHandle) {\n  const csv = await grid.exportCsv({ delimiter: ';' });\n  console.log(csv.length);\n}"
+            }
+          ],
+          "x-acme": {
+            "telemetryId": "grid-01",
+            "theme": "enterprise"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "name": "DataGrid",
+          "declaration": "DataGrid"
+        }
+      ]
+    }
+  ]
+}

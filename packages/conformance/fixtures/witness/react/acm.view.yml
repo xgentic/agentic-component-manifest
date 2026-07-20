@@ -1,0 +1,67 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/Button.tsx
+    declarations:
+      - name: Button
+        identity:
+          paradigmClass: vdom
+          module: "@acme/react"
+          export: Button
+        description: A themable action button as a JSX function component.
+        inputs:
+          - name: variant
+            description: Visual variant of the button.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: primary
+                  - kind: literal
+                    value: secondary
+              raw: "'primary' | 'secondary'"
+            default: "'primary'"
+          - name: disabled
+            description: Disables interaction.
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+        events:
+          - name: press
+            description: Fired on activation via pointer or keyboard.
+            payload:
+              structured:
+                name: PressEvent
+                module: "@acme/react"
+                kind: reference
+              raw: PressEvent
+        slots:
+          - description: "Button label content (children)."
+          - name: icon
+            description: Leading icon element.
+        methods:
+          - name: focus
+            description: Moves keyboard focus to the button via the imperative handle.
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+        cssProperties:
+          - name: "--acme-button-radius"
+            description: Corner radius of the button.
+            default: "4px"
+            syntax: "<length>"
+        semantics:
+          term: button
+          notes: Triggers the action named by its label.
+        examples:
+          - title: Basic
+            lang: tsx
+            source: "import { Button } from '@acme/react';\nexport const Save = () => (\n  <Button variant=\"primary\">Save</Button>\n);"
+    exports:
+      - name: Button
+        declaration: Button

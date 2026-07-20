@@ -1,0 +1,79 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/acme-button.ts
+    declarations:
+      - name: AcmeButton
+        identity:
+          paradigmClass: retained-dom
+          tagName: acme-button
+          module: "@acme/wc"
+          export: AcmeButton
+        description: A themable action button rendered as a custom element.
+        inputs:
+          - name: variant
+            description: Visual variant of the button.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: primary
+                  - kind: literal
+                    value: secondary
+              raw: "'primary' | 'secondary'"
+            default: "'primary'"
+          - name: disabled
+            description: Disables pointer and keyboard interaction.
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+            reflects: true
+        events:
+          - name: press
+            description: Fired on activation via pointer or keyboard.
+            payload:
+              structured:
+                name: PressEvent
+                module: "@acme/wc"
+                kind: reference
+              raw: PressEvent
+        slots:
+          - description: Button label content.
+          - name: icon
+            description: Leading icon.
+        methods:
+          - name: focus
+            description: Moves keyboard focus to the button.
+            parameters:
+              - name: options
+                type:
+                  structured:
+                    name: FocusOptions
+                    kind: reference
+                  raw: FocusOptions
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+        cssProperties:
+          - name: "--acme-button-radius"
+            description: Corner radius of the button.
+            default: "4px"
+            syntax: "<length>"
+        cssParts:
+          - name: label
+            description: The label span inside the shadow root.
+        semantics:
+          term: button
+          notes: Triggers the action named by its label.
+        examples:
+          - title: Basic
+            lang: ts
+            source: "import '@acme/wc';\nconst b = document.createElement('acme-button');\nb.textContent = 'Save';\ndocument.body.append(b);"
+    exports:
+      - name: AcmeButton
+        declaration: AcmeButton

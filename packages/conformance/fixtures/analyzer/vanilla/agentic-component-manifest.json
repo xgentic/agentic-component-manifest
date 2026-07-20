@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/acme-toggle.ts",
+      "declarations": [
+        {
+          "name": "AcmeToggle",
+          "identity": {
+            "paradigmClass": "retained-dom",
+            "tagName": "acme-toggle",
+            "module": "@acme/vanilla",
+            "export": "AcmeToggle"
+          },
+          "description": "A themable on/off toggle rendered as a standard custom element.",
+          "inputs": [
+            {
+              "name": "size",
+              "description": "Visual size of the control.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "small"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "medium"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "large"
+                    }
+                  ]
+                },
+                "raw": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\""
+            },
+            {
+              "name": "checked",
+              "description": "Whether the toggle is currently on.",
+              "default": "false"
+            },
+            {
+              "name": "disabled",
+              "description": "Whether interaction is disabled.",
+              "default": "false"
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "description": "Fired when the toggle state changes.",
+              "payload": {
+                "structured": {
+                  "name": "ToggleChangeEvent",
+                  "module": "./events.js",
+                  "kind": "reference"
+                },
+                "raw": "ToggleChangeEvent"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "The toggle label content."
+            },
+            {
+              "name": "hint",
+              "description": "Supplementary hint text shown beneath the label."
+            }
+          ],
+          "methods": [
+            {
+              "name": "toggle",
+              "description": "Toggle the current state and emit a change event.",
+              "parameters": [
+                {
+                  "name": "force",
+                  "type": {
+                    "structured": {
+                      "kind": "primitive",
+                      "primitive": "boolean"
+                    },
+                    "raw": "boolean"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            },
+            {
+              "name": "focus",
+              "description": "Move keyboard focus to the control.",
+              "parameters": [
+                {
+                  "name": "options",
+                  "type": {
+                    "structured": {
+                      "name": "FocusOptions",
+                      "kind": "reference"
+                    },
+                    "raw": "FocusOptions"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-toggle-fill",
+              "description": "Fill color of the active track.",
+              "default": "#0a7",
+              "syntax": "<color>"
+            },
+            {
+              "name": "--acme-toggle-size",
+              "description": "Diameter of the thumb.",
+              "default": "20px",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "track",
+              "description": "The background track element."
+            },
+            {
+              "name": "thumb",
+              "description": "The sliding thumb element."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeToggle",
+          "declaration": "AcmeToggle"
+        }
+      ]
+    }
+  ]
+}

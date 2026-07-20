@@ -1,0 +1,258 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/acme-data-grid.ts
+    declarations:
+      - name: AcmeDataGrid
+        identity:
+          paradigmClass: retained-dom
+          tagName: acme-data-grid
+          module: "@acme/grid"
+          export: AcmeDataGrid
+        description: "A themable, sortable, selectable data grid rendered as a custom element.\n\nThe maximally complex Lit capability surface: reactive properties spanning every\nstructured-type shape, typed events, projected slots, imperative methods, themable\nCSS custom properties and parts, and form association."
+        inputs:
+          - name: selectionMode
+            description: How many rows may be selected at once.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: single
+                  - kind: literal
+                    value: multi
+                  - kind: literal
+                    value: none
+              raw: "'single' | 'multi' | 'none'"
+            default: "'single'"
+          - name: columns
+            description: "Column definitions, in display order."
+            type:
+              structured:
+                kind: array
+                items:
+                  name: GridColumn
+                  module: "./support.js"
+                  kind: reference
+              raw: "GridColumn<RowData>[]"
+            default: "[]"
+          - name: rowClass
+            description: Resolver returning a CSS class for a given row.
+            type:
+              structured:
+                parameters:
+                  - name: RowData
+                    module: "./support.js"
+                    kind: reference
+                return:
+                  kind: primitive
+                  primitive: string
+                kind: function
+              raw: "(row: RowData) => string"
+            default: "() => ''"
+          - name: renderConfig
+            description: Opaque render configuration nested beyond the structured-type depth bound.
+            type:
+              structured:
+                kind: object
+                fields:
+                  - name: a
+                    type:
+                      kind: object
+                      fields:
+                        - name: b
+                          type:
+                            kind: object
+                            fields:
+                              - name: c
+                                type:
+                                  kind: object
+                                  fields:
+                                    - name: d
+                                      type:
+                                        kind: object
+                                        fields:
+                                          - name: e
+                                            type:
+                                              kind: opaque
+              raw: "{\n    a: { b: { c: { d: { e: { f: string } } } } };\n  }"
+          - name: dense
+            description: "Render with denser row spacing; reflected to an attribute."
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+            reflects: true
+          - name: label
+            description: "Accessible label, surfaced through the `data-label` attribute."
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+            default: "''"
+            x-attribute: data-label
+          - name: pageSize
+            description: Number of rows shown per page.
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+            default: "25"
+          - name: loading
+            description: Whether a data fetch is currently in flight.
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+          - name: emptyText
+            description: Text shown when the grid has no rows.
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+            default: "'No rows'"
+          - name: stickyHeader
+            description: "Keep the header visible while the body scrolls; reflected to an attribute."
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+            reflects: true
+          - name: caption
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+            default: "''"
+        events:
+          - name: sort
+            description: Fired when the active column sort changes.
+            payload:
+              structured:
+                name: SortEvent
+                module: "./support.js"
+                kind: reference
+              raw: SortEvent
+          - name: selection-change
+            description: Fired when the set of selected rows changes.
+            payload:
+              structured:
+                name: SelectionEvent
+                module: "./support.js"
+                kind: reference
+              raw: SelectionEvent
+          - name: page-change
+            description: Fired when the active page changes.
+            payload:
+              structured:
+                name: PageEvent
+                module: "./support.js"
+                kind: reference
+              raw: PageEvent
+          - name: row-activate
+            description: Fired when a row is activated.
+            payload:
+              structured:
+                name: RowActivateEvent
+                module: "./support.js"
+                kind: reference
+              raw: RowActivateEvent
+        slots:
+          - description: Default cell content rendered inside each cell.
+          - name: header
+            description: Custom header renderer.
+          - name: toolbar
+            description: Toolbar shown above the grid.
+          - name: empty
+            description: Content shown when there are no rows.
+        methods:
+          - name: sortBy
+            description: Sort the grid by a column.
+            parameters:
+              - name: columnId
+                type:
+                  structured:
+                    kind: primitive
+                    primitive: string
+                  raw: string
+              - name: direction
+                type:
+                  structured:
+                    kind: union
+                    members:
+                      - kind: literal
+                        value: asc
+                      - kind: literal
+                        value: desc
+                  raw: "'asc' | 'desc'"
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+          - name: refresh
+            description: "Reload the grid's data, optionally cancelling via a signal."
+            parameters:
+              - name: signal
+                type:
+                  structured:
+                    name: AbortSignal
+                    kind: reference
+                  raw: AbortSignal
+            return:
+              structured:
+                name: Promise
+                kind: reference
+              raw: "Promise<void>"
+          - name: scrollToRow
+            description: Scroll the given row index into view and mark it active.
+            parameters:
+              - name: index
+                type:
+                  structured:
+                    kind: primitive
+                    primitive: number
+                  raw: number
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+        cssProperties:
+          - name: "--acme-grid-border"
+            description: Grid border color.
+            default: "#ddd"
+            syntax: "<color>"
+          - name: "--acme-grid-row-height"
+            description: Height of a data row.
+            default: "32px"
+            syntax: "<length>"
+          - name: "--acme-grid-header-bg"
+            description: Header background color.
+            default: "#f5f5f5"
+            syntax: "<color>"
+          - name: "--acme-grid-gap"
+            description: Padding gap inside a cell.
+            default: "8px"
+            syntax: "<length>"
+        cssParts:
+          - name: row
+            description: A data row element.
+          - name: cell
+            description: A single data cell.
+          - name: header
+            description: The header row element.
+        x-wc:
+          formAssociated: true
+    exports:
+      - name: AcmeDataGrid
+        declaration: AcmeDataGrid

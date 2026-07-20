@@ -1,0 +1,11 @@
+{
+  "name": "@acm/toolchain",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "ACM reference toolchain: validate, canonicalize, compile, agent-view, coverage, drift.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/FocusScope.tsx",
+      "declarations": [
+        {
+          "name": "FocusScope",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/headless",
+            "export": "FocusScope"
+          },
+          "description": "Headless focus management: renders no DOM of its own, only its children.",
+          "inputs": [
+            {
+              "name": "trapped",
+              "description": "Whether focus is trapped inside the scope.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "events": [
+            {
+              "name": "escape",
+              "description": "Fired when focus attempts to leave a trapped scope."
+            }
+          ],
+          "slots": [
+            {
+              "description": "Content managed by the scope; rendered verbatim."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "FocusScope",
+          "declaration": "FocusScope"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# Fixtures are ACM Canonical JSON / golden YAML — formatters must never touch them
+packages/conformance/fixtures/
+# Generated artifacts are produced by the drift pipeline, never formatted by hand
+packages/spec/generated/
+node_modules/
+pnpm-lock.yaml
+apm_modules/
+.specify/
+.claude/
+specs/
+docs/
+CONTEXT.md
+LICENSE
+llms.txt

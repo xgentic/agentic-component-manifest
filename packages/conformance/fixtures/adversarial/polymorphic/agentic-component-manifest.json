@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/Box.tsx",
+      "declarations": [
+        {
+          "name": "Box",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/primitives",
+            "export": "Box"
+          },
+          "description": "A polymorphic layout primitive; renders as the element named by `as`.",
+          "inputs": [
+            {
+              "name": "as",
+              "description": "Element or component to render as.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "div"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "span"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "section"
+                    },
+                    {
+                      "name": "ComponentType",
+                      "module": "react",
+                      "kind": "reference"
+                    }
+                  ]
+                },
+                "raw": "'div' | 'span' | 'section' | React.ComponentType"
+              },
+              "default": "'div'"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Content rendered inside the chosen element."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Box",
+          "declaration": "Box"
+        }
+      ]
+    }
+  ]
+}

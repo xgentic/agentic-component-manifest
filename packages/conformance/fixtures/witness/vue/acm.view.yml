@@ -1,0 +1,68 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/AcmeButton.vue
+    declarations:
+      - name: AcmeButton
+        identity:
+          paradigmClass: compiler-sfc
+          module: "@acme/vue"
+          export: AcmeButton
+        description: A themable toggle-capable action button as a single-file component.
+        inputs:
+          - name: variant
+            description: Visual variant of the button.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: primary
+                  - kind: literal
+                    value: secondary
+              raw: "'primary' | 'secondary'"
+            default: "'primary'"
+          - name: pressed
+            description: "Toggle state; supports two-way binding."
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+            twoWay: true
+        events:
+          - name: press
+            description: Fired on activation via pointer or keyboard.
+            payload:
+              structured:
+                name: PressEvent
+                module: "@acme/vue"
+                kind: reference
+              raw: PressEvent
+        slots:
+          - description: Button label content.
+          - name: icon
+            description: Leading icon.
+        methods:
+          - name: focus
+            description: Moves keyboard focus to the button.
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+        cssProperties:
+          - name: "--acme-button-radius"
+            description: Corner radius of the button.
+            default: "4px"
+            syntax: "<length>"
+        semantics:
+          term: button
+          notes: "Triggers the action named by its label; can act as a toggle."
+        examples:
+          - title: Register and mount
+            lang: ts
+            source: "import { createApp } from 'vue';\nimport { AcmeButton } from '@acme/vue';\ncreateApp({ components: { AcmeButton } }).mount('#app');"
+    exports:
+      - name: AcmeButton
+        declaration: AcmeButton

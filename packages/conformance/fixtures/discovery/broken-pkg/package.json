@@ -1,0 +1,5 @@
+{
+  "name": "@fixture/broken-pkg",
+  "version": "1.0.0",
+  "acm": "./missing.json"
+}

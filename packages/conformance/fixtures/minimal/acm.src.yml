@@ -1,0 +1,12 @@
+schemaVersion: 0.1.0
+modules:
+  - path: src/spacer.ts
+    declarations:
+      - name: Spacer
+        identity:
+          paradigmClass: vdom
+          module: "@acme/ui"
+          export: Spacer
+    exports:
+      - name: Spacer
+        declaration: Spacer

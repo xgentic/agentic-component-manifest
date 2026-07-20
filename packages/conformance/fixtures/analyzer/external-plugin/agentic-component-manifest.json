@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/badge.ts",
+      "declarations": [
+        {
+          "name": "StatusBadgeWidget",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/widgets",
+            "export": "StatusBadgeWidget"
+          },
+          "description": "A small inline status badge.",
+          "inputs": [
+            {
+              "name": "label",
+              "description": "Text shown inside the badge.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "tone",
+              "description": "Visual tone of the badge.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "info"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "warn"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "error"
+                    }
+                  ]
+                },
+                "raw": "\"info\" | \"warn\" | \"error\""
+              }
+            }
+          ],
+          "x-toy": {
+            "framework": "toy-widgets"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "name": "StatusBadgeWidget",
+          "declaration": "StatusBadgeWidget"
+        }
+      ]
+    }
+  ]
+}

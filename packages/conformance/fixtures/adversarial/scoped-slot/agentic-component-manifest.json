@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/AcmeList.vue",
+      "declarations": [
+        {
+          "name": "AcmeList",
+          "identity": {
+            "paradigmClass": "compiler-sfc",
+            "module": "@acme/vue",
+            "export": "AcmeList"
+          },
+          "description": "A list that projects each row through a scoped slot.",
+          "inputs": [
+            {
+              "name": "items",
+              "description": "Items to render.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "kind": "primitive",
+                    "primitive": "unknown"
+                  }
+                },
+                "raw": "T[]"
+              },
+              "required": true
+            }
+          ],
+          "slots": [
+            {
+              "name": "item",
+              "description": "Rendered once per item; receives the item and its index.",
+              "scopedPayload": {
+                "structured": {
+                  "kind": "object",
+                  "fields": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "unknown"
+                      }
+                    },
+                    {
+                      "name": "index",
+                      "type": {
+                        "kind": "primitive",
+                        "primitive": "number"
+                      }
+                    }
+                  ]
+                },
+                "raw": "{ item: T; index: number }"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeList",
+          "declaration": "AcmeList"
+        }
+      ]
+    }
+  ]
+}

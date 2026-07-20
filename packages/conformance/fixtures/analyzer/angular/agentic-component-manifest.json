@@ -1,0 +1,200 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/acme-badge.component.ts",
+      "declarations": [
+        {
+          "name": "AcmeBadgeComponent",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@acme/ng",
+            "export": "AcmeBadgeComponent",
+            "selector": "acme-badge"
+          },
+          "description": "A compact status badge with classic decorator inputs and outputs.",
+          "inputs": [
+            {
+              "name": "label",
+              "description": "Text label shown inside the badge.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''"
+            },
+            {
+              "name": "tone",
+              "description": "Visual tone; required at the call site.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "info"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "warn"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "error"
+                    }
+                  ]
+                },
+                "raw": "'info' | 'warn' | 'error'"
+              },
+              "required": true
+            }
+          ],
+          "events": [
+            {
+              "name": "cleared",
+              "description": "Emitted when the badge is dismissed; bound publicly as `cleared`.",
+              "payload": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            }
+          ],
+          "methods": [
+            {
+              "name": "clear",
+              "description": "Clears the badge text.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-badge-bg",
+              "description": "Background color of the badge.",
+              "default": "#eee",
+              "syntax": "<color>"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeBadgeComponent",
+          "declaration": "AcmeBadgeComponent"
+        }
+      ]
+    },
+    {
+      "path": "src/acme-button.component.ts",
+      "declarations": [
+        {
+          "name": "AcmeButtonComponent",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@acme/ng",
+            "export": "AcmeButtonComponent",
+            "selector": "acme-button"
+          },
+          "description": "A themable action button with signal inputs and two-way binding.",
+          "inputs": [
+            {
+              "name": "variant",
+              "description": "Visual variant of the button (signal input).",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "primary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "secondary"
+                    }
+                  ]
+                },
+                "raw": "'primary' | 'secondary'"
+              },
+              "default": "'primary'"
+            },
+            {
+              "name": "pressed",
+              "description": "Toggle state; supports [(pressed)] two-way binding.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false",
+              "twoWay": true
+            }
+          ],
+          "events": [
+            {
+              "name": "press",
+              "description": "Fired on activation via pointer or keyboard.",
+              "payload": {
+                "structured": {
+                  "name": "PressEvent",
+                  "module": "./events.js",
+                  "kind": "reference"
+                },
+                "raw": "PressEvent"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "Button label content (default ng-content)."
+            },
+            {
+              "name": "icon",
+              "description": "Leading icon (ng-content select=\"[icon]\")."
+            }
+          ],
+          "methods": [
+            {
+              "name": "focus",
+              "description": "Moves keyboard focus to the button.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-button-radius",
+              "description": "Corner radius of the button.",
+              "default": "4px",
+              "syntax": "<length>"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeButtonComponent",
+          "declaration": "AcmeButtonComponent"
+        }
+      ]
+    }
+  ]
+}

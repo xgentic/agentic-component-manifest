@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acm.dev/schemas/v0/acm.meta.schema.json",
+  "title": "ACM Meta-Schema",
+  "description": "Constraints on the ACM schema itself (constitution I): declares the ACM annotation keywords and the top-level shape. Exhaustive per-field enforcement (every specified field typed, described, tiered; acmApplicability only on CEM-inherited nodes) is performed by the meta walker in packages/toolchain/src/meta.ts; both run in the gate-schema suite.",
+  "type": "object",
+  "properties": {
+    "$schema": { "const": "https://json-schema.org/draft/2020-12/schema" },
+    "$id": { "type": "string", "pattern": "^https://" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "type": { "const": "object" },
+    "properties": { "type": "object" },
+    "required": { "type": "array", "items": { "type": "string" } },
+    "patternProperties": { "type": "object" },
+    "additionalProperties": { "const": false },
+    "$defs": { "type": "object" }
+  },
+  "required": ["$schema", "$id", "title", "description", "type", "properties", "required", "$defs"],
+  "$defs": {
+    "acmTier": {
+      "description": "Provenance tier annotation keyword: every specified field carries exactly one.",
+      "enum": ["derived", "authored-verifiable"]
+    },
+    "acmApplicability": {
+      "description": "Paradigm classes a node applies to; only valid alongside acmCemInherited: true.",
+      "type": "array",
+      "items": { "enum": ["retained-dom", "vdom", "compiler-sfc", "signals-di"] },
+      "minItems": 1
+    },
+    "acmCemInherited": {
+      "description": "Marks a CEM-inherited, WC-specific node (constitution VIII grandfather clause).",
+      "type": "boolean"
+    }
+  }
+}

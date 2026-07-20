@@ -1,0 +1,586 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acm.dev/schemas/v0/acm.schema.json",
+  "title": "Agentic Component Manifest",
+  "description": "Universal, framework-agnostic manifest describing UI components in mechanical terms plus agent-oriented metadata. Property declaration order in this schema defines canonical JSON key order (Normative Spec NS-CANON-2).",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "The ACM schema version this manifest conforms to (semver). Consumers resolve capability from this declaration, never from guesswork.",
+      "acmTier": "derived",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$",
+      "maxLength": 64
+    },
+    "modules": {
+      "type": "array",
+      "description": "The JavaScript modules of the package that declare components.",
+      "acmTier": "derived",
+      "items": { "$ref": "#/$defs/module" },
+      "maxItems": 256
+    }
+  },
+  "required": ["schemaVersion", "modules"],
+  "patternProperties": { "^x-": {} },
+  "additionalProperties": false,
+  "$defs": {
+    "module": {
+      "type": "object",
+      "description": "One source module and the component declarations it contains.",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Package-relative path of the source module.",
+          "acmTier": "derived",
+          "maxLength": 512
+        },
+        "declarations": {
+          "type": "array",
+          "description": "Component declarations contained in this module.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/componentDeclaration" },
+          "maxItems": 256
+        },
+        "exports": {
+          "type": "array",
+          "description": "Bindings from exported names to declarations in this module.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/moduleExport" },
+          "maxItems": 512
+        }
+      },
+      "required": ["path"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "moduleExport": {
+      "type": "object",
+      "description": "An export binding of a module.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The exported name; \"default\" for default exports.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "declaration": {
+          "type": "string",
+          "description": "Name of the declaration this export binds to; must resolve within the document.",
+          "acmTier": "derived",
+          "maxLength": 128
+        }
+      },
+      "required": ["name", "declaration"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "componentDeclaration": {
+      "type": "object",
+      "description": "Exactly one component implementation artifact in one framework. Never a merged cross-framework surface.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Declaration name, unique within its module.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "identity": { "$ref": "#/$defs/identity", "description": "How this implementation is addressed, via universal identity facets.", "acmTier": "derived" },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text (Markdown). Absent when the source has no documentation; never authored directly into the manifest.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "inputs": {
+          "type": "array",
+          "description": "Inputs (props/attributes) accepted by the component.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/input" },
+          "maxItems": 256
+        },
+        "events": {
+          "type": "array",
+          "description": "Events emitted by the component, in mechanical (framework-free) naming.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/event" },
+          "maxItems": 256
+        },
+        "slots": {
+          "type": "array",
+          "description": "Content projection points: slots, children, and scoped slots / render props.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/slot" },
+          "maxItems": 256
+        },
+        "methods": {
+          "type": "array",
+          "description": "Public methods callable on the component instance or its imperative handle.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/method" },
+          "maxItems": 256
+        },
+        "cssProperties": {
+          "type": "array",
+          "description": "CSS custom properties the component consumes for styling.",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/cssProperty" },
+          "maxItems": 256
+        },
+        "cssParts": {
+          "type": "array",
+          "description": "CSS shadow parts exposed via ::part(). CEM-inherited; applies to retained-DOM components only.",
+          "acmTier": "derived",
+          "acmCemInherited": true,
+          "acmApplicability": ["retained-dom"],
+          "items": { "$ref": "#/$defs/cssPart" },
+          "maxItems": 256
+        },
+        "semantics": { "$ref": "#/$defs/semanticClassification", "description": "Controlled-vocabulary semantic classification of the component.", "acmTier": "authored-verifiable" },
+        "examples": {
+          "type": "array",
+          "description": "Usage examples. Optional; each must compile in the producer's CI to remain core content.",
+          "acmTier": "authored-verifiable",
+          "items": { "$ref": "#/$defs/example" },
+          "maxItems": 32
+        }
+      },
+      "required": ["name", "identity"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "identity": {
+      "type": "object",
+      "description": "Universal identity: one shape whose facets cover all paradigm classes; an entry fills the facets that apply.",
+      "properties": {
+        "paradigmClass": {
+          "type": "string",
+          "description": "The paradigm class this implementation belongs to; drives the coverage matrix.",
+          "acmTier": "derived",
+          "enum": ["retained-dom", "vdom", "compiler-sfc", "signals-di"]
+        },
+        "tagName": {
+          "type": "string",
+          "description": "Custom element tag name facet (retained-DOM). CEM-inherited.",
+          "acmTier": "derived",
+          "acmCemInherited": true,
+          "acmApplicability": ["retained-dom"],
+          "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$",
+          "maxLength": 128
+        },
+        "module": {
+          "type": "string",
+          "description": "Module specifier facet; paired with export (both or neither).",
+          "acmTier": "derived",
+          "maxLength": 256
+        },
+        "export": {
+          "type": "string",
+          "description": "Export name facet; paired with module (both or neither).",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "selector": {
+          "type": "string",
+          "description": "Angular-style selector facet (CSS selector grammar).",
+          "acmTier": "derived",
+          "maxLength": 256
+        }
+      },
+      "required": ["paradigmClass"],
+      "anyOf": [
+        { "required": ["tagName"] },
+        { "required": ["module", "export"] },
+        { "required": ["selector"] }
+      ],
+      "dependentRequired": { "module": ["export"], "export": ["module"] },
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "input": {
+      "type": "object",
+      "description": "One input (prop/attribute) of the component.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Mechanical input name as declared in source.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this input.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "type": { "$ref": "#/$defs/typeExpression", "description": "Layered type of the input value.", "acmTier": "derived" },
+        "default": {
+          "type": "string",
+          "description": "Default value as a verbatim source expression.",
+          "acmTier": "derived",
+          "maxLength": 1024
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether the input must be provided.",
+          "acmTier": "derived"
+        },
+        "reflects": {
+          "type": "boolean",
+          "description": "Whether the property reflects to an attribute. CEM-inherited; retained-DOM only.",
+          "acmTier": "derived",
+          "acmCemInherited": true,
+          "acmApplicability": ["retained-dom"]
+        },
+        "twoWay": {
+          "type": "boolean",
+          "description": "Whether the input supports two-way binding (universal abstraction of Angular [( )] / Vue v-model).",
+          "acmTier": "derived"
+        }
+      },
+      "required": ["name"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "description": "One event emitted by the component.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Mechanical event name without framework prefixes (\"press\", not \"onPress\").",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this event.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "payload": { "$ref": "#/$defs/typeExpression", "description": "Layered type of the event payload.", "acmTier": "derived" }
+      },
+      "required": ["name"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "slot": {
+      "type": "object",
+      "description": "One content projection point. Name absent means the default slot / children.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Slot name; absent for the default slot.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this slot.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "scopedPayload": { "$ref": "#/$defs/typeExpression", "description": "Layered type of data flowing into projected content (scoped slot / render prop).", "acmTier": "derived" }
+      },
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "method": {
+      "type": "object",
+      "description": "One public method of the component.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Method name as declared in source.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this method.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Ordered method parameters.",
+          "acmTier": "derived",
+          "items": {
+            "type": "object",
+            "description": "One method parameter.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Parameter name.",
+                "acmTier": "derived",
+                "maxLength": 128
+              },
+              "description": {
+                "type": "string",
+                "description": "Verbatim source doc-comment text for this parameter.",
+                "acmTier": "derived",
+                "maxLength": 8192
+              },
+              "type": { "$ref": "#/$defs/typeExpression", "description": "Layered type of the parameter.", "acmTier": "derived" }
+            },
+            "required": ["name"],
+            "patternProperties": { "^x-": {} },
+            "additionalProperties": false
+          },
+          "maxItems": 64
+        },
+        "return": { "$ref": "#/$defs/typeExpression", "description": "Layered return type.", "acmTier": "derived" }
+      },
+      "required": ["name"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "cssProperty": {
+      "type": "object",
+      "description": "One CSS custom property the component consumes.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Custom property name including the -- prefix.",
+          "acmTier": "derived",
+          "pattern": "^--",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this custom property.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        },
+        "syntax": {
+          "type": "string",
+          "description": "CSS syntax string (per CSS Properties and Values).",
+          "acmTier": "derived",
+          "maxLength": 256
+        },
+        "default": {
+          "type": "string",
+          "description": "Default CSS value as verbatim source text.",
+          "acmTier": "derived",
+          "maxLength": 256
+        }
+      },
+      "required": ["name"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "cssPart": {
+      "type": "object",
+      "description": "One CSS shadow part exposed via ::part(). CEM-inherited node.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Part name.",
+          "acmTier": "derived",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "Verbatim source doc-comment text for this part.",
+          "acmTier": "derived",
+          "maxLength": 8192
+        }
+      },
+      "required": ["name"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "typeExpression": {
+      "type": "object",
+      "description": "Layered type: a structured machine tier plus the verbatim raw source type text. Both present or the node is absent entirely.",
+      "properties": {
+        "structured": { "$ref": "#/$defs/typeNode", "description": "Structured machine-tier type expression; \"opaque\" kind is the declared fallback when structuring fails.", "acmTier": "derived" },
+        "raw": {
+          "type": "string",
+          "description": "Verbatim source type text (e.g., the original TypeScript type).",
+          "acmTier": "derived",
+          "maxLength": 4096
+        }
+      },
+      "required": ["structured", "raw"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "typeNode": {
+      "type": "object",
+      "description": "One node of the closed structured type grammar, discriminated by kind.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Discriminator of the type node.",
+          "acmTier": "derived",
+          "enum": ["primitive", "literal", "union", "array", "record", "object", "function", "reference", "opaque"]
+        },
+        "primitive": {
+          "type": "string",
+          "description": "Primitive name (kind: primitive).",
+          "acmTier": "derived",
+          "enum": ["string", "number", "boolean", "null", "undefined", "void", "unknown"]
+        },
+        "value": {
+          "description": "Literal value (kind: literal).",
+          "acmTier": "derived",
+          "type": ["string", "number", "boolean", "null"]
+        },
+        "members": {
+          "type": "array",
+          "description": "Union members (kind: union).",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/typeNode" },
+          "maxItems": 64
+        },
+        "items": { "$ref": "#/$defs/typeNode", "description": "Element type (kind: array).", "acmTier": "derived" },
+        "key": { "$ref": "#/$defs/typeNode", "description": "Key type (kind: record).", "acmTier": "derived" },
+        "valueType": { "$ref": "#/$defs/typeNode", "description": "Value type (kind: record).", "acmTier": "derived" },
+        "fields": {
+          "type": "array",
+          "description": "Named fields (kind: object).",
+          "acmTier": "derived",
+          "items": {
+            "type": "object",
+            "description": "One named field of an object type.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Field name.",
+                "acmTier": "derived",
+                "maxLength": 128
+              },
+              "type": { "$ref": "#/$defs/typeNode", "description": "Field type.", "acmTier": "derived" },
+              "optional": {
+                "type": "boolean",
+                "description": "Whether the field is optional.",
+                "acmTier": "derived"
+              }
+            },
+            "required": ["name", "type"],
+            "patternProperties": { "^x-": {} },
+            "additionalProperties": false
+          },
+          "maxItems": 64
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Function parameters (kind: function).",
+          "acmTier": "derived",
+          "items": { "$ref": "#/$defs/typeNode" },
+          "maxItems": 64
+        },
+        "return": { "$ref": "#/$defs/typeNode", "description": "Function return type (kind: function).", "acmTier": "derived" },
+        "name": {
+          "type": "string",
+          "description": "Referenced type name (kind: reference).",
+          "acmTier": "derived",
+          "maxLength": 256
+        },
+        "module": {
+          "type": "string",
+          "description": "Module the referenced type comes from (kind: reference).",
+          "acmTier": "derived",
+          "maxLength": 256
+        }
+      },
+      "required": ["kind"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "semanticClassification": {
+      "type": "object",
+      "description": "Semantic classification from the controlled vocabulary; notes may accompany, never replace, a term.",
+      "properties": {
+        "term": {
+          "type": "string",
+          "description": "Controlled-vocabulary term (Open UI taxonomy / WAI-ARIA anchored; pinned in packages/spec/data/vocabulary.json).",
+          "acmTier": "authored-verifiable",
+          "enum": [
+            "accordion",
+            "alert",
+            "alertdialog",
+            "avatar",
+            "badge",
+            "breadcrumb",
+            "button",
+            "card",
+            "carousel",
+            "checkbox",
+            "combobox",
+            "datepicker",
+            "dialog",
+            "disclosure",
+            "empty-state",
+            "file-upload",
+            "grid",
+            "image",
+            "link",
+            "listbox",
+            "menu",
+            "menubar",
+            "meter",
+            "navigation",
+            "pagination",
+            "popover",
+            "progressbar",
+            "radio",
+            "rating",
+            "searchbox",
+            "select",
+            "skeleton",
+            "slider",
+            "spinbutton",
+            "switch",
+            "tab",
+            "table",
+            "tabpanel",
+            "tabs",
+            "textbox",
+            "toast",
+            "toolbar",
+            "tooltip",
+            "tree",
+            "treegrid"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "description": "Constrained freeform notes accompanying the term; never a replacement for it.",
+          "acmTier": "authored-verifiable",
+          "maxLength": 2048
+        }
+      },
+      "required": ["term"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    },
+    "example": {
+      "type": "object",
+      "description": "One usage example; must compile in the producer's CI to remain core content.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Short example title.",
+          "acmTier": "authored-verifiable",
+          "maxLength": 256
+        },
+        "lang": {
+          "type": "string",
+          "description": "Example source language.",
+          "acmTier": "authored-verifiable",
+          "enum": ["ts", "tsx", "html"]
+        },
+        "source": {
+          "type": "string",
+          "description": "Example source code.",
+          "acmTier": "authored-verifiable",
+          "maxLength": 8192
+        }
+      },
+      "required": ["lang", "source"],
+      "patternProperties": { "^x-": {} },
+      "additionalProperties": false
+    }
+  }
+}

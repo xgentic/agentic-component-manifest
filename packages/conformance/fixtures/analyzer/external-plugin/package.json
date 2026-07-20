@@ -1,0 +1,5 @@
+{
+  "name": "@acme/widgets",
+  "private": true,
+  "type": "module"
+}

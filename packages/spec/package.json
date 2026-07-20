@@ -1,0 +1,8 @@
+{
+  "name": "@acm/spec",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "ACM normative layer: the JSON Schema, meta-schema, Normative Spec, vocabulary, and generated artifacts."
+}

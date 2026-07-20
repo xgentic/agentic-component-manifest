@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/acme-field.ts",
+      "declarations": [
+        {
+          "name": "AcmeField",
+          "identity": {
+            "paradigmClass": "retained-dom",
+            "tagName": "acme-field",
+            "module": "@acme/wc",
+            "export": "AcmeField"
+          },
+          "description": "A form-associated custom element participating in native form submission.",
+          "inputs": [
+            {
+              "name": "name",
+              "description": "Form control name.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "reflects": true
+            },
+            {
+              "name": "value",
+              "description": "Submitted value.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "description": "Fired when the committed value changes."
+            }
+          ],
+          "methods": [
+            {
+              "name": "reportValidity",
+              "description": "Runs constraint validation and shows the message.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            }
+          ],
+          "semantics": {
+            "term": "textbox"
+          },
+          "x-wc": {
+            "formAssociated": true
+          }
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeField",
+          "declaration": "AcmeField"
+        }
+      ]
+    }
+  ]
+}

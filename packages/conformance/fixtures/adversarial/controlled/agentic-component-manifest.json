@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/AcmeInput.tsx",
+      "declarations": [
+        {
+          "name": "AcmeInput",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react",
+            "export": "AcmeInput"
+          },
+          "description": "A text input usable controlled (value) or uncontrolled (defaultValue).",
+          "inputs": [
+            {
+              "name": "value",
+              "description": "Controlled value; pair with the valueChange event.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "defaultValue",
+              "description": "Uncontrolled initial value.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "valueChange",
+              "description": "Fired with the next value on every edit.",
+              "payload": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            }
+          ],
+          "semantics": {
+            "term": "textbox"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeInput",
+          "declaration": "AcmeInput"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/toggle.ts",
+      "declarations": [
+        {
+          "name": "AcmeToggle",
+          "identity": {
+            "paradigmClass": "retained-dom",
+            "tagName": "acme-toggle",
+            "module": "@acme/doc-metadata",
+            "export": "AcmeToggle"
+          },
+          "description": "A themable on/off toggle rendered as a custom element.",
+          "inputs": [
+            {
+              "name": "checked",
+              "description": "Whether the toggle is currently on.",
+              "default": "false"
+            }
+          ],
+          "semantics": {
+            "term": "switch",
+            "notes": "Reflects an on/off state; the label names the action."
+          },
+          "examples": [
+            {
+              "title": "Basic usage",
+              "lang": "ts",
+              "source": "const t = new AcmeToggle();\nt.checked = true;"
+            },
+            {
+              "title": "Markup",
+              "lang": "html",
+              "source": "<acme-toggle checked></acme-toggle>"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeToggle",
+          "declaration": "AcmeToggle"
+        }
+      ]
+    }
+  ]
+}

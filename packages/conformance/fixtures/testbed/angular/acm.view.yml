@@ -1,0 +1,228 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/data-grid.component.ts
+    declarations:
+      - name: AcmeDataGridComponent
+        identity:
+          paradigmClass: signals-di
+          module: "@acme/ng-grid"
+          export: AcmeDataGridComponent
+          selector: acme-data-grid
+        description: "A themable, sortable, selectable data grid as a standalone Angular component.\n\nThe maximally complex Angular capability surface: decorated and signal inputs,\ntwo-way `model()` bindings, decorator and signal outputs, projected content,\nhost-level CSS custom properties, imperative methods, and ignored DI internals."
+        inputs:
+          - name: data-label
+            description: "Accessible label, bound through the `data-label` attribute."
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+            default: "'Grid'"
+          - name: disabled
+            description: "Whether the grid is disabled; coerced from its attribute."
+            type:
+              structured:
+                kind: primitive
+                primitive: boolean
+              raw: boolean
+            default: "false"
+          - name: density
+            description: Visual density of the rows.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: compact
+                  - kind: literal
+                    value: comfortable
+              raw: "'compact' | 'comfortable'"
+            default: "'comfortable'"
+          - name: columns
+            description: "Column definitions, in display order."
+            type:
+              structured:
+                kind: array
+                items:
+                  name: GridColumn
+                  module: "./support.js"
+                  kind: reference
+              raw: "GridColumn<RowData>[]"
+            default: "[]"
+          - name: rowClass
+            description: Resolver returning a CSS class for a given row.
+            type:
+              structured:
+                parameters:
+                  - name: RowData
+                    module: "./support.js"
+                    kind: reference
+                return:
+                  kind: primitive
+                  primitive: string
+                kind: function
+              raw: "(row: RowData) => string"
+            default: "() => ''"
+          - name: renderConfig
+            description: Opaque render configuration nested beyond the structured-type depth bound.
+            type:
+              structured:
+                kind: object
+                fields:
+                  - name: a
+                    type:
+                      kind: object
+                      fields:
+                        - name: b
+                          type:
+                            kind: object
+                            fields:
+                              - name: c
+                                type:
+                                  kind: object
+                                  fields:
+                                    - name: d
+                                      type:
+                                        kind: object
+                                        fields:
+                                          - name: e
+                                            type:
+                                              kind: opaque
+              raw: "{ a: { b: { c: { d: { e: { f: string } } } } } }"
+          - name: pageSize
+            description: "Rows per page; required at the call site."
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+            required: true
+          - name: size
+            description: Maximum number of rows to render before virtualizing.
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+            default: "200"
+          - name: selection
+            description: "Currently selected row ids; two-way bound with `[(selection)]`."
+            type:
+              structured:
+                kind: array
+                items:
+                  kind: primitive
+                  primitive: string
+              raw: "readonly string[]"
+            default: "[]"
+            twoWay: true
+          - name: page
+            description: "Active page index; two-way bound with `[(page)]`."
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+            default: "0"
+            twoWay: true
+          - name: caption
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+            default: "''"
+        events:
+          - name: sortChange
+            description: Fired when the active column sort changes.
+            payload:
+              structured:
+                name: SortEvent
+                module: "./support.js"
+                kind: reference
+              raw: SortEvent
+          - name: rowActivate
+            description: Fired when a row is activated by pointer or keyboard.
+            payload:
+              structured:
+                name: RowActivateEvent
+                module: "./support.js"
+                kind: reference
+              raw: RowActivateEvent
+        slots:
+          - description: Default cell content projected into each cell.
+          - name: header
+            description: "Header renderer (ng-content select=\"[header]\")."
+          - name: toolbar
+            description: "Toolbar shown above the grid (ng-content select=\"[toolbar]\")."
+          - name: footer
+            description: "Footer shown below the grid (ng-content select=\"[footer]\")."
+        methods:
+          - name: sortBy
+            description: Sort the grid by a column.
+            parameters:
+              - name: columnId
+                type:
+                  structured:
+                    kind: primitive
+                    primitive: string
+                  raw: string
+              - name: direction
+                type:
+                  structured:
+                    kind: union
+                    members:
+                      - kind: literal
+                        value: asc
+                      - kind: literal
+                        value: desc
+                  raw: "'asc' | 'desc'"
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+          - name: refresh
+            description: "Reload the grid's data, optionally cancelling via a signal."
+            parameters:
+              - name: signal
+                type:
+                  structured:
+                    name: AbortSignal
+                    kind: reference
+                  raw: AbortSignal
+            return:
+              structured:
+                name: Promise
+                kind: reference
+              raw: "Promise<void>"
+          - name: scrollToRow
+            description: Scroll the given row index into view and activate it.
+            parameters:
+              - name: index
+                type:
+                  structured:
+                    kind: primitive
+                    primitive: number
+                  raw: number
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+        cssProperties:
+          - name: "--acme-grid-border"
+            description: Grid border color.
+            default: "#ccc"
+            syntax: "<color>"
+          - name: "--acme-grid-row-height"
+            description: Height of a data row.
+            default: "36px"
+            syntax: "<length>"
+          - name: "--acme-grid-accent"
+            description: Accent color for selection.
+            default: "#06c"
+            syntax: "<color>"
+    exports:
+      - name: AcmeDataGridComponent
+        declaration: AcmeDataGridComponent

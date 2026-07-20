@@ -1,0 +1,177 @@
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+import { agentViewFromText, checkCanonical, validateManifest } from "../../toolchain/src/index.js";
+import { analyzeProject } from "../../analyzer/src/run.js";
+import { defaultSettings, type BuiltinFramework } from "../../analyzer/src/types.js";
+import { FIXTURES, readFixture } from "./helpers.js";
+
+/**
+ * FR-014 / SC-008: the stress testbeds. One maximally complex DataGrid-class component
+ * per framework, checked in as real source with byte-pinned goldens. This gate walks
+ * the capability inventory (contracts/testbed-inventory.md): every row maps to at least
+ * one machine assertion (presence / shape / negative), the analyzer byte-matches the
+ * golden `agentic-component-manifest.json` and `acm.view.yml`, and re-analysis is byte-identical (SC-002).
+ */
+
+type Json = Record<string, any>;
+
+interface Testbed {
+  fw: BuiltinFramework;
+  dir: string;
+}
+
+const TESTBEDS: Testbed[] = [
+  { fw: "lit", dir: "testbed/lit" },
+  { fw: "angular", dir: "testbed/angular" },
+];
+
+async function analyze(t: Testbed): Promise<string | null> {
+  const settings = defaultSettings();
+  settings.framework = t.fw;
+  const outcome = await analyzeProject(settings, path.join(FIXTURES, t.dir), { write: false });
+  return outcome.text;
+}
+
+/** The single declaration under test in a testbed golden. */
+function goldenDecl(dir: string): Json {
+  return JSON.parse(readFixture(`${dir}/agentic-component-manifest.json`)).modules[0].declarations[0];
+}
+
+/** True when some node anywhere in `obj` satisfies `pred`. */
+function deepSome(obj: unknown, pred: (node: Json) => boolean): boolean {
+  if (!obj || typeof obj !== "object") return false;
+  if (!Array.isArray(obj) && pred(obj as Json)) return true;
+  return Object.values(obj).some((v) => deepSome(v, pred));
+}
+
+/** Every member (input/event/method/slot/cssProperty/cssPart) name in a declaration. */
+function memberNames(decl: Json): string[] {
+  const groups = ["inputs", "events", "methods", "slots", "cssProperties", "cssParts"] as const;
+  return groups.flatMap((g) => (decl[g] ?? []).map((m: Json) => m.name).filter(Boolean));
+}
+
+const byName = (arr: Json[] | undefined, name: string): Json | undefined =>
+  (arr ?? []).find((m) => m.name === name);
+
+// --- Inventory rows: each is one machine assertion over the golden declaration. ---
+
+interface Row {
+  id: string;
+  check: (d: Json) => boolean;
+}
+
+const LIT_ROWS: Row[] = [
+  { id: "L1 identity: tagName + retained-dom + module/export", check: (d) =>
+      d.identity.tagName === "acme-data-grid" && d.identity.paradigmClass === "retained-dom" &&
+      !!d.identity.module && !!d.identity.export },
+  { id: "L2 >=10 reactive properties in source order", check: (d) => (d.inputs?.length ?? 0) >= 10 },
+  { id: "L3 literal-union property", check: (d) => {
+      const i = byName(d.inputs, "selectionMode");
+      return i?.type.structured.kind === "union" &&
+        i.type.structured.members.every((m: Json) => m.kind === "literal"); } },
+  { id: "L4 generic-bearing array-of-reference", check: (d) => {
+      const i = byName(d.inputs, "columns");
+      return i?.type.structured.kind === "array" && i.type.structured.items.kind === "reference"; } },
+  { id: "L5 function-typed property", check: (d) =>
+      byName(d.inputs, "rowClass")?.type.structured.kind === "function" },
+  { id: "L6 beyond-depth object -> opaque fallback + raw", check: (d) => {
+      const i = byName(d.inputs, "renderConfig");
+      return deepSome(i?.type.structured, (n) => n.kind === "opaque") && !!i?.type.raw; } },
+  { id: "L7 reflect:true -> reflects", check: (d) => (d.inputs ?? []).some((i: Json) => i.reflects === true) },
+  { id: "L8 attribute alias captured, type intact", check: (d) => {
+      const i = byName(d.inputs, "label");
+      return i?.["x-attribute"] === "data-label" && i.type.structured.kind === "primitive"; } },
+  { id: "L9 property initializer -> default verbatim", check: (d) =>
+      byName(d.inputs, "pageSize")?.default === "25" },
+  { id: "L10 undocumented member -> description absent", check: (d) =>
+      byName(d.inputs, "caption") !== undefined && byName(d.inputs, "caption")!.description === undefined &&
+      byName(d.inputs, "selectionMode")?.description !== undefined },
+  { id: "L11 >=4 typed events", check: (d) =>
+      (d.events?.length ?? 0) >= 4 && d.events.every((e: Json) => !!e.payload) },
+  { id: "L12 default slot + >=3 named slots", check: (d) => {
+      const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
+      const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
+      return unnamed === 1 && named >= 3; } },
+  { id: "L13 >=3 methods with param + return types", check: (d) =>
+      (d.methods?.length ?? 0) >= 3 && d.methods.some((m: Json) => m.parameters?.length && m.return) &&
+      d.methods.some((m: Json) => m.return?.raw === "Promise<void>") },
+  { id: "L14 private/#/@state members absent (negative)", check: (d) => {
+      const forbidden = ["_hoveredRow", "_cache", "#internalId", "internalId", "styles"];
+      return forbidden.every((n) => !memberNames(d).includes(n)); } },
+  { id: "L15 >=4 CSS custom properties", check: (d) => (d.cssProperties?.length ?? 0) >= 4 },
+  { id: "L16 >=3 CSS parts", check: (d) => (d.cssParts?.length ?? 0) >= 3 },
+  { id: "L17 static formAssociated -> x-wc node", check: (d) => d["x-wc"]?.formAssociated === true },
+];
+
+const ANGULAR_ROWS: Row[] = [
+  { id: "A1 selector identity, signals-di, NO tagName (negative)", check: (d) =>
+      d.identity.selector === "acme-data-grid" && d.identity.paradigmClass === "signals-di" &&
+      !!d.identity.module && !!d.identity.export && d.identity.tagName === undefined },
+  { id: "A2 decorated @Input incl aliased + transform, public names", check: (d) =>
+      byName(d.inputs, "data-label") !== undefined && byName(d.inputs, "disabled") !== undefined },
+  { id: "A3 signal input(default) + input.required distinction", check: (d) =>
+      byName(d.inputs, "pageSize")?.required === true && byName(d.inputs, "size")?.default === "200" &&
+      byName(d.inputs, "pageSize")?.default === undefined },
+  { id: "A4 >=2 model() two-way inputs surfaced (twoWay)", check: (d) =>
+      (d.inputs ?? []).filter((i: Json) => i.twoWay === true).length >= 2 },
+  { id: "A5 decorator + signal outputs -> typed events", check: (d) =>
+      (d.events?.length ?? 0) >= 2 && d.events.every((e: Json) => !!e.payload) },
+  { id: "A6 multi-selector projection + default slot", check: (d) => {
+      const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
+      const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
+      return unnamed === 1 && named >= 3; } },
+  { id: "A7 host CSS custom properties", check: (d) => (d.cssProperties?.length ?? 0) >= 1 },
+  { id: "A8 injected DI absent (negative)", check: (d) =>
+      !memberNames(d).includes("config") && !memberNames(d).includes("GRID_CONFIG") },
+  { id: "A9 >=3 public methods incl async", check: (d) =>
+      (d.methods?.length ?? 0) >= 3 && d.methods.some((m: Json) => m.return?.raw === "Promise<void>") },
+  { id: "A10 protected/private/internal signals absent (negative)", check: (d) => {
+      const forbidden = ["hoveredIndex", "_cache", "_revision", "denseClass", "ngOnInit"];
+      return forbidden.every((n) => !memberNames(d).includes(n)); } },
+  { id: "A11 undocumented member -> description absent", check: (d) =>
+      byName(d.inputs, "caption")?.description === undefined && byName(d.inputs, "density")?.description !== undefined },
+  { id: "A12 union + generic-ref + function + opaque inputs (mirror L3-L6)", check: (d) =>
+      byName(d.inputs, "density")?.type.structured.kind === "union" &&
+      byName(d.inputs, "columns")?.type.structured.items?.kind === "reference" &&
+      byName(d.inputs, "rowClass")?.type.structured.kind === "function" &&
+      deepSome(byName(d.inputs, "renderConfig")?.type.structured, (n) => n.kind === "opaque") },
+];
+
+const ROWS: Record<BuiltinFramework, Row[]> = {
+  lit: LIT_ROWS,
+  angular: ANGULAR_ROWS,
+  react: [],
+};
+
+describe("analyzer-testbed: stress testbeds byte-match goldens and walk the inventory (FR-014)", () => {
+  for (const t of TESTBEDS) {
+    describe(`${t.dir} (${t.fw})`, () => {
+      it("analyze(src) byte-matches agentic-component-manifest.json", async () => {
+        expect(await analyze(t)).toBe(readFixture(`${t.dir}/agentic-component-manifest.json`));
+      });
+
+      it("re-analysis is byte-identical (SC-002 / determinism)", async () => {
+        expect(await analyze(t)).toBe(await analyze(t));
+      });
+
+      it("golden is schema-valid and canonical", () => {
+        const text = readFixture(`${t.dir}/agentic-component-manifest.json`);
+        expect(validateManifest(JSON.parse(text)).valid).toBe(true);
+        expect(checkCanonical(text).canonical).toBe(true);
+      });
+
+      it("acm.view.yml matches the Agent View emitter for the golden", () => {
+        const view = agentViewFromText(readFixture(`${t.dir}/agentic-component-manifest.json`));
+        expect(view.ok).toBe(true);
+        expect(view.view).toBe(readFixture(`${t.dir}/acm.view.yml`));
+      });
+
+      // Inventory totality: one machine assertion per capability row.
+      for (const row of ROWS[t.fw]) {
+        it(`inventory ${row.id}`, () => {
+          expect(row.check(goldenDecl(t.dir))).toBe(true);
+        });
+      }
+    });
+  }
+});

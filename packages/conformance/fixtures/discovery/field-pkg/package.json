@@ -1,0 +1,5 @@
+{
+  "name": "@fixture/field-pkg",
+  "version": "1.0.0",
+  "acm": "./manifest/agentic-component-manifest.json"
+}
