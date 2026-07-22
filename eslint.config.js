@@ -11,6 +11,7 @@ export default tseslint.config(
       "**/dist/",
       "packages/toolchain/skill/",
       "evals/",
+      "examples/",
       "*.js",
     ],
   },

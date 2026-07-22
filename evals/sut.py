@@ -36,6 +36,7 @@ DISCOVERY_SKILL_TARGET = (
     / "SKILL.md"
 )
 LOCAL_SKILLS_DIR = REPO_ROOT / ".claude" / "skills"
+NX_ANGULAR_TESTBED = REPO_ROOT / "examples" / "nx-angular-testbed"
 
 # Model id/alias for the agent under test. Keep separate from the judge so a run can
 # put a small model under test and grade it with a larger one (or vice versa).
@@ -184,6 +185,39 @@ def make_no_toolchain_sandbox() -> tuple[Path, dict]:
         if p and not (Path(p) / "acm").exists()
     )
     env = {**os.environ, "PATH": clean_path}
+    return sandbox, env
+
+
+def make_angular_testbed_sandbox() -> tuple[Path, dict]:
+    """Copy the `examples/nx-angular-testbed` consumer project into a fresh sandbox.
+
+    This is the realistic counterpart to `make_discovery_sandbox()`'s synthetic
+    corpus: a real Nx/Angular monorepo where `@testbed/ui` is a workspace-linked
+    library (not a fixture written to look like `node_modules`). The library already
+    ships a committed `agentic-component-manifest.json` and the project already
+    vendors its own `.claude/skills/acm-discovery/SKILL.md` (installed via `acm
+    init`), so both are copied verbatim rather than re-synthesized here.
+
+    We skip a real `npm install` (slow, and unnecessary for a discovery-behaviour
+    eval that never runs `nx build`/`nx test`) and instead recreate the one thing
+    discovery depends on: `node_modules/@testbed/ui` as a symlink to `libs/ui`,
+    exactly what npm workspaces would have created.
+    """
+    sandbox = Path(tempfile.mkdtemp(prefix="acm-eval-angular-testbed-"))
+    shutil.copytree(
+        NX_ANGULAR_TESTBED,
+        sandbox,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(
+            "node_modules", "dist", ".nx", ".angular", "coverage", "tmp",
+            "test-output", "package-lock.json", ".git",
+        ),
+    )
+    scope_dir = sandbox / "node_modules" / "@testbed"
+    scope_dir.mkdir(parents=True, exist_ok=True)
+    (scope_dir / "ui").symlink_to(sandbox / "libs" / "ui", target_is_directory=True)
+    bin_dir = _write_acm_shim(sandbox)
+    env = {**os.environ, "PATH": f"{bin_dir}:{os.environ['PATH']}"}
     return sandbox, env
 
 

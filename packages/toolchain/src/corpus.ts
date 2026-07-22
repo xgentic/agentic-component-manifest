@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, type Dirent } from "node:fs";
 import path from "node:path";
 import type { Diagnostic } from "./diagnostics.js";
 import { resolveManifestPath } from "./discovery.js";
@@ -67,6 +67,22 @@ export interface CorpusOptions {
 
 function toPosix(p: string): string {
   return p.split(path.sep).join("/");
+}
+
+/**
+ * `Dirent.isDirectory()` reflects the entry's own type, not what it points to — a
+ * package manager's workspace link (npm/pnpm/yarn) is a symlink, so trusting it
+ * directly silently drops every workspace-linked package from the corpus. Resolve
+ * symlinks via `statSync`; a broken link is treated as absent, not an error.
+ */
+function isDirectoryEntry(parentDir: string, dirent: Dirent): boolean {
+  if (dirent.isDirectory()) return true;
+  if (!dirent.isSymbolicLink()) return false;
+  try {
+    return statSync(path.join(parentDir, dirent.name)).isDirectory();
+  } catch {
+    return false;
+  }
 }
 
 function normalize(text: string): string {
@@ -228,11 +244,11 @@ export function assembleCorpus(options: CorpusOptions = {}): Corpus {
   if (existsSync(nodeModules)) {
     const packageNames: string[] = [];
     for (const dirent of readdirSync(nodeModules, { withFileTypes: true })) {
-      if (!dirent.isDirectory() || dirent.name.startsWith(".")) continue;
+      if (!isDirectoryEntry(nodeModules, dirent) || dirent.name.startsWith(".")) continue;
       if (dirent.name.startsWith("@")) {
         const scopeDir = path.join(nodeModules, dirent.name);
         for (const inner of readdirSync(scopeDir, { withFileTypes: true })) {
-          if (inner.isDirectory() && !inner.name.startsWith("."))
+          if (isDirectoryEntry(scopeDir, inner) && !inner.name.startsWith("."))
             packageNames.push(`${dirent.name}/${inner.name}`);
         }
       } else {

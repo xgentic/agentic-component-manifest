@@ -15,3 +15,5 @@ llms.txt
 # The Discovery Skill text layout is content: blocks are byte-compared across
 # targets and generated/ is drift-pipeline territory (invariant #1)
 packages/discovery-skill/
+# Self-contained Nx testbed with its own formatter config; outside the pnpm workspace
+examples/
