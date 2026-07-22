@@ -15,3 +15,7 @@ coverage/
 Thumbs.db
 *.tmp
 *.swp
+
+# The discovery-corpus fixture ships a checked-in node_modules tree on purpose
+!packages/conformance/fixtures/discovery-corpus/node_modules/
+!packages/conformance/fixtures/discovery-corpus/node_modules/**

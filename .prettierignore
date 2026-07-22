@@ -12,3 +12,6 @@ docs/
 CONTEXT.md
 LICENSE
 llms.txt
+# The Discovery Skill text layout is content: blocks are byte-compared across
+# targets and generated/ is drift-pipeline territory (invariant #1)
+packages/discovery-skill/

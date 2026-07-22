@@ -1,0 +1,17 @@
+Results for "button" (5 matches):
+
+  [component]  Button
+               A themable action button as a JSX function component.
+               → acm component Button
+  [component]  AcmeButton
+               A themable action button rendered as a custom element.
+               → acm component AcmeButton --from @acme/lit-buttons
+  [component]  AcmeButton
+               A themable toggle-capable action button as a single-file component.
+               → acm component AcmeButton --from @acme/vue-buttons
+  [component]  AcmeButtonComponent
+               A themable action button with signal inputs and two-way binding.
+               → acm component AcmeButtonComponent
+  [component]  Chip
+               A compact selectable chip. Often mistaken for a button in dense toolbars.
+               → acm component Chip --from @acme/mixed --module @acme/mixed/a

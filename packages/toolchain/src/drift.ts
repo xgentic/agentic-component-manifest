@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { compile as jsonSchemaToTs } from "json-schema-to-typescript";
 import { acmSchema, REPO_ROOT } from "./validate.js";
+import { buildSkillFiles } from "./agent-docs.js";
 
 const GENERATED_DIR = path.join(REPO_ROOT, "packages/spec/generated");
 const TYPES_PATH = path.join(GENERATED_DIR, "types.ts");
@@ -68,6 +69,12 @@ export async function checkDrift(write: boolean): Promise<DriftReport> {
   const expected: Array<[string, string]> = [
     [TYPES_PATH, await generateTypes()],
     [REFERENCE_PATH, generateReference()],
+    // Steering-layer artifacts (ADR 0004): the Discovery Skill's generated
+    // blocks and per-ecosystem targets, projected from the capability manifest.
+    ...buildSkillFiles().files.map(([rel, content]): [string, string] => [
+      path.join(REPO_ROOT, rel),
+      content,
+    ]),
   ];
   const stale: string[] = [];
   for (const [file, content] of expected) {

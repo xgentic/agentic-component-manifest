@@ -1,0 +1,14 @@
+Results for "button" (showing 3 of 5 matches):
+
+  [component]  Button
+               A themable action button as a JSX function component.
+               from @acme/react-buttons — name-exact "button" — score 100
+               → acm component Button
+  [component]  AcmeButton
+               A themable action button rendered as a custom element.
+               from @acme/lit-buttons — name-substring "button" — score 70
+               → acm component AcmeButton --from @acme/lit-buttons
+  [component]  AcmeButton
+               A themable toggle-capable action button as a single-file component.
+               from @acme/vue-buttons — name-substring "button" — score 70
+               → acm component AcmeButton --from @acme/vue-buttons

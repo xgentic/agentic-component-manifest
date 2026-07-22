@@ -146,3 +146,42 @@ jobs:
       # Matches `pnpm test -- analyzer`: analyzer conformance gates (witness, testbed,
       # plugin-seam) plus the analyzer unit tests, on both platforms (SC-002).
       - run: pnpm vitest run analyzer
+
+  gate-discovery:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Spec 004 gates: ranking/rendering goldens, envelope + exit-code checks,
+      # capability drift, API ⇄ CLI parity, hostile inertness, determinism.
+      # Running on both platforms discharges SC-004's two-platform requirement.
+      - run: pnpm vitest run packages/conformance/tests/discovery-search.test.ts packages/conformance/tests/discovery-component.test.ts packages/conformance/tests/discovery-surface.test.ts packages/conformance/tests/discovery-gates.test.ts
+
+  gate-skill:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Spec 005 gates: authored-reference sweep, cross-packaging block
+      # fidelity, token budgets, error-playbook coverage (freshness is gate-drift).
+      - run: pnpm vitest run packages/conformance/tests/skill-gates.test.ts

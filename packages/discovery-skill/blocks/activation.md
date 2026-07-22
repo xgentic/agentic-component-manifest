@@ -1,0 +1,1 @@
+Discover real UI components instead of inventing APIs. Use when building or modifying frontend UI in a project whose libraries ship ACM Manifests (agentic-component-manifest.json in dependencies): search the corpus, then read one component's verbatim spec via the acm CLI.

@@ -37,11 +37,26 @@ instructions. Discovery order for consumers: `acm` field in package.json →
   [Manifest](CONTEXT.md#manifest), [Component](CONTEXT.md#component),
   [Identity Facet](CONTEXT.md#identity-facet), [Canonical JSON](CONTEXT.md#canonical-json),
   [Authoring Input](CONTEXT.md#authoring-input), [Agent View](CONTEXT.md#agent-view),
-  [Paradigm Class](CONTEXT.md#paradigm-class), [Provenance Tier](CONTEXT.md#provenance-tier)
+  [Paradigm Class](CONTEXT.md#paradigm-class), [Provenance Tier](CONTEXT.md#provenance-tier),
+  [Capability Manifest](CONTEXT.md#capability-manifest),
+  [Discovery Skill](CONTEXT.md#discovery-skill), [Two-Call Loop](CONTEXT.md#two-call-loop)
 - [ADR 0001 — Agent View YAML projection](docs/adr/0001-agent-view-yaml-projection.md)
 - [ADR 0002 — ACM Canonical JSON profile](docs/adr/0002-acm-canonical-json-profile.md)
+- [ADR 0003 — Agent consumption layer](docs/adr/0003-agent-consumption-layer.md)
+- [ADR 0004 — Skill generated from capability manifest](docs/adr/0004-skill-generated-from-capability-manifest.md)
+- [ADR 0005 — Lexical search, agent-driven retrieval ladder](docs/adr/0005-lexical-search-agent-retrieval-ladder.md)
+- [Proposal — Agent discovery architecture](docs/proposals/agent-discovery-architecture.md):
+  technical architecture for the skill + CLI discovery surface, mapped against the
+  Meta Astryx reference model
+- [Architecture — steering-layer generator](docs/architecture/steering-layer-generator.md):
+  bound design of the `acm agent-docs` generator and the Discovery Skill package —
+  block model, targets, conformance gates, and the decision log spec 005 planning
+  inherits
 - [AGENTS.md](AGENTS.md): build commands and invariants for coding agents working on
   this repository
+- [Research — component discovery for agents](docs/research/component-discovery-for-agents.md):
+  industry survey of how design systems expose components to AI agents (CLI, MCP,
+  llms.txt, skills) and the layered architecture ACM adopts
 
 ## Examples
 
@@ -61,3 +76,9 @@ instructions. Discovery order for consumers: `acm` field in package.json →
 - [Toolchain CLI contract](specs/001-acm-schema-foundation/contracts/toolchain-cli.md)
 - [Discovery contract](specs/001-acm-schema-foundation/contracts/discovery-contract.md)
 - [Schema contract](specs/001-acm-schema-foundation/contracts/schema-contract.md)
+- [Feature spec 004 — component discovery CLI](specs/004-component-discovery-cli/spec.md)
+- [Discovery CLI contract](specs/004-component-discovery-cli/contracts/cli-discovery.md)
+- [Typed envelope contract](specs/004-component-discovery-cli/contracts/envelope.md)
+- [Capability manifest contract](specs/004-component-discovery-cli/contracts/capability-manifest.md)
+- [Programmatic API contract](specs/004-component-discovery-cli/contracts/api.md)
+- [Feature spec 005 — agent discovery skill](specs/005-agent-discovery-skill/spec.md)

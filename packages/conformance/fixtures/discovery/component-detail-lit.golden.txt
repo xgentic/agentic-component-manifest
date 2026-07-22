@@ -1,0 +1,47 @@
+AcmeButton  (@acme/lit-buttons · node_modules/@acme/lit-buttons/manifest/acm.json)
+
+  A themable action button rendered as a custom element.
+
+  identity
+    paradigmClass  retained-dom
+    tagName        acme-button
+    module         @acme/wc
+    export         AcmeButton
+
+  inputs
+    variant: 'primary' | 'secondary' = 'primary'
+      Visual variant of the button.
+    disabled: boolean = false  [reflects]
+      Disables pointer and keyboard interaction.
+
+  events
+    press: PressEvent
+      Fired on activation via pointer or keyboard.
+
+  slots
+    (default)
+      Button label content.
+    icon
+      Leading icon.
+
+  methods
+    focus(options: FocusOptions): void
+      Moves keyboard focus to the button.
+
+  css properties
+    --acme-button-radius: <length> = 4px
+      Corner radius of the button.
+
+  css parts
+    label
+      The label span inside the shadow root.
+
+  semantics
+    button — Triggers the action named by its label.
+
+  examples
+    Basic (ts)
+      import '@acme/wc';
+      const b = document.createElement('acme-button');
+      b.textContent = 'Save';
+      document.body.append(b);

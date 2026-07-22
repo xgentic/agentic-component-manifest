@@ -13,7 +13,7 @@ source).
 pnpm install         # setup
 pnpm test            # full conformance suite — must be green before any commit
 pnpm test:seeded     # seeded non-conformance proofs (each seeded change MUST be rejected)
-pnpm acm <cmd>       # reference CLI: validate | compile | canonicalize | agent-view | coverage | drift
+pnpm acm <cmd>       # reference CLI: search | component | capabilities | validate | compile | canonicalize | agent-view | coverage | drift | agent-docs
 pnpm analyze --framework <name>   # derive a manifest from source (lit|react|angular; omit for vanilla)
 pnpm drift           # check generated artifacts are fresh
 pnpm generate        # regenerate stale generated artifacts (drift --write)

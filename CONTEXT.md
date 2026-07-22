@@ -89,3 +89,67 @@ _Avoid_: mapping doc, shared concepts (unenumerated)
 The declared origin class of every specified field: Derived (Tier 1), Authored-Verifiable
 (Tier 2), or Freeform (Tier 3, extensions only).
 _Avoid_: field origin, trust level
+
+### Manifest Corpus
+
+The set of valid Manifests assembled for one discovery invocation via the
+Distribution & Discovery convention plus explicitly provided paths; the universe a
+query runs against.
+_Avoid_: index, registry, catalog
+
+### Typed Envelope
+
+The single machine-output document per discovery invocation — a response-type
+discriminator plus data on success, or a message plus stable error code plus
+optional suggestions on failure. Consumers branch on discriminators and codes,
+never on prose.
+_Avoid_: JSON output (unqualified), result blob
+
+### Capability Manifest
+
+The discovery surface's structured self-description — commands, arguments, options,
+response types, error codes, examples — derived from the real command definitions.
+The verification authority for the Discovery Skill and the runtime source of truth
+on version skew.
+_Avoid_: help output, command docs
+
+### Discovery Skill
+
+The canonical steering artifact — an Activation Description plus a workflow body —
+that teaches agents the Two-Call Loop over the discovery surface. One source; every
+ecosystem packaging derives from it.
+_Avoid_: agent docs, prompt file
+
+### Activation Description
+
+The always-resident short text declaring when the Discovery Skill applies; the only
+skill content paying a per-session token cost.
+_Avoid_: skill summary, trigger text
+
+### Two-Call Loop
+
+The prescribed discovery workflow — one search, then one component detail, both in
+machine output — branching only on response-type discriminators and stable error
+codes.
+_Avoid_: search flow, lookup sequence
+
+### Steering Layer
+
+The set of per-ecosystem packagings (Discovery Skill, context-file variants)
+assembled from Generated and Authored Blocks that steer agents onto the discovery
+surface.
+_Avoid_: docs layer, agent docs
+
+### Generated Block
+
+A steering-layer content unit projected mechanically from the Capability Manifest;
+a generated artifact, never hand-edited, structurally unable to drift from the
+surface it describes.
+_Avoid_: template section, boilerplate
+
+### Authored Block
+
+A steering-layer content unit of hand-written judgment — activation, error-path
+playbook, security posture — that no manifest carries; gate-verified against the
+Capability Manifest, never generated.
+_Avoid_: manual section, freeform docs

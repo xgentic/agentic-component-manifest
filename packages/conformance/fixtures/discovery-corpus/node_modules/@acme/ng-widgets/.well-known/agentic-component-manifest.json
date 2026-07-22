@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/acme-button.component.ts",
+      "declarations": [
+        {
+          "name": "AcmeButtonComponent",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@acme/ng",
+            "export": "AcmeButtonComponent",
+            "selector": "acme-button"
+          },
+          "description": "A themable action button with signal inputs and two-way binding.",
+          "inputs": [
+            {
+              "name": "variant",
+              "description": "Visual variant of the button (signal input).",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "primary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "secondary"
+                    }
+                  ]
+                },
+                "raw": "'primary' | 'secondary'"
+              },
+              "default": "'primary'"
+            },
+            {
+              "name": "pressed",
+              "description": "Toggle state; supports [(pressed)] two-way binding.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false",
+              "twoWay": true
+            }
+          ],
+          "events": [
+            {
+              "name": "press",
+              "description": "Fired on activation via pointer or keyboard.",
+              "payload": {
+                "structured": {
+                  "name": "PressEvent",
+                  "module": "@acme/ng",
+                  "kind": "reference"
+                },
+                "raw": "PressEvent"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "Button label content (default ng-content)."
+            },
+            {
+              "name": "icon",
+              "description": "Leading icon (ng-content select=\"[icon]\")."
+            }
+          ],
+          "methods": [
+            {
+              "name": "focus",
+              "description": "Moves keyboard focus to the button.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-button-radius",
+              "description": "Corner radius of the button.",
+              "default": "4px",
+              "syntax": "<length>"
+            }
+          ],
+          "semantics": {
+            "term": "button",
+            "notes": "Triggers the action named by its label; can act as a toggle."
+          },
+          "examples": [
+            {
+              "title": "Template usage",
+              "lang": "ts",
+              "source": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'demo-save',\n  template: '<acme-button variant=\"primary\">Save</acme-button>',\n})\nexport class DemoSave {}"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeButtonComponent",
+          "declaration": "AcmeButtonComponent"
+        }
+      ]
+    }
+  ]
+}

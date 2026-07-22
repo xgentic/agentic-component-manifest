@@ -1,8 +1,37 @@
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { REPO_ROOT } from "../../toolchain/src/validate.js";
 
 export const FIXTURES = path.join(REPO_ROOT, "packages/conformance/fixtures");
+
+/** The discovery-corpus fixture project, REPO_ROOT-relative (stable in output). */
+export const DISCOVERY_CORPUS = "packages/conformance/fixtures/discovery-corpus";
+
+/**
+ * Spawn the real `acm` CLI (tsx over cli.ts) with pinned cwd and a TTY-free
+ * environment — the seam the stdout-purity and parity gates guard.
+ */
+export function runAcm(args: string[]): { stdout: string; stderr: string; exitCode: number } {
+  const tsxBin = path.join(
+    REPO_ROOT,
+    "node_modules",
+    ".bin",
+    process.platform === "win32" ? "tsx.cmd" : "tsx",
+  );
+  const result = spawnSync(
+    tsxBin,
+    [path.join(REPO_ROOT, "packages/toolchain/src/cli.ts"), ...args],
+    {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      env: { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" },
+      shell: process.platform === "win32",
+    },
+  );
+  if (result.error) throw result.error;
+  return { stdout: result.stdout, stderr: result.stderr, exitCode: result.status ?? -1 };
+}
 
 /** Every checked-in valid manifest fixture (canonical form, goldened). */
 export const VALID_FIXTURE_DIRS = [
