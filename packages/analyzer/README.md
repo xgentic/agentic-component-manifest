@@ -1,4 +1,4 @@
-# @acm/analyzer
+# @xgentic/acm-analyzer
 
 The ACM reference analyzer. It statically scans component source and emits
 [ACM Canonical JSON](../spec/normative-spec.md) — a framework-free `agentic-component-manifest.json` describing
@@ -150,7 +150,7 @@ export default {
 ## Plugins
 
 A framework is just a plugin. Everything the built-in frameworks do goes through the public
-`@acm/analyzer` entry point (`import type { AnalyzerPlugin } from "@acm/analyzer"`) — the
+`@xgentic/acm-analyzer` entry point (`import type { AnalyzerPlugin } from "@xgentic/acm-analyzer"`) — the
 core carries zero framework knowledge (Principle: the Prime Directive). A plugin implements
 `name` plus at least one hook, invoked in pipeline order:
 

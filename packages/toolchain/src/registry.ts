@@ -277,6 +277,22 @@ export const REGISTRY: CommandSpec[] = [
     responseTypes: [],
     examples: ["acm agent-docs --target agents-md", "acm agent-docs --write"],
   },
+  {
+    name: "init",
+    description:
+      "Install the bundled Discovery Skill into this project's .claude/skills/ so AI agents run the acm component-discovery workflow. Idempotent; use --force to overwrite an existing copy.",
+    arguments: [],
+    options: [
+      {
+        flag: "--force",
+        type: "boolean",
+        description: "overwrite an existing .claude/skills/acm-discovery directory",
+      },
+    ],
+    jsonSupported: false,
+    responseTypes: [],
+    examples: ["acm init", "acm init --force"],
+  },
 ];
 
 /** Bare option name from its display flag: `--limit <n>` → `limit`. */

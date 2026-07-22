@@ -8,7 +8,7 @@
  */
 
 import ts from "typescript";
-import { acmSchema } from "@acm/toolchain";
+import { acmSchema } from "@xgentic/acm";
 import { makeSpan } from "./context.js";
 import type {
   CssPartDraft,
@@ -25,7 +25,7 @@ import type {
 
 /**
  * The controlled-vocabulary term set (feature 003, research R-02) — read from the schema's
- * own `semanticClassification.term` enum via `@acm/toolchain`, so there is no parallel term
+ * own `semanticClassification.term` enum via `@xgentic/acm`, so there is no parallel term
  * list to drift (Principle I, single source of truth).
  */
 const SEMANTIC_TERMS: ReadonlySet<string> = new Set<string>(

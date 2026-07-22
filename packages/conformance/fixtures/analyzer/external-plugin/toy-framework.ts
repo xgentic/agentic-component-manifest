@@ -1,7 +1,7 @@
 /**
  * SC-005 demonstration: a *complete external framework* taught to the analyzer purely
  * through the public plugin contract. This file imports the analyzer only through its
- * published entry point (`@acm/analyzer` → `plugin.ts`) and touches nothing internal —
+ * published entry point (`@xgentic/acm-analyzer` → `plugin.ts`) and touches nothing internal —
  * no `context`, `emit`, `type-mapping`, or framework code. Everything it produces goes
  * through the `SessionContext` seam every built-in framework also uses, proving the core
  * carries zero framework knowledge (the Prime Directive). Registered from a settings

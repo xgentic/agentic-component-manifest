@@ -24,6 +24,6 @@ One canonical source, four packagings — all assembled from the same blocks:
 - Shared blocks are embedded between `<!-- acm:block … -->` markers and are
   byte-identical across every target, gate-verified.
 
-This package versions in **lockstep** with `@acm/toolchain`: skill `X.Y.Z`
+This package versions in **lockstep** with `@xgentic/acm`: skill `X.Y.Z`
 describes exactly CLI `X.Y.Z`; at runtime, `acm capabilities --json` is the
 source of truth on any skew.

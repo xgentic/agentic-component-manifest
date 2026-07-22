@@ -6,7 +6,7 @@
 ## Before you start
 
 1. Confirm the CLI exists: run `acm capabilities --json`. If it is missing,
-   report that the ACM toolchain is not installed (add the `@acm/toolchain` dev
+   report that the ACM toolchain is not installed (add the `@xgentic/acm` dev
    dependency) and continue the task without discovery — never guess component
    APIs silently.
 2. The corpus is discovered per invocation from the project and its installed

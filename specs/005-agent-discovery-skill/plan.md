@@ -74,7 +74,7 @@ description ≤ 100 tokens and the on-demand body ≤ 2,000 tokens under the rep
 gauge `ceil(UTF-8 bytes / 4)` (400 / 8,000 bytes; architecture G5/D7); `ACM-D-*` codes,
 response-type discriminators, and the `acm agent-docs` command/`--target` names are
 contract once shipped; `@acm/discovery-skill` versions in **lockstep** with
-`@acm/toolchain` (D3) so "which CLI does this skill describe" answers itself.
+`@xgentic/acm` (D3) so "which CLI does this skill describe" answers itself.
 
 **Scale/Scope**: 1 new toolchain command (`agent-docs`, `json: false`); 1 generator
 module (`agent-docs.ts`) + drift/registry/cli wiring; 1 new workspace package

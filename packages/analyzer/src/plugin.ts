@@ -1,5 +1,5 @@
 /**
- * Public plugin interface of `@acm/analyzer` (contracts/plugin-api.md).
+ * Public plugin interface of `@xgentic/acm-analyzer` (contracts/plugin-api.md).
  *
  * This module is the package's public entry (`exports["."]`). Every built-in framework
  * plugin consumes exactly this interface — there is no privileged internal seam

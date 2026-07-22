@@ -12,7 +12,10 @@ export const DISCOVERY_CORPUS = "packages/conformance/fixtures/discovery-corpus"
  * Spawn the real `acm` CLI (tsx over cli.ts) with pinned cwd and a TTY-free
  * environment — the seam the stdout-purity and parity gates guard.
  */
-export function runAcm(args: string[]): { stdout: string; stderr: string; exitCode: number } {
+export function runAcm(
+  args: string[],
+  opts: { cwd?: string } = {},
+): { stdout: string; stderr: string; exitCode: number } {
   const tsxBin = path.join(
     REPO_ROOT,
     "node_modules",
@@ -23,7 +26,7 @@ export function runAcm(args: string[]): { stdout: string; stderr: string; exitCo
     tsxBin,
     [path.join(REPO_ROOT, "packages/toolchain/src/cli.ts"), ...args],
     {
-      cwd: REPO_ROOT,
+      cwd: opts.cwd ?? REPO_ROOT,
       encoding: "utf8",
       env: { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" },
       shell: process.platform === "win32",

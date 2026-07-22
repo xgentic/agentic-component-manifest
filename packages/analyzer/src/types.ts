@@ -1,6 +1,6 @@
 /**
  * Analyzer runtime model (data-model.md). These are the analyzer's own types — the
- * emitted Manifest is defined by the schema in `@acm/spec`, never redefined here.
+ * emitted Manifest is defined by the schema in `@xgentic/acm-spec`, never redefined here.
  */
 
 import type ts from "typescript";

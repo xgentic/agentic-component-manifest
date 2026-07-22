@@ -8,6 +8,9 @@ dist/
 build/
 coverage/
 *.log
+
+# Generated at build: the Claude-skill bundle copied into the CLI package by tsup
+packages/toolchain/skill/
 .env*
 
 # OS / editor noise

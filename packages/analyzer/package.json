@@ -1,25 +1,55 @@
 {
-  "name": "@acm/analyzer",
+  "name": "@xgentic/acm-analyzer",
   "version": "0.1.0",
-  "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "ACM reference analyzer: statically scans component source and emits ACM Canonical JSON.",
-  "bin": {
-    "acm-analyzer": "./src/cli.ts"
+  "description": "ACM reference analyzer: statically scans component source (Angular, Lit/web components, React, Vue, vanilla) and emits ACM Canonical JSON.",
+  "keywords": [
+    "acm",
+    "agentic-component-manifest",
+    "analyzer",
+    "web-components",
+    "angular",
+    "react",
+    "lit",
+    "custom-elements-manifest"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgentic/agentic-component-manifest.git",
+    "directory": "packages/analyzer"
   },
+  "homepage": "https://github.com/xgentic/agentic-component-manifest#readme",
+  "bin": {
+    "acm-analyzer": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "development": "./src/plugin.ts",
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "engines": {
     "node": ">=20"
   },
-  "exports": {
-    ".": "./src/plugin.ts"
+  "scripts": {
+    "build": "tsup",
+    "prepack": "tsup"
   },
   "dependencies": {
-    "@acm/spec": "workspace:*",
-    "@acm/toolchain": "workspace:*",
+    "@xgentic/acm-spec": "workspace:*",
+    "@xgentic/acm": "workspace:*",
     "@vue/compiler-sfc": "^3.5.13",
     "chokidar": "^4.0.3",
     "tinyglobby": "^0.2.10",
     "typescript": "^5.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

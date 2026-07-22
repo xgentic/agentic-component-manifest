@@ -1,8 +1,35 @@
 {
-  "name": "@acm/spec",
+  "name": "@xgentic/acm-spec",
   "version": "0.1.0",
-  "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "ACM normative layer: the JSON Schema, meta-schema, Normative Spec, vocabulary, and generated artifacts."
+  "description": "ACM normative layer: the JSON Schema, meta-schema, Normative Spec, vocabulary, and generated artifacts.",
+  "keywords": [
+    "acm",
+    "agentic-component-manifest",
+    "json-schema",
+    "ui-components",
+    "ai-agents"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgentic/agentic-component-manifest.git",
+    "directory": "packages/spec"
+  },
+  "homepage": "https://github.com/xgentic/agentic-component-manifest#readme",
+  "exports": {
+    "./schema/acm.schema.json": "./schema/acm.schema.json",
+    "./schema/acm.meta.schema.json": "./schema/acm.meta.schema.json",
+    "./data/vocabulary.json": "./data/vocabulary.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "schema",
+    "data",
+    "generated",
+    "normative-spec.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

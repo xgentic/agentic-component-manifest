@@ -1,11 +1,53 @@
 {
-  "name": "@acm/toolchain",
+  "name": "@xgentic/acm",
   "version": "0.1.0",
-  "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "ACM reference toolchain: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, coverage, drift.",
+  "description": "ACM reference toolchain and CLI: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, and the bundled Discovery Skill.",
+  "keywords": [
+    "acm",
+    "agentic-component-manifest",
+    "ai-agents",
+    "component-manifest",
+    "cli",
+    "component-discovery",
+    "design-system"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xgentic/agentic-component-manifest.git",
+    "directory": "packages/toolchain"
+  },
+  "homepage": "https://github.com/xgentic/agentic-component-manifest#readme",
+  "bin": {
+    "acm": "./dist/cli.js"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "skill"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepack": "tsup"
+  },
+  "dependencies": {
+    "@xgentic/acm-spec": "workspace:*",
+    "ajv": "^8.17.1",
+    "json-schema-to-typescript": "^15.0.3",
+    "yaml": "^2.6.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -23,7 +23,7 @@ layer and are marked as such (they may be skipped without failing the spec).
 
 ## Path Conventions
 
-- New package: `packages/analyzer/` (src/, docs/, tests/) — `@acm/analyzer`, bin `acm-analyzer`
+- New package: `packages/analyzer/` (src/, docs/, tests/) — `@xgentic/acm-analyzer`, bin `acm-analyzer`
 - Conformance fixtures & gates: `packages/conformance/fixtures/`, `packages/conformance/tests/`
 - Shared toolchain (consumed, not modified except its `exports` map): `packages/toolchain/`
 
@@ -33,8 +33,8 @@ layer and are marked as such (they may be skipped without failing the spec).
 
 **Purpose**: Stand up the `packages/analyzer` package and wire it into the workspace.
 
-- [X] T001 Create `packages/analyzer/package.json` (name `@acm/analyzer`, `private: true`, `type: "module"`, `bin: { "acm-analyzer": "./src/cli.ts" }` run via tsx, `engines.node >= 20`), plus `packages/analyzer/tsconfig.json` extending the repo config, and empty `src/`, `docs/`, `tests/` directories
-- [X] T002 Add runtime dependencies to `packages/analyzer/package.json` (`typescript`, `@vue/compiler-sfc`, `tinyglobby`, `chokidar`) and workspace deps (`@acm/toolchain`, `@acm/spec`), then run `pnpm install` (depends on T001)
+- [X] T001 Create `packages/analyzer/package.json` (name `@xgentic/acm-analyzer`, `private: true`, `type: "module"`, `bin: { "acm-analyzer": "./src/cli.ts" }` run via tsx, `engines.node >= 20`), plus `packages/analyzer/tsconfig.json` extending the repo config, and empty `src/`, `docs/`, `tests/` directories
+- [X] T002 Add runtime dependencies to `packages/analyzer/package.json` (`typescript`, `@vue/compiler-sfc`, `tinyglobby`, `chokidar`) and workspace deps (`@xgentic/acm`, `@xgentic/acm-spec`), then run `pnpm install` (depends on T001)
 - [X] T003 [P] Add an `exports` map to `packages/toolchain/package.json` publishing the analyzer's integration surface (`validateManifest`, `canonicalize`, `checkCanonical`, `renderDiagnostics`, `Diagnostic`, `agentViewFromValue`/`agentViewFromText`) as the single public entry the analyzer imports
 - [X] T004 [P] Add root `analyze` script to `package.json` (`"analyze": "tsx packages/analyzer/src/cli.ts analyze"`) and add `packages/analyzer` + new conformance globs to the CI workflow in `.github/workflows/ci.yml`
 
@@ -153,7 +153,7 @@ layer and are marked as such (they may be skipped without failing the spec).
 - [X] T040 [US4] Implement external plugin registration + ordering in `packages/analyzer/src/config.ts`/`analyzer.ts`: `plugins[]` resolved and run **after** the framework plugin in array order (deterministic); each validated against the interface shape (`name` + ≥1 hook), violation fatal naming the index (depends on T035)
 - [X] T041 [US4] Enforce the `x-*` contribution rules end-to-end in `packages/analyzer/src/context.ts` + `emit.ts`: core fields accept only Tier-1 span-derived values, unnamespaced unknown keys rejected at the draft API, `x-*` accepts arbitrary JSON, with the reference validator as the post-`packageLink` backstop (depends on T008, T014)
 - [X] T042 [US4] Implement invalid-contribution handling in `packages/analyzer/src/emit.ts`: a contribution that invalidates the manifest aborts emission with a diagnostic **attributed to the offending plugin** and writes no file (US4 scenario 4) (depends on T041)
-- [X] T043 [P] [US4] SC-005 demonstration: implement a toy framework plugin importing **only** the public `@acm/analyzer` entry points, with a fixture under `packages/conformance/fixtures/analyzer/external-plugin/`, proving valid entries with zero analyzer-core changes
+- [X] T043 [P] [US4] SC-005 demonstration: implement a toy framework plugin importing **only** the public `@xgentic/acm-analyzer` entry points, with a fixture under `packages/conformance/fixtures/analyzer/external-plugin/`, proving valid entries with zero analyzer-core changes
 - [X] T044 [US4] Create `packages/conformance/tests/analyzer-gates.test.ts`: seeded-failure gates proving invalid plugin output is rejected, an invented member is detected, and canonical drift is detected (Principle IX), plus the SC-005 public-entry-only demonstration from T043 (depends on T042, T043)
 
 **Checkpoint**: The plugin seam is a user-facing contract; framework agnosticism of the core is proven by an external framework built entirely on the public interface.

@@ -1,15 +1,29 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import AjvModule from "ajv/dist/2020.js";
 import type { Diagnostic } from "./diagnostics.js";
 
 const Ajv2020 = (AjvModule as any).default ?? AjvModule;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+/**
+ * Monorepo root. Only meaningful in-repo; used exclusively by maintainer commands
+ * (drift, coverage, agent-docs `--write`), never on the published runtime path.
+ */
 export const REPO_ROOT = path.resolve(here, "../../..");
-export const SCHEMA_PATH = path.join(REPO_ROOT, "packages/spec/schema/acm.schema.json");
-export const META_SCHEMA_PATH = path.join(REPO_ROOT, "packages/spec/schema/acm.meta.schema.json");
+
+/**
+ * Schema files are resolved through the `@xgentic/acm-spec` package, not a path relative
+ * to this file, so validation works identically in-repo (pnpm symlink) and when the CLI
+ * is installed into a consumer's `node_modules`.
+ */
+const nodeRequire = createRequire(import.meta.url);
+export const SCHEMA_PATH = nodeRequire.resolve("@xgentic/acm-spec/schema/acm.schema.json");
+export const META_SCHEMA_PATH = nodeRequire.resolve(
+  "@xgentic/acm-spec/schema/acm.meta.schema.json",
+);
 
 export const acmSchema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8"));
 

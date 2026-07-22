@@ -2,7 +2,7 @@
   "apiVersion": 1,
   "name": "acm",
   "version": "<normalized>",
-  "description": "ACM reference toolchain: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, coverage, drift.",
+  "description": "ACM reference toolchain and CLI: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, and the bundled Discovery Skill.",
   "globalOptions": [
     {
       "flag": "--json",
@@ -292,6 +292,24 @@
       "examples": [
         "acm agent-docs --target agents-md",
         "acm agent-docs --write"
+      ]
+    },
+    {
+      "name": "init",
+      "description": "Install the bundled Discovery Skill into this project's .claude/skills/ so AI agents run the acm component-discovery workflow. Idempotent; use --force to overwrite an existing copy.",
+      "arguments": [],
+      "options": [
+        {
+          "flag": "--force",
+          "type": "boolean",
+          "description": "overwrite an existing .claude/skills/acm-discovery directory"
+        }
+      ],
+      "json": false,
+      "responseTypes": [],
+      "examples": [
+        "acm init",
+        "acm init --force"
       ]
     }
   ],

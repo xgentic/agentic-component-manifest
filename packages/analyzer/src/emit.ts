@@ -11,8 +11,8 @@
 
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { canonicalize, validateManifest } from "@acm/toolchain";
+import { createRequire } from "node:module";
+import { canonicalize, validateManifest } from "@xgentic/acm";
 import {
   buildProvenance,
   outputModules,
@@ -22,11 +22,15 @@ import {
 } from "./context.js";
 import type { Diagnostic } from "./diagnostics.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
+const nodeRequire = createRequire(import.meta.url);
 
-/** Manifest schema version, self-declared from the spec package (plan Principle VII). */
+/**
+ * Manifest schema version, self-declared from the spec package (plan Principle VII).
+ * Resolved through the `@xgentic/acm-spec` package so it holds when installed, not via a
+ * path relative to this file.
+ */
 export const SCHEMA_VERSION: string = JSON.parse(
-  readFileSync(path.resolve(here, "../../spec/package.json"), "utf8"),
+  readFileSync(nodeRequire.resolve("@xgentic/acm-spec/package.json"), "utf8"),
 ).version;
 
 /** Assemble the schema-shaped manifest from analyzed modules (declaration modules only). */

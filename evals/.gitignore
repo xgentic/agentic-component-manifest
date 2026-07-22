@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.deepeval/
+.deepeval-cache.json
+*.pyc
+temp_test_run_data.json
+run_*.log

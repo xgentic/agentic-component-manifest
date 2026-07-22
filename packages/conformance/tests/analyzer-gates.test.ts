@@ -39,7 +39,7 @@ function onlyDecl(outcome: AnalyzeOutcome): Record<string, unknown> {
  * contribution which would corrupt the manifest is caught before any write and blamed
  * on the offending plugin, that an invented (unnamespaced) member is rejected at the
  * draft API, and that canonical drift is detectable. The SC-005 demonstration proves an
- * external framework built entirely on the public `@acm/analyzer` entry produces valid
+ * external framework built entirely on the public `@xgentic/acm-analyzer` entry produces valid
  * entries with zero analyzer-core change.
  */
 

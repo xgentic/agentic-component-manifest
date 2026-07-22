@@ -28,12 +28,14 @@
   "scripts": {
     "test": "vitest run",
     "test:seeded": "vitest run packages/conformance/tests/gate-seeded.test.ts",
+    "build": "pnpm --filter @xgentic/acm build && pnpm --filter @xgentic/acm-analyzer build",
     "acm": "tsx packages/toolchain/src/cli.ts",
-    "analyze": "tsx packages/analyzer/src/cli.ts analyze",
+    "analyze": "NODE_OPTIONS=--conditions=development tsx packages/analyzer/src/cli.ts analyze",
     "drift": "tsx packages/toolchain/src/cli.ts drift",
     "generate": "tsx packages/toolchain/src/cli.ts drift --write",
     "lint": "eslint .",
-    "format": "prettier --check ."
+    "format": "prettier --check .",
+    "eval": "bash evals/run.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -43,6 +45,7 @@
     "gpt-tokenizer": "^2.8.1",
     "json-schema-to-typescript": "^15.0.3",
     "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0",

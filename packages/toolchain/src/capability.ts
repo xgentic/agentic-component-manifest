@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { REPO_ROOT } from "./validate.js";
+import { fileURLToPath } from "node:url";
 import {
   GLOBAL_OPTIONS,
   REGISTRY,
@@ -78,9 +78,14 @@ function projectCommand(spec: CommandSpec): CapabilityCommand {
 }
 
 export function buildCapabilityManifest(): CapabilityManifest {
-  const packageJson = JSON.parse(
-    readFileSync(path.join(REPO_ROOT, "packages/toolchain/package.json"), "utf8"),
-  ) as { version?: string; description?: string };
+  // Read this package's own package.json relative to the compiled/source file, not the
+  // monorepo root, so `acm capabilities` self-describes correctly once installed. In-repo
+  // (`src/`) and published (`dist/`) both sit one level below package.json.
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const packageJson = JSON.parse(readFileSync(path.resolve(here, "../package.json"), "utf8")) as {
+    version?: string;
+    description?: string;
+  };
   const jsonSupported = REGISTRY.filter((c) => c.jsonSupported).map((c) => c.name);
   return {
     apiVersion: 1,

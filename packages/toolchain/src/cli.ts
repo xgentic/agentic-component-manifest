@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { renderDiagnostics } from "./diagnostics.js";
 import { validateManifest } from "./validate.js";
@@ -324,6 +325,30 @@ const HANDLERS: Record<string, Handler> = {
     if (stale.length > 0)
       fail(3, `stale agent-docs artifacts (run \`pnpm generate\`): ${stale.join(", ")}`);
     process.stdout.write("fresh\n");
+  },
+
+  async init({ values }) {
+    const here = path.dirname(fileURLToPath(import.meta.url));
+    // The build bundles the generated skill under the package's `skill/` dir. In-repo,
+    // before a build has run, fall back to the discovery-skill generated source so
+    // `pnpm acm init` works without building first.
+    const bundled = path.resolve(here, "../skill/acm-discovery");
+    const source = existsSync(bundled)
+      ? bundled
+      : path.join(
+          REPO_ROOT,
+          "packages/discovery-skill/generated/targets/claude-skill/acm-discovery",
+        );
+    if (!existsSync(source)) fail(1, "bundled Discovery Skill not found; reinstall @xgentic/acm");
+    const dest = path.join(process.cwd(), ".claude", "skills", "acm-discovery");
+    const rel = path.relative(process.cwd(), dest);
+    if (existsSync(dest) && values.force !== true) {
+      fail(1, `${rel} already exists; pass --force to overwrite`);
+    }
+    if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
+    mkdirSync(path.dirname(dest), { recursive: true });
+    cpSync(source, dest, { recursive: true });
+    process.stdout.write(`installed Discovery Skill → ${rel}/\n`);
   },
 };
 

@@ -98,7 +98,7 @@ specs/002-acm-analyzer-cli/
 
 ```text
 packages/analyzer/
-├── package.json               # name @acm/analyzer, bin: acm-analyzer
+├── package.json               # name @xgentic/acm-analyzer, bin: acm-analyzer
 ├── docs/
 │   └── type-mapping.md        # documented structured-type mapping rules (Principle VI)
 ├── src/

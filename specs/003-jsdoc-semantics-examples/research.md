@@ -15,12 +15,12 @@ Phase 0 decisions. Each resolves an unknown from the Technical Context; format i
 
 ## R-02 — Controlled-vocabulary source & term validation
 
-**Decision**: Validate the term against `acmSchema.$defs.semanticClassification.term.enum` — the schema's own enum (45 terms) — imported via `acmSchema` from `@acm/toolchain` (already an analyzer dependency). A term not in the enum is rejected at extraction with a diagnostic; it never reaches the draft.
+**Decision**: Validate the term against `acmSchema.$defs.semanticClassification.term.enum` — the schema's own enum (45 terms) — imported via `acmSchema` from `@xgentic/acm` (already an analyzer dependency). A term not in the enum is rejected at extraction with a diagnostic; it never reaches the draft.
 
 **Rationale**: Single source of truth (Principle I) — the schema already generates its `term` enum from `packages/spec/data/vocabulary.json`, so reading the enum avoids a parallel term list that could drift. Rejecting at extraction (not at emit) is essential: the schema enum would otherwise reject an out-of-vocabulary term during `validateManifest`, **aborting the whole manifest** — but semantics is optional, so the correct behavior is drop-with-diagnostic, keeping the manifest valid (spec FR-002, FR-008).
 
 **Alternatives considered**:
-- Read `vocabulary.json` from `@acm/spec` directly — rejected: `@acm/spec` has no `exports` map and the schema enum is the already-derived authority.
+- Read `vocabulary.json` from `@xgentic/acm-spec` directly — rejected: `@xgentic/acm-spec` has no `exports` map and the schema enum is the already-derived authority.
 - Let the emit validator reject bad terms — rejected: that aborts the entire manifest for one optional bad annotation (violates FR-008's "drop the offending optional item, never abort").
 
 ## R-03 — Example tag parsing (`@example`)

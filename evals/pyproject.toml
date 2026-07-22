@@ -1,0 +1,27 @@
+[project]
+name = "acm-skill-evals"
+version = "0.0.0"
+description = "deepeval suite for ACM skills, judged and driven by the Claude Code CLI (claude -p)."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "deepeval>=1.4.0",
+  "pydantic>=2.6",
+]
+
+# deepeval's default judge is OpenAI; this suite overrides it with a Claude-CLI model
+# (evals/claude_model.py), so no OPENAI_API_KEY is needed. Auth is whatever the local
+# `claude` CLI already uses.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# These are pytest-imported scripts, not a distributable package — install deps only,
+# don't try to auto-discover/package the flat .py modules.
+py-modules = []
+
+[tool.pytest.ini_options]
+# deepeval test cases are pytest cases; keep them opt-in and never in the CI gate.
+addopts = "-ra"
+testpaths = ["."]

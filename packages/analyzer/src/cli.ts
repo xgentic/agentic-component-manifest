@@ -1,4 +1,4 @@
-#!/usr/bin/env -S npx tsx
+#!/usr/bin/env node
 /**
  * `acm-analyzer` CLI entry (T016, extended for US2/US3).
  *

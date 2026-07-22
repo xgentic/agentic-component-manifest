@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: acm-skill-evals
+Version: 0.0.0
+Summary: deepeval suite for ACM skills, judged and driven by the Claude Code CLI (claude -p).
+Requires-Python: <3.13,>=3.11
+Requires-Dist: deepeval>=1.4.0
+Requires-Dist: pydantic>=2.6

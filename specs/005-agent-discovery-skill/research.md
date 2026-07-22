@@ -40,7 +40,7 @@ grounded in the industry survey
 ### R-03 / R-04 — Dedicated package (D2), version lockstep (D3)
 
 - **Decision**: The steering layer lives in `@acm/discovery-skill`, versioned in
-  lockstep with `@acm/toolchain` — every toolchain release publishes both at the same
+  lockstep with `@xgentic/acm` — every toolchain release publishes both at the same
   version.
 - **Rationale**: A clean `skills add` publishing unit, separated from the tool that
   writes it; lockstep means "which CLI does this skill describe" answers itself and no
