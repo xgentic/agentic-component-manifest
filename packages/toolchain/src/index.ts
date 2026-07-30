@@ -9,6 +9,9 @@
  */
 
 export { validateManifest, acmSchema, MAX_DEPTH } from "./validate.js";
+// Asset resolution: works from a repo checkout and from an installed package alike,
+// so a Producer bundling this code never reaches for a repo-shaped path.
+export { readSpecPackageVersion } from "./paths.js";
 export { canonicalize, checkCanonical, serializeNumber } from "./canonicalize.js";
 export { renderDiagnostics } from "./diagnostics.js";
 export type { Diagnostic } from "./diagnostics.js";

@@ -17,7 +17,8 @@ import type { SourceModule } from "./types.js";
 function scriptKindOf(path: string): ts.ScriptKind {
   if (path.endsWith(".tsx")) return ts.ScriptKind.TSX;
   if (path.endsWith(".jsx")) return ts.ScriptKind.JSX;
-  if (path.endsWith(".js") || path.endsWith(".mjs") || path.endsWith(".cjs")) return ts.ScriptKind.JS;
+  if (path.endsWith(".js") || path.endsWith(".mjs") || path.endsWith(".cjs"))
+    return ts.ScriptKind.JS;
   // .vue script blocks and plain .ts/.mts/.cts parse as TS.
   return ts.ScriptKind.TS;
 }
@@ -25,6 +26,8 @@ function scriptKindOf(path: string): ts.ScriptKind {
 export interface DiscoverResult {
   modules: SourceModule[];
   diagnostics: Diagnostic[];
+  /** Every path the include/exclude globs matched, sorted — parsed or not (`--dev`). */
+  matched: string[];
 }
 
 /**
@@ -42,12 +45,15 @@ export async function discover(
   const paths = [...matches].sort();
 
   if (paths.length === 0) {
+    const excluded = exclude.length ? `, excluding ${JSON.stringify(exclude)}` : "";
     diagnostics.push({
       code: "ACM-A-NOFILES",
       severity: "error",
-      message: `no source files matched ${JSON.stringify(globs)} under ${cwd}`,
+      message:
+        `no source files matched ${JSON.stringify(globs)}${excluded} under ${cwd} — ` +
+        `check that the run directory is the package root, or pass --globs`,
     });
-    return { modules: [], diagnostics };
+    return { modules: [], diagnostics, matched: paths };
   }
 
   const modules: SourceModule[] = [];
@@ -98,9 +104,9 @@ export async function discover(
     diagnostics.push({
       code: "ACM-A-NOFILES",
       severity: "error",
-      message: "every matched file failed to parse; no manifest produced",
+      message: `every matched file failed to parse (${paths.length}); no manifest produced`,
     });
   }
 
-  return { modules, diagnostics };
+  return { modules, diagnostics, matched: paths };
 }

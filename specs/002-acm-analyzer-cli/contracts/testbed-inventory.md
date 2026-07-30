@@ -8,6 +8,7 @@ and analyzing the source must byte-match the golden. A row that cannot be satisf
 is a reviewed inventory change, never a silent drop.
 
 Fixture locations: `packages/conformance/fixtures/testbed/lit/`,
+`packages/conformance/fixtures/testbed/stencil/`,
 `packages/conformance/fixtures/testbed/angular/`.
 
 ## Lit — `AcmeDataGrid` (`acme-data-grid`)
@@ -49,13 +50,37 @@ Fixture locations: `packages/conformance/fixtures/testbed/lit/`,
 | A11 | JSDoc on every public member; one member deliberately undocumented | `description` verbatim / absent respectively |
 | A12 | literal-union, generic-reference, function-typed, and beyond-depth inputs (mirror of L3–L6) | same four structured-tier behaviors incl. opaque fallback |
 
+## Stencil — `AcmeDataGrid` (`acme-data-grid`)
+
+| # | Capability (source construct) | Expected manifest node |
+|---|-------------------------------|------------------------|
+| S1 | `@Component({ tag: 'acme-data-grid', shadow, formAssociated })` | identity: `tagName`, `paradigmClass: retained-dom`, module + export facets |
+| S2 | ≥ 10 `@Prop()` properties | `inputs[]`, source order |
+| S3 | literal-union-typed prop (`'single' \| 'multi' \| 'none'`) | input `type.structured.kind: union` of literals + verbatim `raw` |
+| S4 | generic-bearing reference type (`GridColumn<RowData>[]`) | structured array-of-reference |
+| S5 | function-typed prop (row-class callback) | structured function mapping or documented opaque fallback + `raw` |
+| S6 | deeply-structured object type beyond depth bound | grammar's **opaque fallback** + verbatim `raw` (negative-space rule) |
+| S7 | `@Prop({ reflect: true })` | input `reflects: true` |
+| S8 | `@Prop({ attribute: 'data-label' })` | explicit attribute alias captured as `x-attribute`; type tiers intact |
+| S9 | `@Prop({ mutable: true })` | mutability surfaced as `x-stencil: { mutable: true }` (extension node — not a core field, Principle IV) |
+| S10 | prop with initializer | input `default` verbatim |
+| S11 | JSDoc on every public member; one member deliberately undocumented | `description` verbatim; undocumented → `description` **absent** |
+| S12 | ≥ 4 `@Event() EventEmitter<T>` incl. one `{ eventName }` alias | `events[]` with typed `payload`; aliased public name |
+| S13 | default slot + ≥ 3 named slots (`@slot` JSDoc) | `slots[]`: one unnamed + named entries |
+| S14 | ≥ 3 `@Method() async` incl. one with parameters/defaults | `methods[]` with parameter + `Promise<…>` return types |
+| S15 | `@State()`/`@Element()`/`@Watch()`/`@Listen()` members **and** a plain public method with no `@Method()` | **absent** from manifest (negative assertion — methods are opt-in via `@Method()`) |
+| S16 | ≥ 4 CSS custom properties (`@cssprop`) + ≥ 3 CSS parts (`@csspart`) | `cssProperties[]` / `cssParts[]` |
+| S17 | `@Component({ formAssociated: true })` | form-associated surfaced as the `x-wc` node |
+| S18 | camelCase serializable props (`selectionMode`, `pageSize`) vs single-word (`dense`) vs complex (`columns`) | implicit dash-cased `x-attribute` (`selection-mode`, `page-size`) derived per Stencil's rule; **absent** when the attribute name equals the property name or the type is property-only (parity with the CEM analyzer — see [stencil-cem-comparison](../../../docs/research/stencil-cem-comparison.md)) |
+
 ## Shared gate assertions
 
 1. **Byte-match**: `analyze(testbed/<fw>/src) ≡ testbed/<fw>/agentic-component-manifest.json` byte-for-byte;
    `acm.view.yml` matches the Agent View emitter output for the golden.
-2. **Compiles**: both sources typecheck under the repo's TypeScript (spec assumption
-   "real, compiling source"); the Angular source typechecks against dev-time Angular
-   type stubs checked in with the fixture (no runtime Angular dependency).
+2. **Compiles**: each source typechecks under the repo's TypeScript (spec assumption
+   "real, compiling source"); the Angular and Stencil sources typecheck against dev-time
+   framework type stubs checked in with the fixture (`types/angular-core.d.ts`,
+   `types/stencil-core.d.ts`) — no runtime framework dependency.
 3. **Inventory totality**: SC-008 test iterates every row above; each row maps to at
    least one machine assertion (presence, shape, or negative).
 4. **Determinism**: analyzing each testbed twice yields identical bytes (feeds

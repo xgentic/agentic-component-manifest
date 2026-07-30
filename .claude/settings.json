@@ -1,36 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)",
-      "Bash(npx eslint *)",
-      "Bash(echo \"tsc analyzer exit=$?\")",
-      "WebSearch",
-      "Skill(deep-research)",
-      "Skill(deep-research:*)",
-      "Workflow(deep-research)",
-      "WebFetch(domain:ui.shadcn.com)",
-      "WebFetch(domain:storybook.js.org)",
-      "WebFetch(domain:custom-elements-manifest.open-wc.org)",
-      "WebFetch(domain:marmelab.com)",
-      "WebFetch(domain:www.figma.com)",
-      "WebFetch(domain:ant.design)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:shadcncraft.com)",
-      "WebFetch(domain:nordhealth.design)",
-      "WebFetch(domain:dev.to)",
-      "WebFetch(domain:news.ycombinator.com)",
-      "WebFetch(domain:help.figma.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:developers.figma.com)",
-      "WebFetch(domain:www.npmjs.com)",
-      "Bash(curl -sL \"https://ant.design/docs/react/mcp/\")",
-      "Bash(npm view *)",
-      "Bash(curl -s https://registry.npmjs.org/@ant-design%2Fcli)",
-      "Bash(python3 -c ' *)",
-      "Bash(npm install *)",
-      "Bash(time ./node_modules/.bin/antd list)",
-      "Bash(./node_modules/.bin/antd token *)",
-      "Bash(./node_modules/.bin/antd info *)"
     ]
   }
 }

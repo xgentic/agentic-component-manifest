@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/acme-button.tsx",
+      "declarations": [
+        {
+          "name": "AcmeButton",
+          "identity": {
+            "paradigmClass": "retained-dom",
+            "tagName": "acme-button",
+            "module": "@acme/stencil",
+            "export": "AcmeButton"
+          },
+          "description": "A themable action button rendered as a custom element.",
+          "inputs": [
+            {
+              "name": "variant",
+              "description": "Visual variant of the button.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "primary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "secondary"
+                    }
+                  ]
+                },
+                "raw": "'primary' | 'secondary'"
+              },
+              "default": "'primary'"
+            },
+            {
+              "name": "disabled",
+              "description": "Disables pointer and keyboard interaction; reflected to an attribute.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false",
+              "reflects": true
+            }
+          ],
+          "events": [
+            {
+              "name": "press",
+              "description": "Fired on activation via pointer or keyboard.",
+              "payload": {
+                "structured": {
+                  "name": "PressEvent",
+                  "module": "./events",
+                  "kind": "reference"
+                },
+                "raw": "PressEvent"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "Button label content."
+            },
+            {
+              "name": "icon",
+              "description": "Leading icon."
+            }
+          ],
+          "methods": [
+            {
+              "name": "setFocus",
+              "description": "Moves keyboard focus to the button.",
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-button-radius",
+              "description": "Corner radius of the button.",
+              "default": "4px",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "label",
+              "description": "The label span inside the shadow root."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "AcmeButton",
+          "declaration": "AcmeButton"
+        }
+      ]
+    }
+  ]
+}

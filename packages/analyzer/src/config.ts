@@ -1,9 +1,9 @@
 /**
  * Framework resolution and (US3) settings-file loading + merge.
  *
- * The single generic `framework` option resolves to one bundled plugin; `undefined`
- * selects the vanilla default. User `plugins[]` run after the framework plugin, in
- * array order (deterministic).
+ * The generic `framework` option resolves to one bundled plugin per named framework, in
+ * the order named; an empty selection falls back to the vanilla default. User `plugins[]`
+ * run after the framework plugins, in array order (deterministic).
  *
  * A committed `acm-analyzer.config.{js,mjs}` is discovered at the invocation cwd (or
  * given explicitly with `--config`) and loaded with native dynamic `import()` — it is
@@ -27,20 +27,48 @@ import {
 } from "./types.js";
 import { vanillaPlugin } from "./frameworks/vanilla.js";
 import { litPlugin } from "./frameworks/lit.js";
+import { stencilPlugin } from "./frameworks/stencil.js";
 import { reactPlugin } from "./frameworks/react.js";
 import { angularPlugin } from "./frameworks/angular.js";
 
 /** Map a built-in framework name to its bundled plugin. */
 const BUILTIN_PLUGINS: Record<BuiltinFramework, () => AnalyzerPlugin> = {
+  vanilla: vanillaPlugin,
   lit: litPlugin,
+  stencil: stencilPlugin,
   angular: angularPlugin,
   react: reactPlugin,
 };
 
-/** Resolve the ordered plugin list: framework plugin first, then user plugins. */
+/**
+ * Validate, flatten (`a,b` → `a`, `b`), and de-duplicate a framework selection, keeping
+ * the first occurrence of each name so plugin order stays exactly as the operator wrote
+ * it. `where` names the origin (a flag or a settings file) in the fatal message.
+ */
+export function normalizeFrameworks(values: string[], where: string): BuiltinFramework[] {
+  const out: BuiltinFramework[] = [];
+  for (const raw of values.flatMap((v) => v.split(","))) {
+    const name = raw.trim();
+    if (name === "") continue;
+    if (!(BUILTIN_FRAMEWORKS as readonly string[]).includes(name)) {
+      throw new UsageError(
+        `${where}: unknown framework "${name}"; supported: ${BUILTIN_FRAMEWORKS.join(", ")} (omit for vanilla)`,
+      );
+    }
+    if (!out.includes(name as BuiltinFramework)) out.push(name as BuiltinFramework);
+  }
+  return out;
+}
+
+/**
+ * Resolve the ordered plugin list: framework plugins in selection order, then user
+ * plugins. An empty selection runs the vanilla plugin alone (the zero-config default).
+ */
 export function resolvePlugins(settings: AnalyzerSettings): AnalyzerPlugin[] {
-  const framework = settings.framework ? BUILTIN_PLUGINS[settings.framework]() : vanillaPlugin();
-  return [framework, ...settings.plugins];
+  const frameworks = settings.frameworks.length
+    ? settings.frameworks.map((name) => BUILTIN_PLUGINS[name]())
+    : [vanillaPlugin()];
+  return [...frameworks, ...settings.plugins];
 }
 
 // ---------------------------------------------------------------------------
@@ -56,6 +84,7 @@ const SETTINGS_KEYS = new Set([
   "exclude",
   "outdir",
   "framework",
+  "frameworks",
   "dev",
   "quiet",
   "watch",
@@ -70,7 +99,8 @@ export interface FileConfig {
   globs?: string[];
   exclude?: string[];
   outdir?: string;
-  framework?: BuiltinFramework;
+  /** Normalized from either the `framework` or the `frameworks` key (never both). */
+  frameworks?: BuiltinFramework[];
   dev?: boolean;
   quiet?: boolean;
   watch?: boolean;
@@ -79,7 +109,7 @@ export interface FileConfig {
 
 /** The explicitly-provided CLI values that override the file (`plugins` is file-only). */
 export type CliOverrides = Partial<
-  Pick<AnalyzerSettings, "globs" | "exclude" | "outdir" | "framework" | "dev" | "quiet" | "watch">
+  Pick<AnalyzerSettings, "globs" | "exclude" | "outdir" | "frameworks" | "dev" | "quiet" | "watch">
 >;
 
 /** Parsed CLI arguments: the explicit `--config` path and the explicit flag overrides. */
@@ -114,13 +144,17 @@ function asStringArray(value: unknown, key: string, file: string): string[] {
   return value as string[];
 }
 
-function asFramework(value: unknown, file: string): BuiltinFramework {
-  if (typeof value === "string" && (BUILTIN_FRAMEWORKS as readonly string[]).includes(value)) {
-    return value as BuiltinFramework;
+/**
+ * Read a framework selection written as either a single name or a list of them. Both the
+ * singular `framework` and the plural `frameworks` key accept both shapes; the caller
+ * enforces that a file uses only one of the two keys.
+ */
+function asFrameworks(value: unknown, key: string, file: string): BuiltinFramework[] {
+  const raw = Array.isArray(value) ? value : [value];
+  if (!raw.every((v) => typeof v === "string")) {
+    throw new UsageError(`settings file ${file}: "${key}" must be a string or an array of strings`);
   }
-  throw new UsageError(
-    `settings file ${file}: unknown framework ${JSON.stringify(value)}; supported: ${BUILTIN_FRAMEWORKS.join(", ")} (omit for vanilla)`,
-  );
+  return normalizeFrameworks(raw as string[], `settings file ${file}`);
 }
 
 function asPlugins(value: unknown, file: string): AnalyzerPlugin[] {
@@ -160,11 +194,20 @@ export function validateFileConfig(raw: unknown, file: string): FileConfig {
     }
   }
 
+  if (obj.framework !== undefined && obj.frameworks !== undefined) {
+    throw new UsageError(`settings file ${file}: set either "framework" or "frameworks", not both`);
+  }
+
   const config: FileConfig = {};
   if (obj.globs !== undefined) config.globs = asStringArray(obj.globs, "globs", file);
   if (obj.exclude !== undefined) config.exclude = asStringArray(obj.exclude, "exclude", file);
   if (obj.outdir !== undefined) config.outdir = asString(obj.outdir, "outdir", file);
-  if (obj.framework !== undefined) config.framework = asFramework(obj.framework, file);
+  if (obj.framework !== undefined) {
+    config.frameworks = asFrameworks(obj.framework, "framework", file);
+  }
+  if (obj.frameworks !== undefined) {
+    config.frameworks = asFrameworks(obj.frameworks, "frameworks", file);
+  }
   if (obj.dev !== undefined) config.dev = asBoolean(obj.dev, "dev", file);
   if (obj.quiet !== undefined) config.quiet = asBoolean(obj.quiet, "quiet", file);
   if (obj.watch !== undefined) config.watch = asBoolean(obj.watch, "watch", file);
@@ -216,7 +259,8 @@ export async function loadConfigFile(
 
 /**
  * Merge defaults ← settings file ← CLI overrides (field-by-field). List options
- * (`globs`/`exclude`) are replaced by whichever layer sets them last, never merged.
+ * (`globs`/`exclude`/`frameworks`) are replaced by whichever layer sets them last, never
+ * merged — a `--framework` flag selects the whole set, it does not add to the file's.
  */
 export function mergeSettings(file: FileConfig | undefined, cli: CliOverrides): AnalyzerSettings {
   const s = defaultSettings();
@@ -224,7 +268,7 @@ export function mergeSettings(file: FileConfig | undefined, cli: CliOverrides): 
     if (file.globs !== undefined) s.globs = file.globs;
     if (file.exclude !== undefined) s.exclude = file.exclude;
     if (file.outdir !== undefined) s.outdir = file.outdir;
-    if (file.framework !== undefined) s.framework = file.framework;
+    if (file.frameworks !== undefined) s.frameworks = file.frameworks;
     if (file.dev !== undefined) s.dev = file.dev;
     if (file.quiet !== undefined) s.quiet = file.quiet;
     if (file.watch !== undefined) s.watch = file.watch;
@@ -233,7 +277,7 @@ export function mergeSettings(file: FileConfig | undefined, cli: CliOverrides): 
   if (cli.globs !== undefined) s.globs = cli.globs;
   if (cli.exclude !== undefined) s.exclude = cli.exclude;
   if (cli.outdir !== undefined) s.outdir = cli.outdir;
-  if (cli.framework !== undefined) s.framework = cli.framework;
+  if (cli.frameworks !== undefined) s.frameworks = cli.frameworks;
   if (cli.dev !== undefined) s.dev = cli.dev;
   if (cli.quiet !== undefined) s.quiet = cli.quiet;
   if (cli.watch !== undefined) s.watch = cli.watch;

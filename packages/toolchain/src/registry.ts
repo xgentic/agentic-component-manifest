@@ -162,6 +162,47 @@ export const REGISTRY: CommandSpec[] = [
     examples: ["acm capabilities --json"],
   },
   {
+    name: "init",
+    description:
+      "Install the Discovery Skill into this project for its detected agent hosts, then report whether discovery will work here: the Manifest Corpus that was found, any Manifests excluded from it, and whether the acm binary is reachable.",
+    arguments: [],
+    options: [
+      {
+        flag: "--target <name>",
+        type: "enum",
+        // Gated against INIT_TARGETS in conformance; the registry stays pure data.
+        choices: ["claude-skill", "agents-md", "rules"],
+        repeatable: true,
+        description:
+          "agent host to install for; repeatable. Omitted: every host detected in the project (.claude/, AGENTS.md, .cursor/), defaulting to claude-skill",
+      },
+      {
+        flag: "--dir <path>",
+        type: "string",
+        description: "project to install into (default: current directory)",
+      },
+      {
+        flag: "--force",
+        type: "boolean",
+        description: "overwrite an existing skill file whose content differs",
+      },
+      {
+        flag: "--dry-run",
+        type: "boolean",
+        description: "report what would be written, and write nothing",
+      },
+      {
+        flag: "--json",
+        type: "boolean",
+        description:
+          "render the install report as JSON on stdout (a plain report, not a discovery envelope)",
+      },
+    ],
+    jsonSupported: false,
+    responseTypes: [],
+    examples: ["acm init", "acm init --target agents-md --dry-run"],
+  },
+  {
     name: "validate",
     description:
       "Validate a Manifest (Canonical JSON) or Authoring Input (YAML) against the schema, structural limits, and semantic rules.",
@@ -175,9 +216,9 @@ export const REGISTRY: CommandSpec[] = [
     ],
     jsonSupported: false,
     responseTypes: [],
-    examples: [
-      "acm validate packages/conformance/fixtures/minimal/agentic-component-manifest.json",
-    ],
+    // Examples are read by consumers of an installed CLI: they must name paths that
+    // exist in a consuming project, never this repository's fixtures.
+    examples: ["acm validate agentic-component-manifest.json"],
   },
   {
     name: "canonicalize",

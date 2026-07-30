@@ -136,7 +136,12 @@ function structured(
 
 /** A throwaway source file used to parse a type written as text (JSDoc `{Type}`). */
 function parseTypeText(text: string): ts.TypeNode | undefined {
-  const sf = ts.createSourceFile("__type__.ts", `type __T = ${text};`, ts.ScriptTarget.Latest, true);
+  const sf = ts.createSourceFile(
+    "__type__.ts",
+    `type __T = ${text};`,
+    ts.ScriptTarget.Latest,
+    true,
+  );
   const stmt = sf.statements[0];
   return stmt && ts.isTypeAliasDeclaration(stmt) ? stmt.type : undefined;
 }

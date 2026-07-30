@@ -6,7 +6,9 @@ import { VALID_FIXTURE_DIRS, loadFixture, readFixture } from "./helpers.js";
 describe("gate-determinism: checked-in fixtures ARE canonical (NS-CANON-5)", () => {
   for (const dir of VALID_FIXTURE_DIRS) {
     it(`${dir}/agentic-component-manifest.json is byte-identical to its canonical form`, () => {
-      expect(checkCanonical(readFixture(`${dir}/agentic-component-manifest.json`)).canonical).toBe(true);
+      expect(checkCanonical(readFixture(`${dir}/agentic-component-manifest.json`)).canonical).toBe(
+        true,
+      );
     });
   }
 
@@ -34,7 +36,7 @@ describe("gate-determinism: YAML authoring compiles byte-identically (NS-YAML, U
   }
 
   it("YAML 1.2 core schema: unquoted `no` is a string (the Norway problem is dead)", () => {
-    const result = compileYaml('schemaVersion: 0.1.0\nmodules: []\nx-note: no\n');
+    const result = compileYaml("schemaVersion: 0.1.0\nmodules: []\nx-note: no\n");
     expect(result.ok).toBe(true);
     expect(result.canonical).toContain('"x-note": "no"');
   });

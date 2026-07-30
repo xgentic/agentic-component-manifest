@@ -85,6 +85,10 @@ export class EntryDraftImpl implements EntryDraft {
   get exportName(): string | undefined {
     return this.identity.export;
   }
+  /** The plugin that created this entry (the root provenance record). */
+  get creator(): string | undefined {
+    return this.provenanceRecords[0]?.plugin;
+  }
   private readonly identity: IdentityFacets;
   private description: Span | undefined;
   private readonly inputs: InputDraft[] = [];
@@ -333,7 +337,25 @@ export function createSessionContext(
     createEntry(module, init) {
       validateInit(init);
       const draft = new EntryDraftImpl(init, () => activePlugin);
-      (module as ModuleContextInternal)._entries.push(draft);
+      const entries = (module as ModuleContextInternal)._entries;
+      const claimed = entries.find((e) => e.name === init.name);
+      if (claimed) {
+        // Two plugins claimed the same declaration — possible once several framework
+        // plugins run in one pass (Angular and Stencil both key off `@Component`). The
+        // first claim wins and the loser's draft is detached: merging the two would forge
+        // exactly the cross-framework surface `validateInit` exists to prevent.
+        sink.push({
+          code: "ACM-A-DUPENTRY",
+          severity: "warning",
+          file: module.path,
+          plugin: activePlugin,
+          message:
+            `declaration "${init.name}" was already claimed by plugin ` +
+            `"${claimed.creator ?? "unknown"}"; this contribution is dropped`,
+        });
+        return draft;
+      }
+      entries.push(draft);
       return draft;
     },
   };

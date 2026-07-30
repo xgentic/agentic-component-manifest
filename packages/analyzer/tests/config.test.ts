@@ -57,7 +57,7 @@ describe("validateFileConfig: shape + key validation (fatal, never silent)", () 
   it("rejects an unknown framework naming the supported set", () => {
     expect(() => validateFileConfig({ framework: "svelte" }, "c.js")).toThrow(/unknown framework/);
     expect(() => validateFileConfig({ framework: "svelte" }, "c.js")).toThrow(
-      /lit, angular, react/,
+      /lit, stencil, angular, react/,
     );
   });
 
@@ -84,7 +84,7 @@ describe("validateFileConfig: shape + key validation (fatal, never silent)", () 
       },
       "c.js",
     );
-    expect(cfg.framework).toBe("lit");
+    expect(cfg.frameworks).toEqual(["lit"]);
     expect(cfg.plugins).toHaveLength(1);
     expect(cfg.exclude).toEqual(["**/*.test.ts"]);
   });
@@ -101,7 +101,7 @@ describe("loadConfigFile: discovery + native import (fatal on any problem)", () 
     const loaded = await loadConfigFile(dir, undefined);
     expect(loaded?.path).toBe("acm-analyzer.config.mjs");
     expect(loaded?.config.outdir).toBe("dist");
-    expect(loaded?.config.framework).toBe("lit");
+    expect(loaded?.config.frameworks).toEqual(["lit"]);
   });
 
   it("prefers .js over .mjs when both exist", async () => {
@@ -118,7 +118,7 @@ describe("loadConfigFile: discovery + native import (fatal on any problem)", () 
     const dir = tmpDir();
     write(dir, "custom.mjs", `export default { framework: "react" };`);
     const loaded = await loadConfigFile(dir, "custom.mjs");
-    expect(loaded?.config.framework).toBe("react");
+    expect(loaded?.config.frameworks).toEqual(["react"]);
   });
 
   it("is fatal when an explicit --config path is missing", async () => {
@@ -143,19 +143,24 @@ describe("mergeSettings: CLI > file > defaults, lists replaced not merged", () =
     const s = mergeSettings(undefined, {});
     expect(s.outdir).toBe(".");
     expect(s.globs).toEqual(["src/**/*.{js,ts,jsx,tsx}"]);
-    expect(s.framework).toBeUndefined();
+    expect(s.frameworks).toEqual([]);
   });
 
   it("lets the file override defaults", () => {
-    const s = mergeSettings({ outdir: "dist", framework: "angular" }, {});
+    const s = mergeSettings({ outdir: "dist", frameworks: ["angular"] }, {});
     expect(s.outdir).toBe("dist");
-    expect(s.framework).toBe("angular");
+    expect(s.frameworks).toEqual(["angular"]);
   });
 
   it("lets a CLI flag override the file field-by-field", () => {
-    const s = mergeSettings({ outdir: "dist", framework: "angular" }, { outdir: "out2" });
+    const s = mergeSettings({ outdir: "dist", frameworks: ["angular"] }, { outdir: "out2" });
     expect(s.outdir).toBe("out2"); // CLI wins
-    expect(s.framework).toBe("angular"); // untouched file value survives
+    expect(s.frameworks).toEqual(["angular"]); // untouched file value survives
+  });
+
+  it("replaces the framework selection wholesale (a flag never adds to the file's)", () => {
+    const s = mergeSettings({ frameworks: ["angular", "lit"] }, { frameworks: ["react"] });
+    expect(s.frameworks).toEqual(["react"]);
   });
 
   it("replaces list options entirely (no merge)", () => {
@@ -170,12 +175,12 @@ describe("resolveSettings: precedence + records path + dev/quiet exclusion", () 
     const dir = tmpDir();
     write(dir, "acm-analyzer.config.mjs", `export default { outdir: "dist", framework: "lit" };`);
     const settings = await resolveSettings(
-      { configPath: undefined, overrides: { framework: "react" } },
+      { configPath: undefined, overrides: { frameworks: ["react"] } },
       dir,
     );
     expect(settings.config).toBe("acm-analyzer.config.mjs");
     expect(settings.outdir).toBe("dist"); // from file
-    expect(settings.framework).toBe("react"); // CLI override wins
+    expect(settings.frameworks).toEqual(["react"]); // CLI override wins
   });
 
   it("is fatal when the merged result sets both dev and quiet", async () => {

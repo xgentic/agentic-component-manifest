@@ -1,18 +1,24 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
-import { compile as jsonSchemaToTs } from "json-schema-to-typescript";
-import { acmSchema, REPO_ROOT } from "./validate.js";
+import { acmSchema } from "./validate.js";
+import { requireRepoLayout } from "./paths.js";
 import { buildSkillFiles } from "./agent-docs.js";
 
-const GENERATED_DIR = path.join(REPO_ROOT, "packages/spec/generated");
-const TYPES_PATH = path.join(GENERATED_DIR, "types.ts");
-const REFERENCE_PATH = path.join(GENERATED_DIR, "reference.md");
+/**
+ * Repo-development command: it regenerates `packages/spec/generated/**` and the
+ * Discovery Skill's generated targets, both of which exist only in a checkout.
+ * `requireRepoLayout` is what turns "run from an installed package" into a clear
+ * message instead of a path error.
+ */
 
 const BANNER =
   "/* Generated from packages/spec/schema/acm.schema.json — do not edit by hand.\n" +
   " * Regenerate with `pnpm generate`; staleness fails CI (gate-drift). */";
 
 export async function generateTypes(): Promise<string> {
+  // Lazily imported so the generator dependency stays out of the shipped bundle:
+  // nothing on the installed surface can reach this code path.
+  const { compile: jsonSchemaToTs } = await import("json-schema-to-typescript");
   return jsonSchemaToTs(structuredClone(acmSchema), "AcmManifest", {
     bannerComment: BANNER,
     additionalProperties: false,
@@ -66,9 +72,11 @@ export interface DriftReport {
 }
 
 export async function checkDrift(write: boolean): Promise<DriftReport> {
+  const REPO_ROOT = requireRepoLayout("drift");
+  const GENERATED_DIR = path.join(REPO_ROOT, "packages/spec/generated");
   const expected: Array<[string, string]> = [
-    [TYPES_PATH, await generateTypes()],
-    [REFERENCE_PATH, generateReference()],
+    [path.join(GENERATED_DIR, "types.ts"), await generateTypes()],
+    [path.join(GENERATED_DIR, "reference.md"), generateReference()],
     // Steering-layer artifacts (ADR 0004): the Discovery Skill's generated
     // blocks and per-ecosystem targets, projected from the capability manifest.
     ...buildSkillFiles().files.map(([rel, content]): [string, string] => [

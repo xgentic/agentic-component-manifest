@@ -5,7 +5,9 @@ apm_modules/
 # Node
 node_modules/
 dist/
+deploy/
 build/
+*.tgz
 coverage/
 *.log
 .env*
@@ -15,6 +17,9 @@ coverage/
 Thumbs.db
 *.tmp
 *.swp
+
+# Scratch dir for the Stencil↔CEM comparison harness (docs/research/stencil-cem)
+.stencil-cem-work/
 
 # The discovery-corpus fixture ships a checked-in node_modules tree on purpose
 !packages/conformance/fixtures/discovery-corpus/node_modules/

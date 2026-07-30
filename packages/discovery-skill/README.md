@@ -4,14 +4,25 @@ The **Discovery Skill**: the steering layer that wires the `acm` discovery CLI
 (`search`, `component`, `capabilities`) into AI coding agents as their
 component-discovery workflow (ADR 0003/0004, spec 005).
 
+This is the skill's **authoring home**, not a published package. The built skill ships
+inside [`@acm/toolchain`](../toolchain/README.md) (as `assets/skill/`), and consumers
+install it with one command:
+
+```sh
+npx acm init
+```
+
+`acm init` detects the project's agent hosts and writes each one's target, byte-identical
+to `acm agent-docs --target <name>`.
+
 One canonical source, four packagings — all assembled from the same blocks:
 
-| Target | Path | Install |
+| Target | Path | Installed by |
 | --- | --- | --- |
-| Claude Code skill (primary) | `generated/targets/claude-skill/acm-discovery/` | copy or symlink the directory into your project's `.claude/skills/` |
-| Cross-vendor skills package | `generated/targets/skills-package/acm-discovery/` | point a `skills add`-compatible installer (e.g. `npx skills`) at this skill directory — it reads the directory's `SKILL.md` |
-| `AGENTS.md` fragment | `generated/targets/AGENTS.fragment.md` | paste into your project's `AGENTS.md` (skill-less hosts) |
-| Editor rules file | `generated/targets/rules/acm-discovery.md` | drop into your editor's rules location |
+| Claude Code skill (primary) | `generated/targets/claude-skill/acm-discovery/` | `acm init` → `.claude/skills/acm-discovery/SKILL.md` |
+| `AGENTS.md` fragment | `generated/targets/AGENTS.fragment.md` | `acm init` → a managed `<!-- acm:skill … -->` region in `AGENTS.md` |
+| Editor rules file | `generated/targets/rules/acm-discovery.md` | `acm init` → `.cursor/rules/acm-discovery.md` |
+| Cross-vendor skills package | `generated/targets/skills-package/acm-discovery/` | not an `init` target — it is a *source* directory a `skills add`-compatible installer (e.g. `npx skills`) is pointed at |
 
 ## How it is built
 
@@ -24,6 +35,6 @@ One canonical source, four packagings — all assembled from the same blocks:
 - Shared blocks are embedded between `<!-- acm:block … -->` markers and are
   byte-identical across every target, gate-verified.
 
-This package versions in **lockstep** with `@acm/toolchain`: skill `X.Y.Z`
-describes exactly CLI `X.Y.Z`; at runtime, `acm capabilities --json` is the
-source of truth on any skew.
+The skill versions in **lockstep** with `@acm/toolchain` by construction — it ships
+inside it: skill `X.Y.Z` describes exactly CLI `X.Y.Z`. At runtime,
+`acm capabilities --json` is the source of truth on any skew.

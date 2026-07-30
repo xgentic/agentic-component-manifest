@@ -2,7 +2,7 @@
   "apiVersion": 1,
   "name": "acm",
   "version": "<normalized>",
-  "description": "ACM reference toolchain: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, coverage, drift.",
+  "description": "ACM reference toolchain: component discovery (search, component, capabilities), init, validate, canonicalize, compile, agent-view, coverage, drift.",
   "globalOptions": [
     {
       "flag": "--json",
@@ -139,6 +139,50 @@
       ]
     },
     {
+      "name": "init",
+      "description": "Install the Discovery Skill into this project for its detected agent hosts, then report whether discovery will work here: the Manifest Corpus that was found, any Manifests excluded from it, and whether the acm binary is reachable.",
+      "arguments": [],
+      "options": [
+        {
+          "flag": "--target <name>",
+          "type": "enum",
+          "choices": [
+            "claude-skill",
+            "agents-md",
+            "rules"
+          ],
+          "repeatable": true,
+          "description": "agent host to install for; repeatable. Omitted: every host detected in the project (.claude/, AGENTS.md, .cursor/), defaulting to claude-skill"
+        },
+        {
+          "flag": "--dir <path>",
+          "type": "string",
+          "description": "project to install into (default: current directory)"
+        },
+        {
+          "flag": "--force",
+          "type": "boolean",
+          "description": "overwrite an existing skill file whose content differs"
+        },
+        {
+          "flag": "--dry-run",
+          "type": "boolean",
+          "description": "report what would be written, and write nothing"
+        },
+        {
+          "flag": "--json",
+          "type": "boolean",
+          "description": "render the install report as JSON on stdout (a plain report, not a discovery envelope)"
+        }
+      ],
+      "json": false,
+      "responseTypes": [],
+      "examples": [
+        "acm init",
+        "acm init --target agents-md --dry-run"
+      ]
+    },
+    {
       "name": "validate",
       "description": "Validate a Manifest (Canonical JSON) or Authoring Input (YAML) against the schema, structural limits, and semantic rules.",
       "arguments": [
@@ -158,7 +202,7 @@
       "json": false,
       "responseTypes": [],
       "examples": [
-        "acm validate packages/conformance/fixtures/minimal/agentic-component-manifest.json"
+        "acm validate agentic-component-manifest.json"
       ]
     },
     {

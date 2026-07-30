@@ -7,8 +7,12 @@ import type ts from "typescript";
 import type { AnalyzerPlugin } from "./plugin.js";
 import type { Diagnostic } from "./diagnostics.js";
 
-/** Built-in framework names selectable via the single generic `framework` option. */
-export const BUILTIN_FRAMEWORKS = ["lit", "angular", "react"] as const;
+/**
+ * Built-in framework names selectable via the generic `framework` option. `vanilla` is
+ * both the default (when none is named) and an explicit choice, so a project that mixes
+ * plain custom elements with a framework can select both.
+ */
+export const BUILTIN_FRAMEWORKS = ["vanilla", "lit", "stencil", "angular", "react"] as const;
 export type BuiltinFramework = (typeof BUILTIN_FRAMEWORKS)[number];
 
 /** Default include globs when the user supplies none (plugins may extend, not replace). */
@@ -22,8 +26,11 @@ export interface AnalyzerSettings {
   exclude: string[];
   /** Output directory; the manifest is always written as `<outdir>/agentic-component-manifest.json`. */
   outdir: string;
-  /** Built-in framework name, or `undefined` for the vanilla default. */
-  framework: BuiltinFramework | undefined;
+  /**
+   * Built-in framework names, in the order their plugins run. Empty selects the vanilla
+   * default; more than one analyzes a mixed-framework project in a single pass.
+   */
+  frameworks: BuiltinFramework[];
   /** Verbose diagnostics to stderr. */
   dev: boolean;
   /** Suppress progress (errors still print). Mutually exclusive with `dev`. */
@@ -42,7 +49,7 @@ export function defaultSettings(): AnalyzerSettings {
     globs: [...DEFAULT_GLOBS],
     exclude: [],
     outdir: ".",
-    framework: undefined,
+    frameworks: [],
     dev: false,
     quiet: false,
     watch: false,

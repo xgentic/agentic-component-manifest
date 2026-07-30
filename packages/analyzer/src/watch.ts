@@ -25,6 +25,8 @@ export interface WatchOptions {
   write?: boolean;
   /** Lifecycle progress lines (e.g. "change detected"); suppressed by the CLI when quiet. */
   log?: (line: string) => void;
+  /** Per-cycle `--dev` trace sink, forwarded to `analyzeProject` (see `AnalyzeOptions`). */
+  trace?: (line: string) => void;
   /** Invoked after every cycle (initial run included) with its outcome and trigger path. */
   onCycle?: (outcome: AnalyzeOutcome, trigger: string) => void;
 }
@@ -65,7 +67,7 @@ export async function runWatch(
   const outFile = path.resolve(cwd, settings.outdir, "agentic-component-manifest.json");
 
   const cycle = async (trigger: string): Promise<void> => {
-    const outcome = await analyzeProject(settings, cwd, { write });
+    const outcome = await analyzeProject(settings, cwd, { write, log: opts.trace });
     opts.onCycle?.(outcome, trigger);
   };
 
