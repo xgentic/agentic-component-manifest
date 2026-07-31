@@ -1,0 +1,27 @@
+<div class="login-page">
+  <tb-card class="login-page__card" [elevation]="2">
+    <span header>Log in</span>
+
+    @if (error()) {
+      <tb-alert type="error" [dismissible]="true" (dismissed)="error.set('')">
+        {{ error() }}
+      </tb-alert>
+    }
+
+    <tb-text-field [(value)]="email" placeholder="you@example.com">
+      <span label>Email</span>
+    </tb-text-field>
+
+    <tb-text-field [(value)]="password" placeholder="Password">
+      <span label>Password</span>
+    </tb-text-field>
+
+    <tb-checkbox [checked]="rememberMe()" (changed)="rememberMe.set($event)">
+      <span label>Remember me</span>
+    </tb-checkbox>
+
+    <span footer>
+      <tb-button variant="primary" (press)="onSubmit()">Log in</tb-button>
+    </span>
+  </tb-card>
+</div>

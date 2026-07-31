@@ -1,0 +1,37 @@
+<div class="add-customer-page">
+  <tb-card class="add-customer-page__card" [elevation]="2">
+    <span header>Add customer</span>
+
+    @if (error()) {
+      <tb-alert type="error" [dismissible]="true" (dismissed)="error.set('')">
+        {{ error() }}
+      </tb-alert>
+    }
+
+    @if (submitted()) {
+      <tb-alert type="success" [dismissible]="true" (dismissed)="submitted.set(false)">
+        Customer added.
+      </tb-alert>
+    }
+
+    <tb-text-field [(value)]="fullName" placeholder="Jane Doe">
+      <span label>Full name</span>
+    </tb-text-field>
+
+    <tb-text-field [(value)]="email" placeholder="jane@example.com">
+      <span label>Email</span>
+    </tb-text-field>
+
+    <tb-text-field [(value)]="phone" placeholder="+1 555 000 0000">
+      <span label>Phone (optional)</span>
+    </tb-text-field>
+
+    <tb-checkbox [checked]="subscribeToUpdates()" (changed)="subscribeToUpdates.set($event)">
+      <span label>Subscribe to product updates</span>
+    </tb-checkbox>
+
+    <span footer>
+      <tb-button variant="primary" (press)="onSubmit()">Add customer</tb-button>
+    </span>
+  </tb-card>
+</div>

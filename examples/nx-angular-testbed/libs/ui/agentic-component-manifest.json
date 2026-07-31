@@ -1,0 +1,694 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/lib/alert/alert.ts",
+      "declarations": [
+        {
+          "name": "Alert",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Alert",
+            "selector": "tb-alert"
+          },
+          "description": "Displays a prominent message about status or a required action.",
+          "inputs": [
+            {
+              "name": "type",
+              "description": "Severity of the alert.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "info"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "success"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "warning"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "error"
+                    }
+                  ]
+                },
+                "raw": "'info' | 'success' | 'warning' | 'error'"
+              },
+              "default": "'info'"
+            },
+            {
+              "name": "dismissible",
+              "description": "Whether a dismiss control is shown.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "events": [
+            {
+              "name": "dismissed",
+              "description": "Fired when the alert is dismissed via its dismiss control.",
+              "payload": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "Default message content."
+            },
+            {
+              "name": "actions",
+              "description": "Action buttons shown alongside the message (ng-content select=\"[actions]\")."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Alert",
+          "declaration": "Alert"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/avatar/avatar.ts",
+      "declarations": [
+        {
+          "name": "Avatar",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Avatar",
+            "selector": "tb-avatar"
+          },
+          "description": "A round image representing a user or entity.",
+          "inputs": [
+            {
+              "name": "src",
+              "description": "Image URL; when absent, the projected fallback content is shown.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''"
+            },
+            {
+              "name": "alt",
+              "description": "Accessible alt text for the image.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''"
+            },
+            {
+              "name": "size",
+              "description": "Diameter of the avatar.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "small"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "medium"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "large"
+                    }
+                  ]
+                },
+                "raw": "'small' | 'medium' | 'large'"
+              },
+              "default": "'medium'"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Fallback content shown when no image is available (e.g. initials)."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Avatar",
+          "declaration": "Avatar"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/badge/badge.ts",
+      "declarations": [
+        {
+          "name": "Badge",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Badge",
+            "selector": "tb-badge"
+          },
+          "description": "A compact label used to display status or a count.",
+          "inputs": [
+            {
+              "name": "tone",
+              "description": "Visual tone of the badge.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "neutral"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "info"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "success"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "warning"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "danger"
+                    }
+                  ]
+                },
+                "raw": "'neutral' | 'info' | 'success' | 'warning' | 'danger'"
+              },
+              "default": "'neutral'"
+            },
+            {
+              "name": "label",
+              "description": "Text label, used when no content is projected.",
+              "default": "''"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Default content shown inside the badge."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Badge",
+          "declaration": "Badge"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/button/button.ts",
+      "declarations": [
+        {
+          "name": "Button",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Button",
+            "selector": "tb-button"
+          },
+          "description": "Triggers a single action when activated.",
+          "inputs": [
+            {
+              "name": "variant",
+              "description": "Visual style of the button.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "primary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "secondary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "ghost"
+                    }
+                  ]
+                },
+                "raw": "'primary' | 'secondary' | 'ghost'"
+              },
+              "default": "'primary'"
+            },
+            {
+              "name": "size",
+              "description": "Size of the button.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "small"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "medium"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "large"
+                    }
+                  ]
+                },
+                "raw": "'small' | 'medium' | 'large'"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the button is disabled.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "events": [
+            {
+              "name": "press",
+              "description": "Fired when the button is activated by pointer or keyboard.",
+              "payload": {
+                "structured": {
+                  "name": "MouseEvent",
+                  "kind": "reference"
+                },
+                "raw": "MouseEvent"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "description": "Default label content."
+            },
+            {
+              "name": "icon",
+              "description": "Leading icon rendered before the label (ng-content select=\"[icon]\")."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Button",
+          "declaration": "Button"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/card/card.ts",
+      "declarations": [
+        {
+          "name": "Card",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Card",
+            "selector": "tb-card"
+          },
+          "description": "A container that groups related content with an optional header and footer.",
+          "inputs": [
+            {
+              "name": "elevation",
+              "description": "Shadow depth, from 0 (flat) to 3 (raised).",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": 0
+                    },
+                    {
+                      "kind": "literal",
+                      "value": 1
+                    },
+                    {
+                      "kind": "literal",
+                      "value": 2
+                    },
+                    {
+                      "kind": "literal",
+                      "value": 3
+                    }
+                  ]
+                },
+                "raw": "0 | 1 | 2 | 3"
+              },
+              "default": "1"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Default body content."
+            },
+            {
+              "name": "header",
+              "description": "Header content shown above the body (ng-content select=\"[header]\")."
+            },
+            {
+              "name": "footer",
+              "description": "Footer content shown below the body (ng-content select=\"[footer]\")."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Card",
+          "declaration": "Card"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/checkbox/checkbox.ts",
+      "declarations": [
+        {
+          "name": "Checkbox",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Checkbox",
+            "selector": "tb-checkbox"
+          },
+          "description": "A checkable input for a binary choice.",
+          "inputs": [
+            {
+              "name": "checked",
+              "description": "Whether the checkbox is checked.",
+              "default": "false"
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the checkbox is disabled.",
+              "default": "false"
+            }
+          ],
+          "events": [
+            {
+              "name": "changed",
+              "description": "Fired with the new checked state when the checkbox is toggled.",
+              "payload": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "name": "label",
+              "description": "Label content shown next to the checkbox (ng-content select=\"[label]\")."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Checkbox",
+          "declaration": "Checkbox"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/spinner/spinner.ts",
+      "declarations": [
+        {
+          "name": "Spinner",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Spinner",
+            "selector": "tb-spinner"
+          },
+          "description": "An indeterminate loading indicator.",
+          "inputs": [
+            {
+              "name": "size",
+              "description": "Diameter of the spinner.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "small"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "medium"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "large"
+                    }
+                  ]
+                },
+                "raw": "'small' | 'medium' | 'large'"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "label",
+              "description": "Accessible label describing what is loading.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "'Loading'"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Spinner",
+          "declaration": "Spinner"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/tabs/tabs.ts",
+      "declarations": [
+        {
+          "name": "Tabs",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Tabs",
+            "selector": "tb-tabs"
+          },
+          "description": "A tabbed container that shows one panel at a time.",
+          "inputs": [
+            {
+              "name": "selectedIndex",
+              "description": "Index of the active tab; two-way bound with `[(selectedIndex)]`.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "0",
+              "twoWay": true
+            }
+          ],
+          "slots": [
+            {
+              "description": "Tab items or panel content."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tabs",
+          "declaration": "Tabs"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/text-field/text-field.ts",
+      "declarations": [
+        {
+          "name": "TextField",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "TextField",
+            "selector": "tb-text-field"
+          },
+          "description": "A single-line text input.",
+          "inputs": [
+            {
+              "name": "value",
+              "description": "Current text value; two-way bound with `[(value)]`.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''",
+              "twoWay": true
+            },
+            {
+              "name": "placeholder",
+              "description": "Placeholder text shown when the field is empty.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''"
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the field is disabled.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "slots": [
+            {
+              "name": "label",
+              "description": "Field label shown above the input (ng-content select=\"[label]\")."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TextField",
+          "declaration": "TextField"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/tooltip/tooltip.ts",
+      "declarations": [
+        {
+          "name": "Tooltip",
+          "identity": {
+            "paradigmClass": "signals-di",
+            "module": "@testbed/ui",
+            "export": "Tooltip",
+            "selector": "tb-tooltip"
+          },
+          "description": "Shows a short message near an element on hover or focus.",
+          "inputs": [
+            {
+              "name": "text",
+              "description": "Message shown in the tooltip.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "''"
+            },
+            {
+              "name": "placement",
+              "description": "Preferred side of the trigger element to render the tooltip.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "top"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "right"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "bottom"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "left"
+                    }
+                  ]
+                },
+                "raw": "'top' | 'right' | 'bottom' | 'left'"
+              },
+              "default": "'top'"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Element that triggers the tooltip on hover or focus."
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tooltip",
+          "declaration": "Tooltip"
+        }
+      ]
+    }
+  ]
+}

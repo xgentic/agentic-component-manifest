@@ -1,0 +1,90 @@
+.dashboard-page {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dashboard-page__bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-page__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-page__wordmark {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.dashboard-page__nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.dashboard-page__account {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.dashboard-page__hint {
+  font-size: 0.8125rem;
+  opacity: 0.6;
+}
+
+.dashboard-page__filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-page__search {
+  flex: 1 1 18rem;
+}
+
+.dashboard-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-page__run-header,
+.dashboard-page__run-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.dashboard-page__suite {
+  font-weight: 600;
+}
+
+.dashboard-page__meta,
+.dashboard-page__run-footer {
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+.dashboard-page__stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dashboard-page__duration {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}

@@ -1,0 +1,129 @@
+<div class="dashboard-page">
+  <header class="dashboard-page__bar">
+    <div class="dashboard-page__brand">
+      <tb-avatar size="small" alt="play·report">PW</tb-avatar>
+      <span class="dashboard-page__wordmark">play·report</span>
+    </div>
+
+    <tb-tabs class="dashboard-page__nav" [(selectedIndex)]="selectedTab">
+      @for (label of tabLabels; track label; let i = $index) {
+      <tb-button variant="ghost" size="small" (press)="selectedTab.set(i)">
+        {{ label }}
+      </tb-button>
+      }
+    </tb-tabs>
+
+    <div class="dashboard-page__account">
+      <span class="dashboard-page__hint">⌘K search</span>
+      <tb-avatar size="small" alt="Mia Weber">mw</tb-avatar>
+    </div>
+  </header>
+
+  @if (selectedTab() === 0) {
+  <div class="dashboard-page__filters">
+    <tb-button
+      [variant]="status() === 'all' ? 'primary' : 'ghost'"
+      size="small"
+      (press)="selectStatus('all')"
+    >
+      All <tb-badge tone="neutral" [label]="counts().all.toString()"></tb-badge>
+    </tb-button>
+
+    <tb-button
+      [variant]="status() === 'fail' ? 'primary' : 'ghost'"
+      size="small"
+      (press)="selectStatus('fail')"
+    >
+      Failed
+      <tb-badge tone="danger" [label]="counts().fail.toString()"></tb-badge>
+    </tb-button>
+
+    <tb-button
+      [variant]="status() === 'flaky' ? 'primary' : 'ghost'"
+      size="small"
+      (press)="selectStatus('flaky')"
+    >
+      Flaky
+      <tb-badge tone="warning" [label]="counts().flaky.toString()"></tb-badge>
+    </tb-button>
+
+    <tb-button
+      [variant]="status() === 'pass' ? 'primary' : 'ghost'"
+      size="small"
+      (press)="selectStatus('pass')"
+    >
+      Passed
+      <tb-badge tone="success" [label]="counts().pass.toString()"></tb-badge>
+    </tb-button>
+
+    <!-- @testbed/ui has no select/menu component; these two filters are static. -->
+    <tb-button variant="secondary" size="small" [disabled]="true"
+      >main</tb-button
+    >
+    <tb-button variant="secondary" size="small" [disabled]="true"
+      >last 7 days</tb-button
+    >
+
+    <tb-text-field
+      class="dashboard-page__search"
+      [(value)]="query"
+      placeholder="search runs by suite, sha, author…"
+    >
+      <span label>Search</span>
+    </tb-text-field>
+  </div>
+
+  @if (visibleRuns().length === 0) {
+  <tb-alert type="info">
+    No runs match this filter.
+    <span actions>
+      <tb-button
+        variant="secondary"
+        size="small"
+        (press)="selectStatus('all'); query.set('')"
+      >
+        Clear filters
+      </tb-button>
+    </span>
+  </tb-alert>
+  }
+
+  <div class="dashboard-page__grid">
+    @for (run of visibleRuns(); track run.id) {
+    <tb-card class="dashboard-page__run" [elevation]="1">
+      <span header class="dashboard-page__run-header">
+        <span class="dashboard-page__suite">{{ run.suite }}</span>
+        <tb-badge [tone]="toneFor(run.status)">{{ run.status }}</tb-badge>
+      </span>
+
+      <div class="dashboard-page__meta">{{ run.branch }} · {{ run.sha }}</div>
+
+      <div class="dashboard-page__stats">
+        <tb-badge
+          [tone]="toneFor(run.status)"
+          [label]="ratioLabel(run)"
+        ></tb-badge>
+        <tb-tooltip text="Wall-clock duration" placement="top">
+          <span class="dashboard-page__duration">{{ run.duration }}</span>
+        </tb-tooltip>
+      </div>
+
+      <span footer class="dashboard-page__run-footer">
+        <span>#{{ run.id }} · {{ run.author }}</span>
+        <span>{{ run.age }}</span>
+      </span>
+    </tb-card>
+    }
+  </div>
+  } @else {
+  <tb-alert type="info">
+    The {{ tabLabels[selectedTab()] }} tab is not part of this dashboard
+    wireframe.
+    <span actions>
+      <tb-button variant="secondary" size="small" (press)="selectedTab.set(0)">
+        Back to Runs
+      </tb-button>
+    </span>
+  </tb-alert>
+  }
+</div>

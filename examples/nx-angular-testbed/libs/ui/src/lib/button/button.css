@@ -1,0 +1,42 @@
+.tb-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font: inherit;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.tb-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tb-button--small {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+}
+.tb-button--medium {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+.tb-button--large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.tb-button--primary {
+  background: #2563eb;
+  color: #fff;
+}
+.tb-button--secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+.tb-button--ghost {
+  background: transparent;
+  border-color: #d1d5db;
+  color: #111827;
+}

@@ -1,0 +1,37 @@
+.tb-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  background: #fff;
+  border: 1px solid #e2e2e2;
+}
+
+.tb-card--elevation-0 {
+  box-shadow: none;
+}
+.tb-card--elevation-1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.tb-card--elevation-2 {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+.tb-card--elevation-3 {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.tb-card [part='header']:not(:empty) {
+  padding: 1rem 1.25rem 0;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.tb-card [part='body'] {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.tb-card [part='footer']:not(:empty) {
+  padding: 0 1.25rem 1.25rem;
+}

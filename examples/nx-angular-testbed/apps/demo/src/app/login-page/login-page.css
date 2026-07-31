@@ -1,0 +1,10 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.login-page__card {
+  width: 100%;
+  max-width: 24rem;
+}
