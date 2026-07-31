@@ -15,8 +15,8 @@ The merge result of CLI flags > settings file > defaults ([R-09](./research.md#r
 | `globs` | `string[]` | `['src/**/*.{js,ts,jsx,tsx}']` | non-empty strings; plugin `fileExtensions` may extend defaults only (never user values) |
 | `exclude` | `string[]` | `[]` | — |
 | `outdir` | `string` | `'.'` | manifest filename is always `agentic-component-manifest.json` (discovery convention); directory created if absent |
-| `framework` | `string \| undefined` | `undefined` (vanilla) | must be a built-in name (`lit`, `stencil`, `angular`, `react`, `vue`); unknown → fatal error listing supported values (FR-004) |
-| `dev` | `boolean` | `false` | verbose diagnostics to stderr |
+| `frameworks` | `string[]` | `[]` (vanilla) | each a built-in name (`vanilla`, `lit`, `stencil`, `angular`, `react`); repeatable/comma-separated on the CLI, one-or-many in the settings file (`framework` singular is an alias; both keys set → fatal); duplicates collapse to the first occurrence; plugins run in the order given; unknown → fatal error listing supported values (FR-004) |
+| `dev` | `boolean` | `false` | verbose run trace to stderr (discovery, parse counts, plugin pipeline, framework import census, per-plugin yield, summary); observation never alters output |
 | `quiet` | `boolean` | `false` | suppress progress, keep errors; `dev` and `quiet` mutually exclusive → usage error |
 | `watch` | `boolean` | `false` | — |
 | `plugins` | `AnalyzerPlugin[]` | `[]` | settings-file only (functions can't cross the CLI boundary); each entry must satisfy the plugin interface shape or fatal config error |

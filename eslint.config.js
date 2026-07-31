@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -8,6 +9,8 @@ export default tseslint.config(
       "apm_modules/",
       "packages/conformance/fixtures/",
       "packages/spec/generated/",
+      // Build output: bundled third-party code, not ours to lint.
+      "dist/",
       "*.js",
     ],
   },
@@ -18,5 +21,10 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     },
+  },
+  {
+    // Build and verification scripts: plain Node ESM, not part of the TS program.
+    files: ["scripts/**/*.mjs"],
+    languageOptions: { globals: globals.node },
   },
 );

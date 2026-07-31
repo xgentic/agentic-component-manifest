@@ -23,18 +23,20 @@ interface Testbed {
 const TESTBEDS: Testbed[] = [
   { fw: "lit", dir: "testbed/lit" },
   { fw: "angular", dir: "testbed/angular" },
+  { fw: "stencil", dir: "testbed/stencil" },
 ];
 
 async function analyze(t: Testbed): Promise<string | null> {
   const settings = defaultSettings();
-  settings.framework = t.fw;
+  settings.frameworks = [t.fw];
   const outcome = await analyzeProject(settings, path.join(FIXTURES, t.dir), { write: false });
   return outcome.text;
 }
 
 /** The single declaration under test in a testbed golden. */
 function goldenDecl(dir: string): Json {
-  return JSON.parse(readFixture(`${dir}/agentic-component-manifest.json`)).modules[0].declarations[0];
+  return JSON.parse(readFixture(`${dir}/agentic-component-manifest.json`)).modules[0]
+    .declarations[0];
 }
 
 /** True when some node anywhere in `obj` satisfies `pred`. */
@@ -61,84 +63,298 @@ interface Row {
 }
 
 const LIT_ROWS: Row[] = [
-  { id: "L1 identity: tagName + retained-dom + module/export", check: (d) =>
-      d.identity.tagName === "acme-data-grid" && d.identity.paradigmClass === "retained-dom" &&
-      !!d.identity.module && !!d.identity.export },
-  { id: "L2 >=10 reactive properties in source order", check: (d) => (d.inputs?.length ?? 0) >= 10 },
-  { id: "L3 literal-union property", check: (d) => {
+  {
+    id: "L1 identity: tagName + retained-dom + module/export",
+    check: (d) =>
+      d.identity.tagName === "acme-data-grid" &&
+      d.identity.paradigmClass === "retained-dom" &&
+      !!d.identity.module &&
+      !!d.identity.export,
+  },
+  {
+    id: "L2 >=10 reactive properties in source order",
+    check: (d) => (d.inputs?.length ?? 0) >= 10,
+  },
+  {
+    id: "L3 literal-union property",
+    check: (d) => {
       const i = byName(d.inputs, "selectionMode");
-      return i?.type.structured.kind === "union" &&
-        i.type.structured.members.every((m: Json) => m.kind === "literal"); } },
-  { id: "L4 generic-bearing array-of-reference", check: (d) => {
+      return (
+        i?.type.structured.kind === "union" &&
+        i.type.structured.members.every((m: Json) => m.kind === "literal")
+      );
+    },
+  },
+  {
+    id: "L4 generic-bearing array-of-reference",
+    check: (d) => {
       const i = byName(d.inputs, "columns");
-      return i?.type.structured.kind === "array" && i.type.structured.items.kind === "reference"; } },
-  { id: "L5 function-typed property", check: (d) =>
-      byName(d.inputs, "rowClass")?.type.structured.kind === "function" },
-  { id: "L6 beyond-depth object -> opaque fallback + raw", check: (d) => {
+      return i?.type.structured.kind === "array" && i.type.structured.items.kind === "reference";
+    },
+  },
+  {
+    id: "L5 function-typed property",
+    check: (d) => byName(d.inputs, "rowClass")?.type.structured.kind === "function",
+  },
+  {
+    id: "L6 beyond-depth object -> opaque fallback + raw",
+    check: (d) => {
       const i = byName(d.inputs, "renderConfig");
-      return deepSome(i?.type.structured, (n) => n.kind === "opaque") && !!i?.type.raw; } },
-  { id: "L7 reflect:true -> reflects", check: (d) => (d.inputs ?? []).some((i: Json) => i.reflects === true) },
-  { id: "L8 attribute alias captured, type intact", check: (d) => {
+      return deepSome(i?.type.structured, (n) => n.kind === "opaque") && !!i?.type.raw;
+    },
+  },
+  {
+    id: "L7 reflect:true -> reflects",
+    check: (d) => (d.inputs ?? []).some((i: Json) => i.reflects === true),
+  },
+  {
+    id: "L8 attribute alias captured, type intact",
+    check: (d) => {
       const i = byName(d.inputs, "label");
-      return i?.["x-attribute"] === "data-label" && i.type.structured.kind === "primitive"; } },
-  { id: "L9 property initializer -> default verbatim", check: (d) =>
-      byName(d.inputs, "pageSize")?.default === "25" },
-  { id: "L10 undocumented member -> description absent", check: (d) =>
-      byName(d.inputs, "caption") !== undefined && byName(d.inputs, "caption")!.description === undefined &&
-      byName(d.inputs, "selectionMode")?.description !== undefined },
-  { id: "L11 >=4 typed events", check: (d) =>
-      (d.events?.length ?? 0) >= 4 && d.events.every((e: Json) => !!e.payload) },
-  { id: "L12 default slot + >=3 named slots", check: (d) => {
+      return i?.["x-attribute"] === "data-label" && i.type.structured.kind === "primitive";
+    },
+  },
+  {
+    id: "L9 property initializer -> default verbatim",
+    check: (d) => byName(d.inputs, "pageSize")?.default === "25",
+  },
+  {
+    id: "L10 undocumented member -> description absent",
+    check: (d) =>
+      byName(d.inputs, "caption") !== undefined &&
+      byName(d.inputs, "caption")!.description === undefined &&
+      byName(d.inputs, "selectionMode")?.description !== undefined,
+  },
+  {
+    id: "L11 >=4 typed events",
+    check: (d) => (d.events?.length ?? 0) >= 4 && d.events.every((e: Json) => !!e.payload),
+  },
+  {
+    id: "L12 default slot + >=3 named slots",
+    check: (d) => {
       const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
       const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
-      return unnamed === 1 && named >= 3; } },
-  { id: "L13 >=3 methods with param + return types", check: (d) =>
-      (d.methods?.length ?? 0) >= 3 && d.methods.some((m: Json) => m.parameters?.length && m.return) &&
-      d.methods.some((m: Json) => m.return?.raw === "Promise<void>") },
-  { id: "L14 private/#/@state members absent (negative)", check: (d) => {
+      return unnamed === 1 && named >= 3;
+    },
+  },
+  {
+    id: "L13 >=3 methods with param + return types",
+    check: (d) =>
+      (d.methods?.length ?? 0) >= 3 &&
+      d.methods.some((m: Json) => m.parameters?.length && m.return) &&
+      d.methods.some((m: Json) => m.return?.raw === "Promise<void>"),
+  },
+  {
+    id: "L14 private/#/@state members absent (negative)",
+    check: (d) => {
       const forbidden = ["_hoveredRow", "_cache", "#internalId", "internalId", "styles"];
-      return forbidden.every((n) => !memberNames(d).includes(n)); } },
+      return forbidden.every((n) => !memberNames(d).includes(n));
+    },
+  },
   { id: "L15 >=4 CSS custom properties", check: (d) => (d.cssProperties?.length ?? 0) >= 4 },
   { id: "L16 >=3 CSS parts", check: (d) => (d.cssParts?.length ?? 0) >= 3 },
-  { id: "L17 static formAssociated -> x-wc node", check: (d) => d["x-wc"]?.formAssociated === true },
+  {
+    id: "L17 static formAssociated -> x-wc node",
+    check: (d) => d["x-wc"]?.formAssociated === true,
+  },
 ];
 
 const ANGULAR_ROWS: Row[] = [
-  { id: "A1 selector identity, signals-di, NO tagName (negative)", check: (d) =>
-      d.identity.selector === "acme-data-grid" && d.identity.paradigmClass === "signals-di" &&
-      !!d.identity.module && !!d.identity.export && d.identity.tagName === undefined },
-  { id: "A2 decorated @Input incl aliased + transform, public names", check: (d) =>
-      byName(d.inputs, "data-label") !== undefined && byName(d.inputs, "disabled") !== undefined },
-  { id: "A3 signal input(default) + input.required distinction", check: (d) =>
-      byName(d.inputs, "pageSize")?.required === true && byName(d.inputs, "size")?.default === "200" &&
-      byName(d.inputs, "pageSize")?.default === undefined },
-  { id: "A4 >=2 model() two-way inputs surfaced (twoWay)", check: (d) =>
-      (d.inputs ?? []).filter((i: Json) => i.twoWay === true).length >= 2 },
-  { id: "A5 decorator + signal outputs -> typed events", check: (d) =>
-      (d.events?.length ?? 0) >= 2 && d.events.every((e: Json) => !!e.payload) },
-  { id: "A6 multi-selector projection + default slot", check: (d) => {
+  {
+    id: "A1 selector identity, signals-di, NO tagName (negative)",
+    check: (d) =>
+      d.identity.selector === "acme-data-grid" &&
+      d.identity.paradigmClass === "signals-di" &&
+      !!d.identity.module &&
+      !!d.identity.export &&
+      d.identity.tagName === undefined,
+  },
+  {
+    id: "A2 decorated @Input incl aliased + transform, public names",
+    check: (d) =>
+      byName(d.inputs, "data-label") !== undefined && byName(d.inputs, "disabled") !== undefined,
+  },
+  {
+    id: "A3 signal input(default) + input.required distinction",
+    check: (d) =>
+      byName(d.inputs, "pageSize")?.required === true &&
+      byName(d.inputs, "size")?.default === "200" &&
+      byName(d.inputs, "pageSize")?.default === undefined,
+  },
+  {
+    id: "A4 >=2 model() two-way inputs surfaced (twoWay)",
+    check: (d) => (d.inputs ?? []).filter((i: Json) => i.twoWay === true).length >= 2,
+  },
+  {
+    id: "A5 decorator + signal outputs -> typed events",
+    check: (d) => (d.events?.length ?? 0) >= 2 && d.events.every((e: Json) => !!e.payload),
+  },
+  {
+    id: "A6 multi-selector projection + default slot",
+    check: (d) => {
       const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
       const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
-      return unnamed === 1 && named >= 3; } },
+      return unnamed === 1 && named >= 3;
+    },
+  },
   { id: "A7 host CSS custom properties", check: (d) => (d.cssProperties?.length ?? 0) >= 1 },
-  { id: "A8 injected DI absent (negative)", check: (d) =>
-      !memberNames(d).includes("config") && !memberNames(d).includes("GRID_CONFIG") },
-  { id: "A9 >=3 public methods incl async", check: (d) =>
-      (d.methods?.length ?? 0) >= 3 && d.methods.some((m: Json) => m.return?.raw === "Promise<void>") },
-  { id: "A10 protected/private/internal signals absent (negative)", check: (d) => {
+  {
+    id: "A8 injected DI absent (negative)",
+    check: (d) => !memberNames(d).includes("config") && !memberNames(d).includes("GRID_CONFIG"),
+  },
+  {
+    id: "A9 >=3 public methods incl async",
+    check: (d) =>
+      (d.methods?.length ?? 0) >= 3 &&
+      d.methods.some((m: Json) => m.return?.raw === "Promise<void>"),
+  },
+  {
+    id: "A10 protected/private/internal signals absent (negative)",
+    check: (d) => {
       const forbidden = ["hoveredIndex", "_cache", "_revision", "denseClass", "ngOnInit"];
-      return forbidden.every((n) => !memberNames(d).includes(n)); } },
-  { id: "A11 undocumented member -> description absent", check: (d) =>
-      byName(d.inputs, "caption")?.description === undefined && byName(d.inputs, "density")?.description !== undefined },
-  { id: "A12 union + generic-ref + function + opaque inputs (mirror L3-L6)", check: (d) =>
+      return forbidden.every((n) => !memberNames(d).includes(n));
+    },
+  },
+  {
+    id: "A11 undocumented member -> description absent",
+    check: (d) =>
+      byName(d.inputs, "caption")?.description === undefined &&
+      byName(d.inputs, "density")?.description !== undefined,
+  },
+  {
+    id: "A12 union + generic-ref + function + opaque inputs (mirror L3-L6)",
+    check: (d) =>
       byName(d.inputs, "density")?.type.structured.kind === "union" &&
       byName(d.inputs, "columns")?.type.structured.items?.kind === "reference" &&
       byName(d.inputs, "rowClass")?.type.structured.kind === "function" &&
-      deepSome(byName(d.inputs, "renderConfig")?.type.structured, (n) => n.kind === "opaque") },
+      deepSome(byName(d.inputs, "renderConfig")?.type.structured, (n) => n.kind === "opaque"),
+  },
+];
+
+const STENCIL_ROWS: Row[] = [
+  {
+    id: "S1 identity: tagName + retained-dom + module/export",
+    check: (d) =>
+      d.identity.tagName === "acme-data-grid" &&
+      d.identity.paradigmClass === "retained-dom" &&
+      !!d.identity.module &&
+      !!d.identity.export,
+  },
+  { id: "S2 >=10 @Prop() inputs in source order", check: (d) => (d.inputs?.length ?? 0) >= 10 },
+  {
+    id: "S3 literal-union property",
+    check: (d) => {
+      const i = byName(d.inputs, "selectionMode");
+      return (
+        i?.type.structured.kind === "union" &&
+        i.type.structured.members.every((m: Json) => m.kind === "literal")
+      );
+    },
+  },
+  {
+    id: "S4 generic-bearing array-of-reference",
+    check: (d) => {
+      const i = byName(d.inputs, "columns");
+      return i?.type.structured.kind === "array" && i.type.structured.items.kind === "reference";
+    },
+  },
+  {
+    id: "S5 function-typed property",
+    check: (d) => byName(d.inputs, "rowClass")?.type.structured.kind === "function",
+  },
+  {
+    id: "S6 beyond-depth object -> opaque fallback + raw",
+    check: (d) => {
+      const i = byName(d.inputs, "renderConfig");
+      return deepSome(i?.type.structured, (n) => n.kind === "opaque") && !!i?.type.raw;
+    },
+  },
+  {
+    id: "S7 @Prop({ reflect: true }) -> reflects",
+    check: (d) => (d.inputs ?? []).some((i: Json) => i.reflects === true),
+  },
+  {
+    id: "S8 attribute alias captured, type intact",
+    check: (d) => {
+      const i = byName(d.inputs, "label");
+      return i?.["x-attribute"] === "data-label" && i.type.structured.kind === "primitive";
+    },
+  },
+  {
+    id: "S9 @Prop({ mutable: true }) -> x-stencil.mutable",
+    check: (d) => byName(d.inputs, "query")?.["x-stencil"]?.mutable === true,
+  },
+  {
+    id: "S10 property initializer -> default verbatim",
+    check: (d) => byName(d.inputs, "pageSize")?.default === "25",
+  },
+  {
+    id: "S11 undocumented member -> description absent",
+    check: (d) =>
+      byName(d.inputs, "caption") !== undefined &&
+      byName(d.inputs, "caption")!.description === undefined &&
+      byName(d.inputs, "selectionMode")?.description !== undefined,
+  },
+  {
+    id: "S12 >=4 typed events incl aliased public name",
+    check: (d) =>
+      (d.events?.length ?? 0) >= 4 &&
+      d.events.every((e: Json) => !!e.payload) &&
+      byName(d.events, "selection-change") !== undefined,
+  },
+  {
+    id: "S13 default slot + >=3 named slots",
+    check: (d) => {
+      const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
+      const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
+      return unnamed === 1 && named >= 3;
+    },
+  },
+  {
+    id: "S14 >=3 @Method() incl async Promise<void> with params",
+    check: (d) =>
+      (d.methods?.length ?? 0) >= 3 &&
+      d.methods.some((m: Json) => m.parameters?.length && m.return) &&
+      d.methods.every((m: Json) => m.return?.raw === "Promise<void>"),
+  },
+  {
+    id: "S15 opt-in gating: non-@Method + @State/@Element/@Watch/@Listen absent (negative)",
+    check: (d) => {
+      const forbidden = [
+        "recompute",
+        "hoveredRow",
+        "hostEl",
+        "_cache",
+        "internalId",
+        "onPageSizeChange",
+        "onKeydown",
+        "render",
+      ];
+      return forbidden.every((n) => !memberNames(d).includes(n));
+    },
+  },
+  {
+    id: "S16 >=4 CSS custom properties + >=3 CSS parts",
+    check: (d) => (d.cssProperties?.length ?? 0) >= 4 && (d.cssParts?.length ?? 0) >= 3,
+  },
+  {
+    id: "S17 @Component({ formAssociated: true }) -> x-wc node",
+    check: (d) => d["x-wc"]?.formAssociated === true,
+  },
+  {
+    id: "S18 implicit dash-cased attribute for camelCase props; absent for same-name/complex",
+    check: (d) =>
+      byName(d.inputs, "selectionMode")?.["x-attribute"] === "selection-mode" &&
+      byName(d.inputs, "pageSize")?.["x-attribute"] === "page-size" &&
+      byName(d.inputs, "dense")?.["x-attribute"] === undefined &&
+      byName(d.inputs, "columns")?.["x-attribute"] === undefined,
+  },
 ];
 
 const ROWS: Record<BuiltinFramework, Row[]> = {
+  vanilla: [],
   lit: LIT_ROWS,
+  stencil: STENCIL_ROWS,
   angular: ANGULAR_ROWS,
   react: [],
 };

@@ -9,10 +9,9 @@
  * is ever observable.
  */
 
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { canonicalize, validateManifest } from "@acm/toolchain";
+import { canonicalize, readSpecPackageVersion, validateManifest } from "@acm/toolchain";
 import {
   buildProvenance,
   outputModules,
@@ -22,12 +21,8 @@ import {
 } from "./context.js";
 import type { Diagnostic } from "./diagnostics.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-
 /** Manifest schema version, self-declared from the spec package (plan Principle VII). */
-export const SCHEMA_VERSION: string = JSON.parse(
-  readFileSync(path.resolve(here, "../../spec/package.json"), "utf8"),
-).version;
+export const SCHEMA_VERSION: string = readSpecPackageVersion();
 
 /** Assemble the schema-shaped manifest from analyzed modules (declaration modules only). */
 export function assemble(moduleContexts: ModuleContextInternal[]): Record<string, unknown> {
@@ -66,6 +61,10 @@ export interface EmitOptions {
   cwd: string;
   /** When false, validate and canonicalize but do not touch disk (used by tests). */
   write?: boolean;
+  /** Files the run scanned; reported in the empty-manifest diagnostic when known. */
+  scanned?: number;
+  /** Frameworks that drove the run; reported in the empty-manifest diagnostic. */
+  frameworks?: readonly string[];
 }
 
 /** Validate, canonicalize, and (optionally) atomically write `<outdir>/agentic-component-manifest.json`. */
@@ -93,10 +92,16 @@ export function emit(moduleContexts: ModuleContextInternal[], options: EmitOptio
   const text = canonicalize(manifest);
 
   if ((manifest.modules as unknown[]).length === 0) {
+    // Name the scope that came up empty — a bare "no components found" is the single
+    // least actionable thing the analyzer can say.
+    const scope = options.scanned === undefined ? "" : ` in ${options.scanned} scanned file(s)`;
+    const using = options.frameworks?.length
+      ? ` using framework ${options.frameworks.join(", ")}`
+      : "";
     diagnostics.push({
       code: "ACM-A-EMPTY",
       severity: "warning",
-      message: "no components found; wrote a valid empty manifest",
+      message: `no components found${scope}${using}; wrote a valid empty manifest`,
     });
   }
 

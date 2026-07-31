@@ -1,6 +1,4 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import { REPO_ROOT } from "./validate.js";
+import { readToolchainPackageJson } from "./paths.js";
 import {
   GLOBAL_OPTIONS,
   REGISTRY,
@@ -78,9 +76,7 @@ function projectCommand(spec: CommandSpec): CapabilityCommand {
 }
 
 export function buildCapabilityManifest(): CapabilityManifest {
-  const packageJson = JSON.parse(
-    readFileSync(path.join(REPO_ROOT, "packages/toolchain/package.json"), "utf8"),
-  ) as { version?: string; description?: string };
+  const packageJson = readToolchainPackageJson();
   const jsonSupported = REGISTRY.filter((c) => c.jsonSupported).map((c) => c.name);
   return {
     apiVersion: 1,

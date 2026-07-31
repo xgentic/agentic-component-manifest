@@ -17,7 +17,7 @@
   "dependencies": {
     "@acm/spec": "workspace:*",
     "@acm/toolchain": "workspace:*",
-    "@vue/compiler-sfc": "^3.5.13",
+    "ajv": "^8.17.1",
     "chokidar": "^4.0.3",
     "tinyglobby": "^0.2.10",
     "typescript": "^5.7.2"

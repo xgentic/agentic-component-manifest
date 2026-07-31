@@ -30,23 +30,40 @@ pnpm exec tsx "$(git rev-parse --show-toplevel)/packages/analyzer/src/cli.ts" an
 # → writes ./agentic-component-manifest.json (exit 0)
 ```
 
+### Then search it
+
+There is **no index step**. `@acm/toolchain` assembles its Manifest Corpus from the
+current directory on every invocation, so writing `agentic-component-manifest.json` at
+your project root is the whole of "indexing":
+
+```sh
+acm-analyzer analyze --framework stencil        # produce
+acm component                                   # list every component found
+acm search account                              # rank matches
+acm component PfAccountField --dense            # one component, verbatim, token-frugal
+```
+
+See the [toolchain README](../toolchain/README.md#the-manifest-corpus-there-is-no-index-step)
+for how the corpus is assembled, how to point it at another directory, and how a
+dependency's Manifest joins it.
+
 ## CLI
 
 ```
 acm-analyzer analyze [--config <path>] [--globs <glob>...] [--exclude <glob>...]
-                     [--outdir <dir>] [--framework <name>] [--watch] [--dev] [--quiet]
+                     [--outdir <dir>] [--framework <name>...] [--watch] [--dev] [--quiet]
 ```
 
-| Flag          | Arg   | Meaning                                                                                                  |
-| ------------- | ----- | -------------------------------------------------------------------------------------------------------- |
-| `--config`    | path  | explicit settings file (missing file at an explicit path → exit 2)                                       |
-| `--globs`     | glob… | include patterns; **replaces** the settings-file value, never merged                                     |
-| `--exclude`   | glob… | exclude patterns; **replaces** the settings-file value                                                   |
-| `--outdir`    | dir   | output directory; manifest is always `<outdir>/agentic-component-manifest.json`; created if absent                              |
-| `--framework` | name  | `lit` \| `angular` \| `react`; omit for vanilla web components. Unknown → exit 2 with the supported list |
-| `--watch`     | —     | re-analyze on change; the process survives per-cycle failures                                            |
-| `--dev`       | —     | verbose diagnostics to stderr; mutually exclusive with `--quiet` (→ exit 2)                              |
-| `--quiet`     | —     | suppress progress; errors still print                                                                    |
+| Flag          | Arg   | Meaning                                                                                                                                   |
+| ------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `--config`    | path  | explicit settings file (missing file at an explicit path → exit 2)                                                                        |
+| `--globs`     | glob… | include patterns; **replaces** the settings-file value, never merged                                                                      |
+| `--exclude`   | glob… | exclude patterns; **replaces** the settings-file value                                                                                    |
+| `--outdir`    | dir   | output directory; manifest is always `<outdir>/agentic-component-manifest.json`; created if absent                                        |
+| `--framework` | name… | `vanilla` \| `lit` \| `stencil` \| `angular` \| `react`; repeatable and comma-separated; omit for vanilla. Unknown → exit 2 with the list |
+| `--watch`     | —     | re-analyze on change; the process survives per-cycle failures                                                                             |
+| `--dev`       | —     | verbose run trace to stderr; mutually exclusive with `--quiet` (→ exit 2)                                                                 |
+| `--quiet`     | —     | suppress progress; errors still print                                                                                                     |
 
 Precedence for every option is **CLI flag > settings file > built-in default**. Progress
 and diagnostics go to **stderr**; stdout is reserved. Full contract:
@@ -66,16 +83,63 @@ last good `agentic-component-manifest.json` is never truncated or half-written.
 
 ## Frameworks
 
-| `--framework` | Paradigm       | Identity facets            |
-| ------------- | -------------- | -------------------------- |
-| _(omitted)_   | `retained-dom` | `tagName` + module/export  |
-| `lit`         | `retained-dom` | `tagName` + module/export  |
-| `angular`     | `signals-di`   | `selector` + module/export |
-| `react`       | `vdom`         | module/export              |
+| `--framework`            | Paradigm       | Identity facets            |
+| ------------------------ | -------------- | -------------------------- |
+| `vanilla` _(or omitted)_ | `retained-dom` | `tagName` + module/export  |
+| `lit`                    | `retained-dom` | `tagName` + module/export  |
+| `stencil`                | `retained-dom` | `tagName` + module/export  |
+| `angular`                | `signals-di`   | `selector` + module/export |
+| `react`                  | `vdom`         | module/export              |
 
-Stencil and Vue are **not shipped in v1** (a documented gap, not a silent one) — the plugin
-seam below covers them on demand. See the [type-mapping rules](docs/type-mapping.md) for how
-TypeScript type syntax becomes the schema's structured `TypeNode` grammar.
+Vue is **not shipped in v1** (a documented gap, not a silent one) — the plugin seam below
+covers it on demand. See the [type-mapping rules](docs/type-mapping.md) for how TypeScript
+type syntax becomes the schema's structured `TypeNode` grammar.
+
+### Mixed-framework repositories
+
+`--framework` is repeatable, so a repository that ships more than one paradigm is **one
+run**, not one run per framework. These are equivalent:
+
+```sh
+acm-analyzer analyze --framework stencil --framework react
+acm-analyzer analyze --framework stencil,react
+```
+
+Plugins run in the order written, and that order is the tie-break: when two of them
+recognize the same declaration — Angular and Stencil both key off `@Component` — the
+first claim wins, and the dropped contribution is reported as an `ACM-A-DUPENTRY` warning
+naming both plugins. Nothing is ever merged across frameworks; a declaration belongs to
+exactly one paradigm class.
+
+### Why did I get an empty manifest?
+
+Run with `--dev`. The trace walks the pipeline in the order things can go wrong:
+
+```text
+acm-analyzer: cwd=/repo
+acm-analyzer: frameworks=stencil outdir=. globs=["src/**/*.tsx"] exclude=[] plugins=0 (from defaults + flags)
+acm-analyzer: discovered 42 file(s) matching ["src/**/*.tsx"] (no excludes)
+acm-analyzer:   src/components/form/account-field/account-field.tsx
+acm-analyzer:   … 17 more
+acm-analyzer: parsed 42 file(s), skipped 0
+acm-analyzer: plugins: stencil
+acm-analyzer: framework imports detected: stencil ("@stencil/core", 41 file(s))
+acm-analyzer:   stencil: 41 declaration(s)
+acm-analyzer: summary: 42 file(s) scanned · 41 module(s) with declarations · 41 declaration(s)
+```
+
+Two diagnostics cover the empty-result cases without `--dev`:
+
+| Code              | When                                                                                                                   |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `ACM-A-NOFILES`   | the globs matched nothing — names the patterns, the directory, and `--globs`                                           |
+| `ACM-A-EMPTY`     | files were scanned but nothing was extracted — names the count and framework                                           |
+| `ACM-A-FRAMEWORK` | nothing was extracted **and** the sources import a framework you did not select — names it and the flag to re-run with |
+
+`stencil` reads `@Component({ tag })` classes: `@Prop()` → inputs (`reflect`/`attribute`/
+`mutable`), `@Event() EventEmitter<T>` → typed events (`eventName` alias), and `@Method()` →
+methods. Unlike Lit/Angular, methods are **opt-in**: a public method with no `@Method()` is
+internal and excluded; `@State`/`@Watch`/`@Listen`/`@Element` are ignored.
 
 ## Doc-comment tags
 
@@ -130,8 +194,8 @@ never a failed build. Full guide: [docs/semantics-examples.md](docs/semantics-ex
 
 Auto-discovered as `acm-analyzer.config.{js,mjs}` at the cwd, or passed via `--config`.
 The default export is the config object; it is your own trusted code (analyzed _sources_
-are never executed). Unknown keys, a non-object export, or an unknown `framework` are fatal
-(exit 2) — never a silent fallback. Full contract:
+are never executed). Unknown keys, a non-object export, or an unknown framework name are
+fatal (exit 2) — never a silent fallback. Full contract:
 [contracts/config-file.md](../../specs/002-acm-analyzer-cli/contracts/config-file.md).
 
 ```js
@@ -142,10 +206,14 @@ export default {
   globs: ["src/**/*.ts"],
   exclude: ["**/*.test.ts"],
   outdir: "dist",
-  framework: "lit", // 'lit' | 'angular' | 'react' | undefined → vanilla
-  plugins: [myPlugin()], // run after the framework plugin, in array order
+  frameworks: ["stencil", "react"], // one name or a list; omit → vanilla
+  plugins: [myPlugin()], // run after the framework plugins, in array order
 };
 ```
+
+`framework` (singular) is accepted as an alias and takes the same one-or-many value;
+setting both keys is a fatal error. A `--framework` flag **replaces** the file's selection
+rather than adding to it, like every other list option.
 
 ## Plugins
 
@@ -174,17 +242,17 @@ ACM's `analyze` subcommand mirrors the [Custom Elements Manifest](https://github
 analyzer. Most options carry over by name; framework selection collapses the CEM flag zoo
 into one generic `--framework`:
 
-| CEM analyzer                                                           | ACM analyzer                                                                           |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `globs` / `exclude` / `outdir` / `dev` / `quiet` / `watch` / `plugins` | same name, same meaning                                                                |
-| `--litelement`                                                         | `--framework lit` (or `framework: 'lit'`)                                              |
-| `--stencil`                                                            | `framework: 'stencil'` — **not shipped in v1** (plugin seam available; documented gap) |
-| `--fast` / `--catalyst`                                                | not shipped in v1 (plugin seam available; documented gap, not silent)                  |
-| `overrideModuleCreation`                                               | not in v1 — the `preprocess` hook covers container formats; revisit on demand          |
+| CEM analyzer                                                           | ACM analyzer                                                                  |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `globs` / `exclude` / `outdir` / `dev` / `quiet` / `watch` / `plugins` | same name, same meaning                                                       |
+| `--litelement`                                                         | `--framework lit` (or `framework: 'lit'`)                                     |
+| `--stencil`                                                            | `--framework stencil` (or `framework: 'stencil'`)                             |
+| `--fast` / `--catalyst`                                                | not shipped in v1 (plugin seam available; documented gap, not silent)         |
+| `overrideModuleCreation`                                               | not in v1 — the `preprocess` hook covers container formats; revisit on demand |
 
 The important difference: ACM's output is **canonical and framework-free**. The same schema
-and the same `agentic-component-manifest.json` describe a Lit, Angular, React, or vanilla component, and the file
-is byte-stable across reruns and platforms.
+and the same `agentic-component-manifest.json` describe a Lit, Stencil, Angular, React, or vanilla component, and
+the file is byte-stable across reruns and platforms.
 
 ## Conformance
 
@@ -192,7 +260,7 @@ The analyzer's behavior is pinned by the executable conformance suite, run on bo
 macOS in CI:
 
 - `analyzer-witness.test.ts` — reproduces every checked-in witness/analyzer golden byte-for-byte from source (FR-013).
-- `analyzer-testbed.test.ts` — walks every [testbed-inventory](../../specs/002-acm-analyzer-cli/contracts/testbed-inventory.md) row on the Lit/Angular stress components (FR-014).
+- `analyzer-testbed.test.ts` — walks every [testbed-inventory](../../specs/002-acm-analyzer-cli/contracts/testbed-inventory.md) row on the Lit/Stencil/Angular stress components (FR-014).
 - `analyzer-gates.test.ts` — seeded failures: invalid plugin output, invented members, and canonical drift are each caught (Principle IX).
 - `tests/bench/perf.test.ts` — 100-component analysis < 30 s, watch single-file change < 5 s (SC-007).
 

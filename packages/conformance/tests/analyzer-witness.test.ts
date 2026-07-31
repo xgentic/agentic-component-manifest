@@ -31,6 +31,7 @@ const CASES: WitnessCase[] = [
   { dir: "analyzer/vanilla" }, // vanilla golden (no witness slot of its own — R-12)
   { dir: "analyzer/doc-metadata" }, // feature 003: @acmSemantic + @example Tier-2 extraction
   { dir: "analyzer/angular", framework: "angular" }, // classic @Input/@Output decorators
+  { dir: "analyzer/stencil", framework: "stencil" }, // @Prop/@Event/@Method decorators (retained-dom)
   { dir: "witness/lit", framework: "lit", projected: true }, // retained-dom witness
   { dir: "witness/react", framework: "react", projected: true }, // vdom witness
   { dir: "witness/angular", framework: "angular", projected: true }, // signals-di witness
@@ -56,14 +57,16 @@ function target(c: WitnessCase): string {
 
 async function analyzeFixture(c: WitnessCase): Promise<string | null> {
   const settings = defaultSettings();
-  settings.framework = c.framework;
+  settings.frameworks = c.framework ? [c.framework] : [];
   const outcome = await analyzeProject(settings, path.join(FIXTURES, c.dir), { write: false });
   return outcome.text;
 }
 
 describe("analyzer-witness: analyze reproduces checked-in goldens byte-for-byte (FR-013)", () => {
   for (const c of CASES) {
-    const label = c.projected ? "Tier-1 projection of agentic-component-manifest.json" : "agentic-component-manifest.json";
+    const label = c.projected
+      ? "Tier-1 projection of agentic-component-manifest.json"
+      : "agentic-component-manifest.json";
 
     it(`${c.dir}: analyze(src) byte-matches ${label}`, async () => {
       const text = await analyzeFixture(c);

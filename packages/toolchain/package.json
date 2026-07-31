@@ -4,8 +4,15 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "ACM reference toolchain: component discovery (search, component, capabilities), validate, canonicalize, compile, agent-view, coverage, drift.",
+  "description": "ACM reference toolchain: component discovery (search, component, capabilities), init, validate, canonicalize, compile, agent-view, coverage, drift.",
+  "engines": {
+    "node": ">=20"
+  },
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "yaml": "^2.6.1"
   }
 }

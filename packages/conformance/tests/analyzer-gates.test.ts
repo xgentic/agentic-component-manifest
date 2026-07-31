@@ -25,7 +25,7 @@ async function analyzeSource(
   writeFileSync(path.join(dir, "package.json"), `{ "name": "@acme/seeded", "version": "0.0.0" }`);
   writeFileSync(path.join(dir, "src", "c.ts"), source, "utf8");
   const settings = defaultSettings();
-  settings.framework = framework;
+  settings.frameworks = framework ? [framework] : [];
   return analyzeProject(settings, dir, { write: false });
 }
 
@@ -54,7 +54,7 @@ function analyze(
 ): Promise<AnalyzeOutcome> {
   const settings = defaultSettings();
   settings.plugins = plugins;
-  settings.framework = framework;
+  settings.frameworks = framework ? [framework] : [];
   return analyzeProject(settings, dir, { write: false });
 }
 
@@ -109,7 +109,9 @@ function stamp(name: string, key: `x-${string}`, value: unknown): AnalyzerPlugin
 describe("analyzer-gates: SC-005 — a framework taught purely via the public interface", () => {
   it("byte-matches the checked-in golden and is schema-valid + canonical", async () => {
     const outcome = await analyze(EXTERNAL_PLUGIN, [toyWidgetPlugin()]);
-    expect(outcome.text).toBe(readFixture("analyzer/external-plugin/agentic-component-manifest.json"));
+    expect(outcome.text).toBe(
+      readFixture("analyzer/external-plugin/agentic-component-manifest.json"),
+    );
     expect(outcome.exitCode).toBe(EXIT.SUCCESS);
     expect(validateManifest(JSON.parse(outcome.text!)).valid).toBe(true);
     expect(checkCanonical(outcome.text!).canonical).toBe(true);

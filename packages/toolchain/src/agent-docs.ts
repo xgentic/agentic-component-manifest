@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { REPO_ROOT } from "./validate.js";
+import { SKILL_DIR } from "./paths.js";
 import { buildCapabilityManifest, type CapabilityManifest } from "./capability.js";
 import type { OptionSpec } from "./registry.js";
 
@@ -17,7 +17,7 @@ import type { OptionSpec } from "./registry.js";
  * context via generation (architecture doc §8).
  */
 
-export const SKILL_PACKAGE_DIR = path.join(REPO_ROOT, "packages/discovery-skill");
+export const SKILL_PACKAGE_DIR = SKILL_DIR;
 const BLOCKS_DIR = path.join(SKILL_PACKAGE_DIR, "blocks");
 
 export const AUTHORED_BLOCK_IDS = [

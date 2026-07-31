@@ -82,3 +82,6 @@ instructions. Discovery order for consumers: `acm` field in package.json →
 - [Capability manifest contract](specs/004-component-discovery-cli/contracts/capability-manifest.md)
 - [Programmatic API contract](specs/004-component-discovery-cli/contracts/api.md)
 - [Feature spec 005 — agent discovery skill](specs/005-agent-discovery-skill/spec.md)
+- [Feature spec 006 — distribution and `acm init`](specs/006-distribution-and-init/spec.md)
+- [`acm init` contract](specs/006-distribution-and-init/contracts/init-cli.md)
+- [Packaging contract](specs/006-distribution-and-init/contracts/packaging.md)

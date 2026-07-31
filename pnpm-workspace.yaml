@@ -1,2 +1,6 @@
 packages:
   - packages/*
+allowBuilds:
+  # esbuild bundles the two shipped packages (scripts/build.mjs); its install
+  # script links the platform-native binary.
+  esbuild: true

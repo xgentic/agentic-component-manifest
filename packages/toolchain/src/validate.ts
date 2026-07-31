@@ -1,15 +1,16 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import AjvModule from "ajv/dist/2020.js";
 import type { Diagnostic } from "./diagnostics.js";
+import { SPEC_DIR } from "./paths.js";
 
 const Ajv2020 = (AjvModule as any).default ?? AjvModule;
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-export const REPO_ROOT = path.resolve(here, "../../..");
-export const SCHEMA_PATH = path.join(REPO_ROOT, "packages/spec/schema/acm.schema.json");
-export const META_SCHEMA_PATH = path.join(REPO_ROOT, "packages/spec/schema/acm.meta.schema.json");
+// Re-exported here because the conformance suite and the repo-only commands have
+// always indexed off `validate.js`; `paths.ts` owns the resolution.
+export { REPO_ROOT } from "./paths.js";
+export const SCHEMA_PATH = path.join(SPEC_DIR, "schema/acm.schema.json");
+export const META_SCHEMA_PATH = path.join(SPEC_DIR, "schema/acm.meta.schema.json");
 
 export const acmSchema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8"));
 

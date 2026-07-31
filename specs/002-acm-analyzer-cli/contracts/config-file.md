@@ -18,15 +18,17 @@ export default {
   exclude: ['**/*.test.ts'],
   /** Output directory for agentic-component-manifest.json. Default: '.' */
   outdir: 'dist',
-  /** Framework plugin: 'lit' | 'stencil' | 'angular' | 'react' | 'vue'. Default: undefined → vanilla */
-  framework: 'lit',
+  /** Framework plugins: 'vanilla' | 'lit' | 'stencil' | 'angular' | 'react', one name or a
+   *  list, run in array order. Default: [] → vanilla. `framework` (singular) is an accepted
+   *  alias taking the same one-or-many value; setting both keys is fatal. */
+  frameworks: ['stencil', 'react'],
   /** Verbose diagnostics. Default: false */
   dev: false,
   /** Suppress progress output. Default: false */
   quiet: false,
   /** Re-analyze on change. Default: false */
   watch: false,
-  /** Additional plugins (settings-file only), run after the framework plugin in array order */
+  /** Additional plugins (settings-file only), run after the framework plugins in array order */
   plugins: [myPlugin()],
 };
 ```
@@ -36,10 +38,12 @@ export default {
 1. Every key is optional; unknown keys are a fatal configuration error (exit 2) —
    config typos must not silently no-op.
 2. CLI flags override file values field-by-field; list-valued options (`globs`,
-   `exclude`) are *replaced*, never merged.
+   `exclude`, `frameworks`) are *replaced*, never merged — a `--framework` flag selects
+   the whole set rather than adding to the file's.
 3. A malformed file — unparseable, throwing on import, non-object default export,
-   type-invalid field, unknown `framework` name — is a fatal error naming the file
-   and the problem (exit 2). Never a silent fallback to defaults (spec edge case).
+   type-invalid field, unknown framework name, or both `framework` and `frameworks`
+   set — is a fatal error naming the file and the problem (exit 2). Never a silent
+   fallback to defaults (spec edge case).
 4. `plugins` entries must satisfy the [plugin interface](./plugin-api.md) shape
    (`name` string + at least one hook); violations are fatal config errors naming the
    offending index.
@@ -51,7 +55,8 @@ export default {
 | CEM analyzer | ACM analyzer |
 |--------------|--------------|
 | `globs` / `exclude` / `outdir` / `dev` / `quiet` / `watch` / `plugins` | same name, same meaning |
-| `--litelement` | `framework: 'lit'` |
-| `--stencil` | `framework: 'stencil'` |
+| `--litelement` | `frameworks: ['lit']` |
+| `--stencil` | `frameworks: ['stencil']` |
+| one run per framework | one run: `frameworks: ['stencil', 'react']` |
 | `--fast` / `--catalyst` | not shipped in v1 (plugin seam available; documented gap, not silent) |
 | `overrideModuleCreation` | not in v1 (the `preprocess` hook covers container formats; revisit on demand) |

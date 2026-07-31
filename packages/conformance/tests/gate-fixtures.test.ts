@@ -22,9 +22,9 @@ describe("gate-fixtures: the corpus validates (US1)", () => {
   }
 
   it("the minimal fixture stays within its byte budget (constitution III)", () => {
-    expect(Buffer.byteLength(readFixture("minimal/agentic-component-manifest.json"))).toBeLessThanOrEqual(
-      MINIMAL_BUDGET_BYTES,
-    );
+    expect(
+      Buffer.byteLength(readFixture("minimal/agentic-component-manifest.json")),
+    ).toBeLessThanOrEqual(MINIMAL_BUDGET_BYTES);
   });
 });
 
@@ -150,7 +150,11 @@ describe("gate-fixtures: discovery convention (NS-DISC)", () => {
     const r = resolveManifestPath(path.join(FIXTURES, "discovery/field-pkg"));
     expect(r.error).toBeUndefined();
     expect(r.path?.endsWith(path.join("manifest", "agentic-component-manifest.json"))).toBe(true);
-    expect(validateManifest(JSON.parse(readFixture("discovery/field-pkg/manifest/agentic-component-manifest.json"))).valid).toBe(true);
+    expect(
+      validateManifest(
+        JSON.parse(readFixture("discovery/field-pkg/manifest/agentic-component-manifest.json")),
+      ).valid,
+    ).toBe(true);
   });
 
   it("falls back to the conventional filename", () => {

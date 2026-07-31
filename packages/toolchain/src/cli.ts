@@ -10,7 +10,8 @@ import { agentViewFromText } from "./agent-view.js";
 import { computeCoverage, loadWitnessFixtures, renderMatrix } from "./coverage.js";
 import { checkDrift } from "./drift.js";
 import { buildSkillFiles } from "./agent-docs.js";
-import { REPO_ROOT } from "./validate.js";
+import { RepoOnlyCommandError, requireRepoLayout } from "./paths.js";
+import { exitStatusForInit, runInit, INIT_TARGETS, type InitTarget } from "./init.js";
 import {
   applicableOptions,
   findCommand,
@@ -30,6 +31,7 @@ import {
   renderComponentDetail,
   renderComponentList,
   renderError,
+  renderInit,
   renderSearch,
 } from "./render.js";
 
@@ -201,6 +203,25 @@ const HANDLERS: Record<string, Handler> = {
     }
   },
 
+  async init({ values }) {
+    const requested = values.target as string[] | undefined;
+    for (const target of requested ?? []) {
+      if (!(INIT_TARGETS as readonly string[]).includes(target))
+        fail(2, `unknown target: ${target} (supported: ${INIT_TARGETS.join(", ")})`);
+    }
+    const report = runInit({
+      ...(values.dir !== undefined ? { project: String(values.dir) } : {}),
+      ...(requested !== undefined ? { targets: requested as InitTarget[] } : {}),
+      force: values.force === true,
+      dryRun: values["dry-run"] === true,
+    });
+    process.stdout.write(
+      values.json === true ? JSON.stringify(report, null, 2) + "\n" : renderInit(report),
+    );
+    const status = exitStatusForInit(report);
+    if (status !== 0) process.exit(status);
+  },
+
   async validate({ values, positionals }) {
     const file = positionals[0];
     const text = readInput(file);
@@ -305,9 +326,12 @@ const HANDLERS: Record<string, Handler> = {
       process.stdout.write(file[1]);
       return;
     }
+    // Printing a target works anywhere; checking and rewriting the repo's generated
+    // artifacts does not — those paths exist only in a checkout.
+    const repoRoot = requireRepoLayout("agent-docs");
     const stale: string[] = [];
     for (const [relPath, content] of files) {
-      const absolute = path.join(REPO_ROOT, relPath);
+      const absolute = path.join(repoRoot, relPath);
       const current = existsSync(absolute) ? readFileSync(absolute, "utf8") : null;
       if (current !== content) {
         stale.push(relPath);
@@ -356,7 +380,14 @@ async function main(): Promise<void> {
 
   const handler = HANDLERS[spec.name];
   if (!handler) fail(2, `unknown command: ${spec.name}`);
-  await handler(invocation);
+  try {
+    await handler(invocation);
+  } catch (error) {
+    // A repo-development command reached for a checkout that isn't there: a usage
+    // error, not a crash.
+    if (error instanceof RepoOnlyCommandError) fail(2, error.message);
+    throw error;
+  }
 }
 
 await main();

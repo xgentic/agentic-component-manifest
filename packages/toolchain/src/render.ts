@@ -3,6 +3,7 @@ import type { SearchResultSet } from "./search.js";
 import type { ComponentDetailData, ComponentListData } from "./component.js";
 import type { CapabilityManifest } from "./capability.js";
 import type { ErrorEnvelope } from "./envelope.js";
+import type { InitReport } from "./init.js";
 import type { ArgumentSpec, DetailLevel } from "./registry.js";
 
 /**
@@ -325,6 +326,50 @@ export function renderCapabilities(data: CapabilityManifest): string {
   const codeWidth = Math.max(...data.errorCodes.map((e) => e.code.length));
   for (const entry of data.errorCodes)
     lines.push(`${INDENT}${entry.code.padEnd(codeWidth)}  ${entry.description}`);
+  return lines.join("\n") + "\n";
+}
+
+/**
+ * `acm init`'s install summary and corpus preflight. Everything project-derived
+ * (package names, manifest paths) is sanitized: a dependency directory or a project's
+ * `package.json` name is no more trusted than Manifest text (NS-DATA-1).
+ */
+export function renderInit(report: InitReport): string {
+  const lines: string[] = [];
+  const mode = report.dryRun ? " (dry run — nothing written)" : "";
+  lines.push(`acm init — Discovery Skill → ${sanitize(report.project)}${mode}`, "");
+
+  for (const install of report.installs) {
+    const suffix = install.reason !== undefined ? ` — ${install.reason}` : "";
+    lines.push(`${INDENT}${install.action.padEnd(8)}${install.path}${suffix}`);
+  }
+
+  lines.push("", "corpus preflight:");
+  const { manifests, components, sources, diagnostics } = report.preflight;
+  if (manifests === 0) {
+    lines.push(
+      `${INDENT}no ACM Manifests found — discovery will report ACM-D-EMPTY-CORPUS here.`,
+      `${INDENT}Install a component library that ships one, or derive a Manifest for this`,
+      `${INDENT}project's own components with \`acm-analyzer analyze --framework <name>\`.`,
+    );
+  } else {
+    lines.push(
+      `${INDENT}${manifests} Manifest${manifests === 1 ? "" : "s"}, ` +
+        `${components} component${components === 1 ? "" : "s"}:`,
+    );
+    for (const source of sources)
+      lines.push(`${INDENT}${INDENT}${sanitize(source.name)}  (${source.components})`);
+  }
+  for (const diagnostic of diagnostics)
+    lines.push(`${INDENT}${diagnostic.ruleId}: ${sanitize(diagnostic.path)} — excluded`);
+
+  if (!report.cliResolvable) {
+    lines.push(
+      "",
+      `${INDENT}\`acm\` is not resolvable from this project — the skill's commands will fail.`,
+      `${INDENT}Add it: \`npm install --save-dev @acm/toolchain\`.`,
+    );
+  }
   return lines.join("\n") + "\n";
 }
 

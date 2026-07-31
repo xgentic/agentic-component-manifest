@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { acmSchema, REPO_ROOT } from "./validate.js";
+import { acmSchema } from "./validate.js";
+import { requireRepoLayout } from "./paths.js";
 
 export const PARADIGM_CLASSES = ["retained-dom", "vdom", "compiler-sfc", "signals-di"] as const;
 export type ParadigmClass = (typeof PARADIGM_CLASSES)[number];
@@ -65,13 +66,19 @@ function nonEmpty(v: unknown): boolean {
   return true;
 }
 
+/** Repo-development input: the witness fixtures ship with the repo, not the package. */
 export function loadWitnessFixtures(): Array<{ name: string; doc: any }> {
-  const witnessDir = path.join(REPO_ROOT, "packages/conformance/fixtures/witness");
+  const witnessDir = path.join(
+    requireRepoLayout("coverage"),
+    "packages/conformance/fixtures/witness",
+  );
   return readdirSync(witnessDir, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => ({
       name: e.name,
-      doc: JSON.parse(readFileSync(path.join(witnessDir, e.name, "agentic-component-manifest.json"), "utf8")),
+      doc: JSON.parse(
+        readFileSync(path.join(witnessDir, e.name, "agentic-component-manifest.json"), "utf8"),
+      ),
     }));
 }
 
