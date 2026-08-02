@@ -26,8 +26,20 @@ pnpm install
 > the workspace with the checkout:
 >
 > ```sh
+> # covers the bare `acm` the installed Discovery Skill invokes
 > alias acm='npx tsx ../../packages/toolchain/src/cli.ts'
-> alias acm-analyzer='npx tsx ../../packages/analyzer/src/cli.ts analyze'
+> ```
+>
+> `pnpm` resolves binaries itself and never consults a shell alias, so the two commands
+> below that route through it need the checkout spelled out:
+>
+> ```sh
+> # instead of: pnpm acm <cmd>
+> npx tsx ../../packages/toolchain/src/cli.ts <cmd>
+>
+> # instead of: pnpm --filter @testbed/ui acm:generate
+> (cd libs/ui && npx tsx ../../../../packages/analyzer/src/cli.ts analyze \
+>    --framework react --outdir .)
 > ```
 >
 > The devDependencies are declared as a real consumer would declare them, so once those
@@ -44,6 +56,10 @@ pnpm typecheck                            # typecheck the whole workspace
 pnpm acm search "data table" --json       # try the discovery loop directly
 pnpm acm component DataTable --json
 ```
+
+The `acm:generate`, `acm search`, and `acm component` lines go through the published CLIs
+and need the checkout substitutions from Setup until those fixes ship; `build`, `test`,
+and `typecheck` work as written today.
 
 ## What the library contains
 

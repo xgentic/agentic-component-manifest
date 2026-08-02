@@ -54,9 +54,6 @@ instructions. Discovery order for consumers: `acm` field in package.json →
   inherits
 - [AGENTS.md](AGENTS.md): build commands and invariants for coding agents working on
   this repository
-- [Research — component discovery for agents](docs/research/component-discovery-for-agents.md):
-  industry survey of how design systems expose components to AI agents (CLI, MCP,
-  llms.txt, skills) and the layered architecture ACM adopts
 
 ## Examples
 

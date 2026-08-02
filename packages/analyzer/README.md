@@ -100,14 +100,14 @@ type syntax becomes the schema's structured `TypeNode` grammar.
 Recognized component forms — all of them exported, since module + export is React's only
 identity:
 
-| Form | Props come from |
-| --- | --- |
-| `function Button(props: ButtonProps)` | the parameter annotation |
-| `const Button = (props: ButtonProps) => …` | the parameter annotation |
-| `const Button: FC<ButtonProps> = …` | the `FC` / `VFC` / `FunctionComponent` type argument |
-| `forwardRef<Handle, Props>(…)`, `memo(…)`, and the two nested | the wrapper's second type argument |
-| `React.forwardRef` / `React.memo` (namespace import) | same as above |
-| `class Button extends React.Component<ButtonProps>` | the base's first type argument |
+| Form                                                          | Props come from                                      |
+| ------------------------------------------------------------- | ---------------------------------------------------- |
+| `function Button(props: ButtonProps)`                         | the parameter annotation                             |
+| `const Button = (props: ButtonProps) => …`                    | the parameter annotation                             |
+| `const Button: FC<ButtonProps> = …`                           | the `FC` / `VFC` / `FunctionComponent` type argument |
+| `forwardRef<Handle, Props>(…)`, `memo(…)`, and the two nested | the wrapper's second type argument                   |
+| `React.forwardRef` / `React.memo` (namespace import)          | same as above                                        |
+| `class Button extends React.Component<ButtonProps>`           | the base's first type argument                       |
 
 `export default function Shell(…)` takes `default` as its `export` identity facet.
 
@@ -174,7 +174,7 @@ acm-analyzer:   stencil: 41 declaration(s)
 acm-analyzer: summary: 42 file(s) scanned · 41 module(s) with declarations · 41 declaration(s)
 ```
 
-Two diagnostics cover the empty-result cases without `--dev`:
+Three diagnostics cover the empty-result cases without `--dev`:
 
 | Code              | When                                                                                                                   |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |

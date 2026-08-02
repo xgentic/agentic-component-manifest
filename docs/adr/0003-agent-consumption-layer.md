@@ -2,8 +2,7 @@
 
 An agent building frontend UI must find the right Component from the Manifest corpus
 before it can use one — and how it retrieves that information decides token cost,
-freshness, and hallucination resistance. An industry survey
-([research](../research/component-discovery-for-agents.md)) of ~30 design systems
+freshness, and hallucination resistance. An industry survey of ~30 design systems
 shows every mature implementation (Ant Design, shadcn/ui, Storybook, Figma, IBM
 Carbon) converging on the same layered shape: a derived static index as substrate, a
 local CLI querying it, MCP added later as a thin bridge over the same data, and a

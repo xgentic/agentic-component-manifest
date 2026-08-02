@@ -262,9 +262,9 @@ like this (abridged):
       source: '<acme-button variant="primary" (press)="save()">Save</acme-button>'
 ```
 
-The full manifest and Agent View for this component, plus witnesses for React, Vue, and
-Lit and adversarial cases (controlled inputs, polymorphic components, scoped slots,
-headless and form-associated components), live under
+The full manifest and Agent View for this component, plus witnesses for React, Vue, Lit,
+and Angular and adversarial cases (controlled inputs, polymorphic components, scoped
+slots, headless and form-associated components), live under
 [packages/conformance/fixtures/](packages/conformance/fixtures/), each a golden
 `agentic-component-manifest.json` / `acm.view.yml` pair. Two complete runnable projects
 ship a committed Manifest and an installed Discovery Skill:
@@ -273,15 +273,17 @@ ship a committed Manifest and an installed Discovery Skill:
 carrying complex components — a generic `DataTable`, `Combobox`, `Dialog`, and `Form` —
 because those are the components an agent is most likely to get wrong from memory.
 
-Every component in both libraries carries a semantic classification and compile-verified
-usage examples, derived from its source doc comment. Each README has an **Integration
-examples** section showing how `@acmSemantic` and `@example` are authored and what they
-buy: `acm search "grid"` finds the React `DataTable` on its classification alone, since
-neither its name nor its description contains that word.
+Every component in both libraries carries a semantic classification and usage examples,
+derived from its source doc comment — type-checked against the component for React, and
+surfaced verbatim for Angular, where a template has no TypeScript program to check it
+against. Each README has an **Integration examples** section showing how `@acmSemantic`
+and `@example` are authored and what they buy: `acm search "grid"` finds the React
+`DataTable` on its classification alone, since neither its name nor its description
+contains that word.
 
 ## Concepts
 
-The five artifacts and terms you will meet everywhere (the normative glossary is
+The eight artifacts and terms you will meet everywhere (the normative glossary is
 [CONTEXT.md](CONTEXT.md)):
 
 | Term                                          | Meaning                                                                                                                                                                    |
@@ -425,6 +427,7 @@ assets inside them, and the conformance package never ships.
 | [`packages/analyzer/`](packages/analyzer/)                                     | The multi-framework analyzer CLI (derives Manifests from source) |
 | [`packages/discovery-skill/`](packages/discovery-skill/)                       | The Discovery Skill's authored and generated blocks              |
 | [`examples/nx-angular-testbed/`](examples/nx-angular-testbed/)                 | A runnable Nx + Angular project exercising the whole flow        |
+| [`examples/vite-react-testbed/`](examples/vite-react-testbed/)                 | The same flow on Vite + React, with the complex components       |
 | [`docs/adr/`](docs/adr/)                                                       | Architecture decision records                                    |
 | [`CONTEXT.md`](CONTEXT.md)                                                     | The project's glossary                                           |
 | [`AGENTS.md`](AGENTS.md)                                                       | Build commands and invariants for coding agents                  |
