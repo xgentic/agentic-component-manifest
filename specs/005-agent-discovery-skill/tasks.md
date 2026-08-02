@@ -55,9 +55,9 @@ deferred to the repo owner.
 
 ## Phase 1: Setup (Product Package Scaffold)
 
-**Purpose**: The `@acm/discovery-skill` package every block and target lives in.
+**Purpose**: The `@xgentic/acm-discovery-skill` package every block and target lives in.
 
-- [x] T001 Create the `@acm/discovery-skill` workspace package: `packages/discovery-skill/package.json` (name, `version` in lockstep with `@acm/toolchain` per decision D3, `files: [blocks, generated, README.md]`), the `blocks/` (authored) and `generated/{blocks,targets}/` (invariant #1) directory layout per [architecture §3](../../docs/architecture/steering-layer-generator.md#3-package-layout), and `packages/discovery-skill/README.md` documenting how the package is built (authored vs generated, marker grammar, lockstep)
+- [x] T001 Create the `@xgentic/acm-discovery-skill` workspace package: `packages/discovery-skill/package.json` (name, `version` in lockstep with `@xgentic/acm` per decision D3, `files: [blocks, generated, README.md]`), the `blocks/` (authored) and `generated/{blocks,targets}/` (invariant #1) directory layout per [architecture §3](../../docs/architecture/steering-layer-generator.md#3-package-layout), and `packages/discovery-skill/README.md` documenting how the package is built (authored vs generated, marker grammar, lockstep)
 - [x] T002 Confirm the vitest config and `.github/workflows/ci.yml` pick up `packages/conformance/tests/skill-gates.test.ts` and that `pnpm drift` covers `packages/discovery-skill/generated/**` (the generated artifacts join `pnpm generate` / `pnpm drift`)
 
 ---

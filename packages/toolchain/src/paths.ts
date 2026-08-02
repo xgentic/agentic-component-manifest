@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
  *   packaged  <pkg>/dist/cli.js            →  <pkg>/assets/spec/…, <pkg>/assets/skill/…
  *
  * Every asset path in the toolchain goes through one of the exports below, so an
- * installed `@acm/toolchain` never reaches for a repo-shaped path. `scripts/build.mjs`
+ * installed `@xgentic/acm` never reaches for a repo-shaped path. `scripts/build.mjs`
  * populates `assets/` when packing; the probe order below is what makes the packaged
  * copy win without the code knowing which layout it is in.
  *
@@ -107,7 +107,7 @@ export class RepoOnlyCommandError extends Error {
   constructor(readonly command: string) {
     super(
       `\`acm ${command}\` is a repo-development command and is not available in an ` +
-        `installed @acm/toolchain (it reads this repository's generated artifacts and fixtures).`,
+        `installed @xgentic/acm (it reads this repository's generated artifacts and fixtures).`,
     );
     this.name = "RepoOnlyCommandError";
   }

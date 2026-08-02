@@ -19,7 +19,7 @@ description: "Task list for Doc-Comment Semantics & Examples Extraction"
 
 ## Path Conventions
 
-Single monorepo package `@acm/analyzer` at `packages/analyzer/`; conformance fixtures/tests at `packages/conformance/`. No new package, no schema change (`semantics`/`examples` already exist in `acm.schema.json`).
+Single monorepo package `@xgentic/acm-analyzer` at `packages/analyzer/`; conformance fixtures/tests at `packages/conformance/`. No new package, no schema change (`semantics`/`examples` already exist in `acm.schema.json`).
 
 ---
 
@@ -39,7 +39,7 @@ Single monorepo package `@acm/analyzer` at `packages/analyzer/`; conformance fix
 
 - [X] T002 Add `SemanticDraft` and `ExampleDraft` types and the additive `setSemantics(semantic)` / `addExample(example)` methods to the `EntryDraft` interface in `packages/analyzer/src/plugin.ts` per [contracts/draft-api.md](./contracts/draft-api.md) (no existing signature changes — external plugins unaffected)
 - [X] T003 Implement `setSemantics`/`addExample` + internal `pruneExamples(keep: boolean[])` in `EntryDraftImpl`, record provenance (`/semantics`, `/examples/<n>`), and serialize `semantics`/`examples` in `toEntry()` in schema key order (after `cssParts`, before `x-*`), absent-when-empty, in `packages/analyzer/src/context.ts` per [data-model.md](./data-model.md) (depends on T002)
-- [X] T004 [P] Add a controlled-vocabulary helper that reads the term set from `acmSchema.$defs.semanticClassification.term.enum` (via the already-imported `@acm/toolchain`) as the single-source validation list, in `packages/analyzer/src/jsdoc.ts`, per [research R-02](./research.md)
+- [X] T004 [P] Add a controlled-vocabulary helper that reads the term set from `acmSchema.$defs.semanticClassification.term.enum` (via the already-imported `@xgentic/acm`) as the single-source validation list, in `packages/analyzer/src/jsdoc.ts`, per [research R-02](./research.md)
 
 **Checkpoint**: Draft API + serialization + vocabulary source ready — stories can begin.
 

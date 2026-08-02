@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import type { Diagnostic } from "./diagnostics.js";
 import { resolveManifestPath } from "./discovery.js";
@@ -15,6 +15,27 @@ import { AcmDiscoveryError } from "./envelope.js";
  *   - broken advertisement / unparseable / invalid → CorpusDiagnostic, excluded
  *   - failing explicit --manifest path             → ACM-D-BAD-MANIFEST (fatal)
  */
+
+/**
+ * True for an installed package directory inside `node_modules`. `readdir` reports link
+ * entries by their own type, so a plain `isDirectory()` would skip every symlinked
+ * package — which is how npm, pnpm, and yarn all install workspace packages, and exactly
+ * the case where a monorepo's own component library lives. Dangling links resolve to
+ * false rather than throwing.
+ */
+function isPackageDir(
+  parent: string,
+  dirent: { name: string; isDirectory(): boolean; isSymbolicLink(): boolean },
+): boolean {
+  if (dirent.name.startsWith(".")) return false;
+  if (dirent.isDirectory()) return true;
+  if (!dirent.isSymbolicLink()) return false;
+  try {
+    return statSync(path.join(parent, dirent.name)).isDirectory();
+  } catch {
+    return false;
+  }
+}
 
 export interface CorpusSource {
   kind: "project-root" | "installed-package" | "explicit-path";
@@ -228,12 +249,11 @@ export function assembleCorpus(options: CorpusOptions = {}): Corpus {
   if (existsSync(nodeModules)) {
     const packageNames: string[] = [];
     for (const dirent of readdirSync(nodeModules, { withFileTypes: true })) {
-      if (!dirent.isDirectory() || dirent.name.startsWith(".")) continue;
+      if (!isPackageDir(nodeModules, dirent)) continue;
       if (dirent.name.startsWith("@")) {
         const scopeDir = path.join(nodeModules, dirent.name);
         for (const inner of readdirSync(scopeDir, { withFileTypes: true })) {
-          if (inner.isDirectory() && !inner.name.startsWith("."))
-            packageNames.push(`${dirent.name}/${inner.name}`);
+          if (isPackageDir(scopeDir, inner)) packageNames.push(`${dirent.name}/${inner.name}`);
         }
       } else {
         packageNames.push(dirent.name);

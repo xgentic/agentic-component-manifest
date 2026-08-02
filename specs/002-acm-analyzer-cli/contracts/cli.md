@@ -1,6 +1,6 @@
 # Contract: `acm-analyzer` CLI
 
-**Bin**: `acm-analyzer` (package `@acm/analyzer`) | **Subcommand**: `analyze` (CEM parity)
+**Bin**: `acm-analyzer` (package `@xgentic/acm-analyzer`) | **Subcommand**: `analyze` (CEM parity)
 
 ## Synopsis
 

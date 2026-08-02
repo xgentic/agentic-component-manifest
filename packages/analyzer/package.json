@@ -1,5 +1,5 @@
 {
-  "name": "@acm/analyzer",
+  "name": "@xgentic/acm-analyzer",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -15,8 +15,8 @@
     ".": "./src/plugin.ts"
   },
   "dependencies": {
-    "@acm/spec": "workspace:*",
-    "@acm/toolchain": "workspace:*",
+    "@xgentic/acm-spec": "workspace:*",
+    "@xgentic/acm": "workspace:*",
     "ajv": "^8.17.1",
     "chokidar": "^4.0.3",
     "tinyglobby": "^0.2.10",

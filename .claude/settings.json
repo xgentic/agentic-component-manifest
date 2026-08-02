@@ -1,6 +1,13 @@
 {
   "permissions": {
     "allow": [
+      "Bash(pnpm acm *)",
+      "Bash(pnpm format *)",
+      "Bash(pnpm test:seeded)",
+      "Bash(git stash *)",
+      "Bash(pnpm lint *)",
+      "Bash(npx eslint *)",
+      "Bash(pnpm dist:verify)"
     ]
   }
 }

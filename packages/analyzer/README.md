@@ -1,9 +1,9 @@
-# @acm/analyzer
+# @xgentic/acm-analyzer
 
 The ACM reference analyzer. It statically scans component source and emits
 [ACM Canonical JSON](../spec/normative-spec.md) — a framework-free `agentic-component-manifest.json` describing
 each component's inputs, events, slots, methods, and CSS hooks. It is the _deriving_ path
-in the [ACM architecture](../../README.md#architecture): source (L1) → manifest (L2).
+in the [ACM architecture](../../README.md#how-it-works): source (L1) → manifest (L2).
 
 Analysis is **syntax-only** (no type checker, no `node_modules` resolution) and
 **deterministic**: the same sources always produce byte-identical output, on any platform
@@ -17,12 +17,12 @@ The analyzer discovers sources **relative to the current working directory** and
 `<outdir>/agentic-component-manifest.json`. Run it from the root of the project you are describing:
 
 ```sh
-# once published / installed as a dependency, the bin is on PATH:
-acm-analyzer analyze [flags]
+npm install --save-dev @xgentic/acm-analyzer
+npx acm-analyzer analyze [flags]
 ```
 
-In this monorepo (no published bin yet), invoke the CLI through `tsx`, keeping the target
-project as the working directory:
+From a checkout of this monorepo, invoke the CLI through `tsx` instead, keeping the
+target project as the working directory:
 
 ```sh
 cd packages/conformance/fixtures/analyzer/vanilla
@@ -32,7 +32,7 @@ pnpm exec tsx "$(git rev-parse --show-toplevel)/packages/analyzer/src/cli.ts" an
 
 ### Then search it
 
-There is **no index step**. `@acm/toolchain` assembles its Manifest Corpus from the
+There is **no index step**. `@xgentic/acm` assembles its Manifest Corpus from the
 current directory on every invocation, so writing `agentic-component-manifest.json` at
 your project root is the whole of "indexing":
 
@@ -94,6 +94,52 @@ last good `agentic-component-manifest.json` is never truncated or half-written.
 Vue is **not shipped in v1** (a documented gap, not a silent one) — the plugin seam below
 covers it on demand. See the [type-mapping rules](docs/type-mapping.md) for how TypeScript
 type syntax becomes the schema's structured `TypeNode` grammar.
+
+### React
+
+Recognized component forms — all of them exported, since module + export is React's only
+identity:
+
+| Form | Props come from |
+| --- | --- |
+| `function Button(props: ButtonProps)` | the parameter annotation |
+| `const Button = (props: ButtonProps) => …` | the parameter annotation |
+| `const Button: FC<ButtonProps> = …` | the `FC` / `VFC` / `FunctionComponent` type argument |
+| `forwardRef<Handle, Props>(…)`, `memo(…)`, and the two nested | the wrapper's second type argument |
+| `React.forwardRef` / `React.memo` (namespace import) | same as above |
+| `class Button extends React.Component<ButtonProps>` | the base's first type argument |
+
+`export default function Shell(…)` takes `default` as its `export` identity facet.
+
+**Props resolution is cross-module but syntactic.** There is no TypeScript checker and no
+`node_modules` lookup, so a run is reproducible from its flags and its source alone. The
+analyzer follows `extends` clauses, intersections, and `Partial` / `Required` / `Omit` /
+`Pick` through the modules it already parsed, reached by **relative** import specifiers.
+Member order is fixed: heritage bases in clause order, then own members; intersections
+left to right; on a duplicate name the most-derived declaration wins at the first
+occurrence's position.
+
+A props type it cannot follow — anything from a bare package specifier, such as
+`React.HTMLAttributes<HTMLButtonElement>` — contributes **no** inputs and is recorded
+verbatim instead:
+
+```jsonc
+"x-react": { "unresolvedProps": ["React.HTMLAttributes<HTMLButtonElement>"] }
+```
+
+That is deliberate. Following it would make the output depend on an install tree, and
+would bury the props a library actually defines under a hundred inherited DOM attributes.
+
+Other React specifics:
+
+- **Callback props stay inputs.** `onSelect` is a prop, not an event; React has no
+  separate event channel, and synthesizing one would put an invented name in a Tier-1
+  field. `events[]` comes from `@fires` JSDoc only.
+- **`children` yields an input and the default slot** — it is both a prop and the content
+  channel — unless a `@slot` tag already declared an unnamed slot, which wins.
+- **Imperative methods** come from `useImperativeHandle`, reading both `open() {}` and
+  `open: () => {}` members. When the ref's handle type resolves in the project, parameter
+  and return types are taken from it, since arrow-function handles rarely annotate them.
 
 ### Mixed-framework repositories
 
@@ -218,7 +264,7 @@ rather than adding to it, like every other list option.
 ## Plugins
 
 A framework is just a plugin. Everything the built-in frameworks do goes through the public
-`@acm/analyzer` entry point (`import type { AnalyzerPlugin } from "@acm/analyzer"`) — the
+`@xgentic/acm-analyzer` entry point (`import type { AnalyzerPlugin } from "@xgentic/acm-analyzer"`) — the
 core carries zero framework knowledge (Principle: the Prime Directive). A plugin implements
 `name` plus at least one hook, invoked in pipeline order:
 

@@ -11,7 +11,7 @@
 
 import { mkdirSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { canonicalize, readSpecPackageVersion, validateManifest } from "@acm/toolchain";
+import { canonicalize, readSpecPackageVersion, validateManifest } from "@xgentic/acm";
 import {
   buildProvenance,
   outputModules,

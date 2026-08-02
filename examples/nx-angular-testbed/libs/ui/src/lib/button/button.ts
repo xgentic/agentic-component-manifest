@@ -2,8 +2,20 @@ import { Component, input, output } from '@angular/core';
 
 /**
  * Triggers a single action when activated.
+ * @acmSemantic button - Triggers the action named by its label; not for navigation.
  * @slot - Default label content.
  * @slot icon - Leading icon rendered before the label (ng-content select="[icon]").
+ * @example Primary action
+ * ```html
+ * <tb-button variant="primary" (press)="save()">Save</tb-button>
+ * ```
+ * @example Disabled secondary with a leading icon
+ * ```html
+ * <tb-button variant="secondary" size="small" [disabled]="true">
+ *   <svg icon></svg>
+ *   Cancel
+ * </tb-button>
+ * ```
  */
 @Component({
   selector: 'tb-button',

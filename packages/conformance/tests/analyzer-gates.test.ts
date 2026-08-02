@@ -29,6 +29,17 @@ async function analyzeSource(
   return analyzeProject(settings, dir, { write: false });
 }
 
+/** As `analyzeSource`, but the module is `.tsx` and analyzed with the React plugin. */
+async function analyzeTsx(source: string): Promise<AnalyzeOutcome> {
+  const dir = mkdtempSync(path.join(tmpRoot, "proj-"));
+  mkdirSync(path.join(dir, "src"), { recursive: true });
+  writeFileSync(path.join(dir, "package.json"), `{ "name": "@acme/seeded", "version": "0.0.0" }`);
+  writeFileSync(path.join(dir, "src", "c.tsx"), source, "utf8");
+  const settings = defaultSettings();
+  settings.frameworks = ["react"];
+  return analyzeProject(settings, dir, { write: false });
+}
+
 /** The single declaration in a produced manifest (seeded projects have exactly one). */
 function onlyDecl(outcome: AnalyzeOutcome): Record<string, unknown> {
   return JSON.parse(outcome.text!).modules[0].declarations[0];
@@ -39,7 +50,7 @@ function onlyDecl(outcome: AnalyzeOutcome): Record<string, unknown> {
  * contribution which would corrupt the manifest is caught before any write and blamed
  * on the offending plugin, that an invented (unnamespaced) member is rejected at the
  * draft API, and that canonical drift is detectable. The SC-005 demonstration proves an
- * external framework built entirely on the public `@acm/analyzer` entry produces valid
+ * external framework built entirely on the public `@xgentic/acm-analyzer` entry produces valid
  * entries with zero analyzer-core change.
  */
 
@@ -285,6 +296,58 @@ describe("analyzer-gates: @example compile-verification (feature 003, US2)", () 
     );
     const examples = onlyDecl(await analyzeSource(src)).examples as ExampleOut[];
     expect(examples).toEqual([{ title: "Markup", lang: "html", source: "<x-c></x-c>" }]);
+  });
+
+  /**
+   * A React component lives in a `.tsx` module, so the verification program must be able
+   * to load JSX at all. Without `jsx` set, the injected `import { X } from './component'`
+   * alone failed, which rejected *every* example on a React component — including plain
+   * `ts` ones — and made compile-verified examples unreachable for the framework.
+   */
+  it("verifies examples on a .tsx component, keeping tsx and ts alike", async () => {
+    const outcome = await analyzeTsx(
+      [
+        "import type { ReactNode } from 'react';",
+        "interface CardProps { /** Heading. */ title: string }",
+        "/**",
+        " * A card.",
+        " * @example JSX",
+        " * ```tsx",
+        " * const el = <Card title='Hello' />;",
+        " * ```",
+        " * @example Props object",
+        " * ```ts",
+        " * const props = { title: 'Hello' };",
+        " * Card(props);",
+        " * ```",
+        " */",
+        "export function Card(props: CardProps): ReactNode { return null; }",
+      ].join("\n"),
+    );
+    const examples = onlyDecl(outcome).examples as ExampleOut[];
+    expect(examples.map((e) => e.lang)).toEqual(["tsx", "ts"]);
+    expect(outcome.diagnostics.some((d) => d.code === "ACM-A-EXCOMPILE")).toBe(false);
+  });
+
+  it("still rejects a JSX example that misuses the component's props", async () => {
+    const outcome = await analyzeTsx(
+      [
+        "import type { ReactNode } from 'react';",
+        "interface CardProps { /** Heading. */ title: string }",
+        "/**",
+        " * A card.",
+        " * @example Wrong prop name",
+        " * ```tsx",
+        " * const el = <Card heading='Hello' />;",
+        " * ```",
+        " */",
+        "export function Card(props: CardProps): ReactNode { return null; }",
+      ].join("\n"),
+    );
+    expect(onlyDecl(outcome).examples).toBeUndefined();
+    expect(outcome.diagnostics.find((d) => d.code === "ACM-A-EXCOMPILE")?.message).toMatch(
+      /heading/,
+    );
   });
 
   it("drops an empty @example with ACM-A-EXEMPTY", async () => {

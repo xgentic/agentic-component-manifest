@@ -9,8 +9,8 @@ workspaces, TypeScript, Node ≥ 20): `packages/spec` (normative layer),
 source).
 
 Five packages are how the repo is _authored_; **two** are what ships (spec 006):
-`@acm/toolchain` (the `acm` CLI + the schema + the Discovery Skill, for consuming
-manifests) and `@acm/analyzer` (for producing them). `packages/spec` and
+`@xgentic/acm` (the `acm` CLI + the schema + the Discovery Skill, for consuming
+manifests) and `@xgentic/acm-analyzer` (for producing them). `packages/spec` and
 `packages/discovery-skill` become `assets/` inside the packages that need them;
 `packages/conformance` never ships.
 

@@ -24,6 +24,7 @@ const TESTBEDS: Testbed[] = [
   { fw: "lit", dir: "testbed/lit" },
   { fw: "angular", dir: "testbed/angular" },
   { fw: "stencil", dir: "testbed/stencil" },
+  { fw: "react", dir: "testbed/react" },
 ];
 
 async function analyze(t: Testbed): Promise<string | null> {
@@ -351,12 +352,135 @@ const STENCIL_ROWS: Row[] = [
   },
 ];
 
+const REACT_ROWS: Row[] = [
+  {
+    id: "R1 identity: module + export + vdom; no tagName, no selector (negative)",
+    check: (d) =>
+      d.identity.paradigmClass === "vdom" &&
+      !!d.identity.module &&
+      d.identity.export === "AcmeDataGrid" &&
+      d.identity.tagName === undefined &&
+      d.identity.selector === undefined,
+  },
+  { id: "R2 >=10 props as inputs in source order", check: (d) => (d.inputs?.length ?? 0) >= 10 },
+  {
+    id: "R3 literal-union prop",
+    check: (d) => {
+      const i = byName(d.inputs, "selectionMode");
+      return (
+        i?.type.structured.kind === "union" &&
+        i.type.structured.members.every((m: Json) => m.kind === "literal")
+      );
+    },
+  },
+  {
+    id: "R4 generic-bearing array-of-reference",
+    check: (d) => {
+      const i = byName(d.inputs, "columns");
+      return i?.type.structured.kind === "array" && i.type.structured.items.kind === "reference";
+    },
+  },
+  {
+    id: "R5 function-typed prop",
+    check: (d) => byName(d.inputs, "rowClass")?.type.structured.kind === "function",
+  },
+  {
+    id: "R6 beyond-depth object -> opaque fallback + raw",
+    check: (d) => {
+      const i = byName(d.inputs, "renderConfig");
+      return deepSome(i?.type.structured, (n) => n.kind === "opaque") && !!i?.type.raw;
+    },
+  },
+  {
+    id: "R7 optional vs required props",
+    check: (d) =>
+      byName(d.inputs, "columns")?.required === true &&
+      byName(d.inputs, "rows")?.required === true &&
+      byName(d.inputs, "pageSize")?.required === undefined &&
+      byName(d.inputs, "gap")?.required === undefined,
+  },
+  {
+    id: "R8 destructuring defaults verbatim, incl. a renamed binding",
+    check: (d) =>
+      // `{ density: rowDensity = 'comfortable' }` attributes its default to `density`.
+      byName(d.inputs, "density")?.default === "'comfortable'" &&
+      byName(d.inputs, "selectionMode")?.default === "'single'" &&
+      byName(d.inputs, "pageSize")?.default === "25",
+  },
+  {
+    id: "R9 on* callback props stay inputs, never events (negative)",
+    check: (d) =>
+      byName(d.inputs, "onSortChange")?.type.structured.kind === "function" &&
+      byName(d.inputs, "onRowActivate")?.type.structured.kind === "function" &&
+      !(d.events ?? []).some((e: Json) => e.name.startsWith("on")),
+  },
+  {
+    id: "R10 useImperativeHandle -> methods typed from the handle interface",
+    check: (d) => {
+      const m = byName(d.methods, "scrollToRow");
+      return (
+        (d.methods?.length ?? 0) >= 3 &&
+        m?.parameters?.length === 2 &&
+        m.return?.raw === "Promise<void>"
+      );
+    },
+  },
+  {
+    id: "R11 cross-module props merged; unresolvable base recorded, contributes nothing",
+    check: (d) => {
+      const names = (d.inputs ?? []).map((i: Json) => i.name);
+      const merged =
+        names.includes("gap") && // GridSpacing, two modules away via GridBase
+        names.includes("testId") && // GridBase
+        names.includes("columns") && // GridOwnProps
+        names.includes("virtualizeAfter") && // intersected mixin
+        names.includes("caption"); // Omit dropped the base's, the local literal re-added it
+      const unresolved = d["x-react"]?.unresolvedProps ?? [];
+      // The bare-specifier base is named verbatim, and none of its members leaked in.
+      return (
+        merged &&
+        unresolved.length === 1 &&
+        unresolved[0].includes("HTMLAttributes") &&
+        !names.includes("className") &&
+        !names.includes("style") &&
+        !names.includes("id")
+      );
+    },
+  },
+  {
+    id: "R12 JSDoc -> events, slots, cssProperties, cssParts",
+    check: (d) => {
+      const unnamed = (d.slots ?? []).filter((s: Json) => s.name === undefined).length;
+      const named = (d.slots ?? []).filter((s: Json) => s.name !== undefined).length;
+      return (
+        (d.events?.length ?? 0) >= 2 &&
+        d.events.every((e: Json) => !!e.payload) &&
+        unnamed === 1 && // the `children` prop's default slot
+        named >= 3 &&
+        (d.cssProperties?.length ?? 0) >= 4 &&
+        (d.cssParts?.length ?? 0) >= 3
+      );
+    },
+  },
+  {
+    id: "R13 internals absent (negative); undocumented prop -> description absent",
+    check: (d) => {
+      const forbidden = ["renderCount", "GridRow", "selected", "visible", "ref"];
+      return (
+        forbidden.every((n) => !memberNames(d).includes(n)) &&
+        byName(d.inputs, "emptyMessage")?.description === undefined &&
+        byName(d.inputs, "caption")?.description !== undefined
+      );
+    },
+  },
+];
+
 const ROWS: Record<BuiltinFramework, Row[]> = {
   vanilla: [],
   lit: LIT_ROWS,
   stencil: STENCIL_ROWS,
   angular: ANGULAR_ROWS,
-  react: [],
+  react: REACT_ROWS,
 };
 
 describe("analyzer-testbed: stress testbeds byte-match goldens and walk the inventory (FR-014)", () => {

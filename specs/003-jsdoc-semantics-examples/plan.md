@@ -17,7 +17,7 @@ Both live in the analyzer's **shared doc-comment layer** (`jsdoc.ts`), so vanill
 
 **Language/Version**: TypeScript 5.7 (ESM, NodeNext), Node ≥ 20 — matches the existing analyzer.
 
-**Primary Dependencies**: `typescript` (already a dependency; the compiler API is used syntax-only today and gains a **scoped checker use** for example verification), `@acm/toolchain` (validator/canonicalizer + `acmSchema` for the vocabulary enum), `@acm/spec` (schema). No new runtime dependencies.
+**Primary Dependencies**: `typescript` (already a dependency; the compiler API is used syntax-only today and gains a **scoped checker use** for example verification), `@xgentic/acm` (validator/canonicalizer + `acmSchema` for the vocabulary enum), `@xgentic/acm-spec` (schema). No new runtime dependencies.
 
 **Storage**: N/A — reads source files, writes `<outdir>/agentic-component-manifest.json` (unchanged emit path).
 
@@ -25,13 +25,13 @@ Both live in the analyzer's **shared doc-comment layer** (`jsdoc.ts`), so vanill
 
 **Target Platform**: Node CLI (dev tool), Linux + macOS in CI (byte-identity across both, SC-003).
 
-**Project Type**: Monorepo library/CLI — the `@acm/analyzer` package; no frontend/backend split.
+**Project Type**: Monorepo library/CLI — the `@xgentic/acm-analyzer` package; no frontend/backend split.
 
 **Performance Goals**: Stay within the existing SC-007 ceiling — full analysis of the 100-component bench < 30 s. Example verification adds a single `ts.Program` per run (not per example), so the added cost is one program construction + one checker pass over synthetic example modules.
 
 **Constraints**: **Determinism is the hard constraint** (Principle V, SC-003) — the example compile gate's pass/fail decision MUST be byte-reproducible across runs and platforms, which forces a **hermetic** compiler configuration (pinned `lib`/`target`/`module`, no external `node_modules` resolution) rather than the project's real tsconfig. Analysis stays offline. Notes/source/title are bounded by the schema's structural limits (notes ≤ 2048, source ≤ 8192, title ≤ 256, ≤ 32 examples).
 
-**Scale/Scope**: Declaration-level annotations only (v1). ~6 source files touched in `@acm/analyzer` + 1 new module + fixtures/tests. No CLI-flag or config-file surface change.
+**Scale/Scope**: Declaration-level annotations only (v1). ~6 source files touched in `@xgentic/acm-analyzer` + 1 new module + fixtures/tests. No CLI-flag or config-file surface change.
 
 ## Constitution Check
 
@@ -96,7 +96,7 @@ packages/conformance/
     └── analyzer-gates.test.ts        # extend: seeded failures (unknown term, non-compiling example, determinism)
 ```
 
-**Structure Decision**: Single-package change inside the existing `@acm/analyzer`, plus conformance fixtures/tests. Extraction is added to the **shared doc-comment layer** (`jsdoc.ts` + a `shared.ts` helper the four frameworks call), and example verification is a **core post-analyze pass** (`examples-verify.ts` invoked from `run.ts`, so both one-shot and watch runs get it) — parallel to how `emit.ts` runs the reference validator as a core gate. No new package, no plugin-interface consumer breakage (the additions to `EntryDraft` are additive).
+**Structure Decision**: Single-package change inside the existing `@xgentic/acm-analyzer`, plus conformance fixtures/tests. Extraction is added to the **shared doc-comment layer** (`jsdoc.ts` + a `shared.ts` helper the four frameworks call), and example verification is a **core post-analyze pass** (`examples-verify.ts` invoked from `run.ts`, so both one-shot and watch runs get it) — parallel to how `emit.ts` runs the reference validator as a core gate. No new package, no plugin-interface consumer breakage (the additions to `EntryDraft` are additive).
 
 ## Complexity Tracking
 

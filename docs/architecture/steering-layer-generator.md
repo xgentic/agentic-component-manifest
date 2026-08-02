@@ -13,7 +13,7 @@ contract), [spec 005](../../specs/005-agent-discovery-skill/spec.md) (steering l
 ## 1. Scope
 
 This document binds the technical design of the steering-layer tool: the
-`acm agent-docs` generator command and the `@acm/discovery-skill` product package it
+`acm agent-docs` generator command and the `@xgentic/acm-discovery-skill` product package it
 writes into. The discovery engine, CLI commands, Typed Envelopes, and Capability
 Manifest are spec 004's territory ([contracts](../../specs/004-component-discovery-cli/contracts/))
 and are consumed here, never redefined.
@@ -29,7 +29,7 @@ and are consumed here, never redefined.
         │ build-time consumer: acm agent-docs (in-process, FR-009 API)
         ▼
   ┌───────────────────────────────────────────────────────────┐
-  │ @acm/discovery-skill                                      │
+  │ @xgentic/acm-discovery-skill                                      │
   │  blocks/            authored source (hand-edited prose)   │
   │  generated/blocks/  Generated Blocks (invariant #1)       │
   │  generated/targets/ per-ecosystem packagings              │
@@ -43,7 +43,7 @@ and are consumed here, never redefined.
 
 ```
 packages/discovery-skill/
-├── package.json                  # @acm/discovery-skill — version locksteps with @acm/toolchain
+├── package.json                  # @xgentic/acm-discovery-skill — version locksteps with @xgentic/acm
 ├── blocks/                       # Authored Blocks — source-controlled prose, hand-edited
 │   ├── activation.md             #   when discovery applies (becomes skill frontmatter description)
 │   ├── corpus-preamble.md        #   corpus detection, empty-corpus stop, CLI-missing fallback
@@ -158,8 +158,8 @@ generator never touches corpus content at all.
 | # | Decision | Binding | Rationale |
 |---|---|---|---|
 | D1 | Discovery-subset rule | The Capability Manifest's `jsonSupported` list | Machine truth already; envelope support is exactly what the loop needs; no new surface |
-| D2 | Steering-layer home | Dedicated `@acm/discovery-skill` workspace package | Product artifact separated from the tool; clean `skills add` unit |
-| D3 | Version coupling | Lockstep with `@acm/toolchain`; every toolchain release publishes both | "Which CLI does this skill describe" answers itself; no compat matrix |
+| D2 | Steering-layer home | Dedicated `@xgentic/acm-discovery-skill` workspace package | Product artifact separated from the tool; clean `skills add` unit |
+| D3 | Version coupling | Lockstep with `@xgentic/acm`; every toolchain release publishes both | "Which CLI does this skill describe" answers itself; no compat matrix |
 | D4 | Packaging fidelity | Block markers + whole-file drift; SC-004 check extracts marked regions | Verifies the property without trusting generator internals |
 | D5 | Authored-reference detection | Grammar sweep over all text + backtick vocabulary check | Catches the unmarked sloppy reference; false positives rare and cheap to reword |
 | D6 | Corpus scope | Corpus-agnostic by design rule (§8) | Repo-side generation has no corpus; consumer-side indexing is a different product and security surface |

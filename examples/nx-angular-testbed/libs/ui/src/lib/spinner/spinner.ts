@@ -2,6 +2,11 @@ import { Component, input } from '@angular/core';
 
 /**
  * An indeterminate loading indicator.
+ * @acmSemantic progressbar - Indeterminate progress; use a determinate meter when a percentage is known.
+ * @example Inline loading state
+ * ```html
+ * <tb-spinner size="small" label="Loading results"></tb-spinner>
+ * ```
  */
 @Component({
   selector: 'tb-spinner',

@@ -84,7 +84,7 @@ check("deploy/ holds exactly the two consumer packages", () => {
   );
   const names = tarballs.map((t) => t.replace(/-\d.*$/, "")).sort();
   assert(
-    JSON.stringify(names) === JSON.stringify(["acm-analyzer", "acm-toolchain"]),
+    JSON.stringify(names) === JSON.stringify(["xgentic-acm", "xgentic-acm-analyzer"]),
     `unexpected packages: ${names.join(", ")}`,
   );
 });

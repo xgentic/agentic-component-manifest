@@ -1,5 +1,7 @@
 # Fixtures are ACM Canonical JSON / golden YAML — formatters must never touch them
 packages/conformance/fixtures/
+# Example workspaces carry their own Prettier config and their own conventions
+examples/
 # Generated artifacts are produced by the drift pipeline, never formatted by hand
 packages/spec/generated/
 node_modules/

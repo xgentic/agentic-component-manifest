@@ -6,7 +6,7 @@ one. Built by `scripts/build.mjs`, verified by `scripts/verify-dist.mjs`.
 
 ## The two packages
 
-| | `@acm/toolchain` | `@acm/analyzer` |
+| | `@xgentic/acm` | `@xgentic/acm-analyzer` |
 |---|---|---|
 | purpose | **consume** Manifests: discovery, validation, and `init` | **produce** a Manifest from component source |
 | bin | `acm` → `dist/cli.js` | `acm-analyzer` → `dist/cli.js` |
@@ -16,11 +16,11 @@ one. Built by `scripts/build.mjs`, verified by `scripts/verify-dist.mjs`.
 
 Both are ESM, `node >= 20`, bundled by esbuild with those dependencies external.
 
-`@acm/spec` and `@acm/discovery-skill` do not ship as packages; they become `assets/`
-inside the packages that read them. `@acm/conformance` never ships.
+`@xgentic/acm-spec` and `@xgentic/acm-discovery-skill` do not ship as packages; they become `assets/`
+inside the packages that read them. `@xgentic/acm-conformance` never ships.
 
 The analyzer **bundles** the toolchain modules it uses rather than depending on
-`@acm/toolchain`, so the two tarballs install standalone in either order with no version
+`@xgentic/acm`, so the two tarballs install standalone in either order with no version
 skew. Both are built from one source tree in one invocation, so the duplicated reference
 validator and canonicalizer cannot drift.
 
@@ -41,7 +41,7 @@ layout first and the repo layout second:
 
 `readToolchainPackageJson()` sources the version and description `acm capabilities`
 reports; `readSpecPackageVersion()` sources the manifest `schemaVersion` the analyzer
-emits, and is re-exported from `@acm/toolchain`'s public surface so a Producer bundling
+emits, and is re-exported from `@xgentic/acm`'s public surface so a Producer bundling
 the reference emitter resolves it the same way in both layouts.
 
 Adding a new asset read means adding it to `paths.ts` and to `REQUIRED_ASSETS` in

@@ -29,6 +29,12 @@ const OPTIONS: ts.CompilerOptions = {
   types: [],
   allowJs: true,
   checkJs: false,
+  // Without this, *every* example on a `.tsx` component is rejected — not just JSX ones,
+  // since the injected `import { X } from './component'` alone errors with "'--jsx' is not
+  // set". That made compile-verified examples unreachable for React entirely. `Preserve`
+  // type-checks JSX without requiring a runtime (`noEmit`), so API misuse inside an example
+  // still fails the gate.
+  jsx: ts.JsxEmit.Preserve,
 };
 
 function scriptKindOf(file: string): ts.ScriptKind {

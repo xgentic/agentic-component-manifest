@@ -5,8 +5,9 @@
  * session on every source change, debounced 100 ms. Each cycle goes through the same
  * atomic emit as a one-shot run, so a write is never partial and an unchanged input
  * reproduces byte-identical output (SC-002). A per-cycle failure (parse error, zero
- * matches, validation failure) reports a diagnostic and keeps watching — only exit-2
- * usage/config errors terminate, and those are raised before watching begins.
+ * matches, validation failure) reports a diagnostic and keeps watching, and a cycle that
+ * throws outright is caught to the same end — only exit-2 usage/config errors terminate,
+ * and those are raised before watching begins.
  *
  * chokidar v4 no longer expands globs, so we watch the globs' magic-free base
  * directories and let `discover()` re-apply the real include/exclude every cycle.
@@ -101,7 +102,16 @@ export async function runWatch(
         const trigger = pending;
         pending = undefined;
         log(`acm-analyzer: change detected (${trigger}); re-analyzing`);
-        await cycle(trigger);
+        try {
+          await cycle(trigger);
+        } catch (err) {
+          // A cycle that *throws* rather than returning diagnostics (an emit that hits
+          // EACCES, a plugin that blows up mid-change) must not end the session: the
+          // timer callback is `void fire()`, so an escaping rejection is unhandled and
+          // Node's default policy would kill the watch process — the opposite of
+          // "stays alive through per-cycle failures". Report it and keep listening.
+          log(`acm-analyzer: analysis failed (${trigger}): ${(err as Error).message}`);
+        }
       }
     } finally {
       running = false;

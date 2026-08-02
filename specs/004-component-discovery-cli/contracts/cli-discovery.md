@@ -1,6 +1,6 @@
 # Contract: `acm` discovery commands
 
-**Bin**: `acm` (package `@acm/toolchain`, `pnpm acm …`) | **Commands**: `search`, `component`, `capabilities`
+**Bin**: `acm` (package `@xgentic/acm`, `pnpm acm …`) | **Commands**: `search`, `component`, `capabilities`
 
 The three discovery commands join the existing surface (`validate`, `compile`,
 `canonicalize`, `agent-view`, `coverage`, `drift`), whose flags, exit codes, and

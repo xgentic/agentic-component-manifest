@@ -367,7 +367,7 @@ export function renderInit(report: InitReport): string {
     lines.push(
       "",
       `${INDENT}\`acm\` is not resolvable from this project — the skill's commands will fail.`,
-      `${INDENT}Add it: \`npm install --save-dev @acm/toolchain\`.`,
+      `${INDENT}Add it: \`npm install --save-dev @xgentic/acm\`.`,
     );
   }
   return lines.join("\n") + "\n";

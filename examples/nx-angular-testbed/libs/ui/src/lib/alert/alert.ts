@@ -2,8 +2,16 @@ import { Component, input, output } from '@angular/core';
 
 /**
  * Displays a prominent message about status or a required action.
+ * @acmSemantic alert - Announces an important message in place; does not steal focus.
  * @slot - Default message content.
  * @slot actions - Action buttons shown alongside the message (ng-content select="[actions]").
+ * @example Dismissible error with actions
+ * ```html
+ * <tb-alert type="error" [dismissible]="true" (dismissed)="onDismiss()">
+ *   Could not save your changes.
+ *   <tb-button actions variant="ghost">Retry</tb-button>
+ * </tb-alert>
+ * ```
  */
 @Component({
   selector: 'tb-alert',

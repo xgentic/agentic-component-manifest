@@ -11,7 +11,7 @@ mechanics, authored judgment)
 **Evidence**: [industry research](../research/component-discovery-for-agents.md),
 primarily the Meta Astryx reference model
 **Tool architecture**: [steering-layer generator](../architecture/steering-layer-generator.md)
-— bound design of `acm agent-docs` and `@acm/discovery-skill`, with the decision log
+— bound design of `acm agent-docs` and `@xgentic/acm-discovery-skill`, with the decision log
 of the 2026-07-21 design review
 
 ## 1. Reference model

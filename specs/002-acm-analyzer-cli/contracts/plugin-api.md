@@ -1,6 +1,6 @@
 # Contract: public plugin interface
 
-Exported from `@acm/analyzer` (`plugin.ts`). Built-in framework plugins consume
+Exported from `@xgentic/acm-analyzer` (`plugin.ts`). Built-in framework plugins consume
 exactly this interface — there is no privileged internal seam (SC-005 by
 construction). Phase names inherit the CEM analyzer's lifecycle vocabulary
 (Principle VIII: no new names for shared concepts).

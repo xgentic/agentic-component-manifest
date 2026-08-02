@@ -32,6 +32,7 @@ const CASES: WitnessCase[] = [
   { dir: "analyzer/doc-metadata" }, // feature 003: @acmSemantic + @example Tier-2 extraction
   { dir: "analyzer/angular", framework: "angular" }, // classic @Input/@Output decorators
   { dir: "analyzer/stencil", framework: "stencil" }, // @Prop/@Event/@Method decorators (retained-dom)
+  { dir: "analyzer/react", framework: "react" }, // spec 007: recognition forms + cross-module props
   { dir: "witness/lit", framework: "lit", projected: true }, // retained-dom witness
   { dir: "witness/react", framework: "react", projected: true }, // vdom witness
   { dir: "witness/angular", framework: "angular", projected: true }, // signals-di witness

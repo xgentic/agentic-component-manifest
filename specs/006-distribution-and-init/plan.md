@@ -11,8 +11,8 @@ the conformance suite, the drift generator, the AGENTS.md invariants, and every
 nothing the request asked for; the request was about what lands in `deploy/`. Only what
 ships changes.
 
-**D2 — Keep the published names.** `@acm/toolchain` is already the install target named in
-the skill's own gated `corpus-preamble` block ("add the `@acm/toolchain` dev dependency")
+**D2 — Keep the published names.** `@xgentic/acm` is already the install target named in
+the skill's own gated `corpus-preamble` block ("add the `@xgentic/acm` dev dependency")
 and in the skill README's lockstep note. Renaming would churn both for no gain.
 
 **D3 — The analyzer bundles the toolchain rather than depending on it.** Two tarballs that
@@ -57,7 +57,7 @@ handler, regenerated capability golden, and `init-gates.test.ts`.
 `scripts/build.mjs` (esbuild bundle + asset copy + generated manifests + `--pack`) and
 `scripts/verify-dist.mjs` (install outside the repo, drive both CLIs). Declare the
 toolchain's real dependencies, drop the analyzer's unused `@vue/compiler-sfc`, make
-`@acm/discovery-skill` private, and ignore `deploy/` and `*.tgz`.
+`@xgentic/acm-discovery-skill` private, and ignore `deploy/` and `*.tgz`.
 
 ## Defects found and fixed en route
 
@@ -68,7 +68,7 @@ toolchain's real dependencies, drop the analyzer's unused `@vue/compiler-sfc`, m
 - **`acm capabilities` documented a path consumers do not have.** The `validate` example
   named `packages/conformance/fixtures/minimal/…`. Examples are read by consumers of an
   installed CLI; it now names `agentic-component-manifest.json`.
-- **Undeclared runtime dependencies.** `@acm/toolchain` declared none while importing
+- **Undeclared runtime dependencies.** `@xgentic/acm` declared none while importing
   `ajv` and `yaml`.
 - **A double shebang.** esbuild hoists the entry's shebang; adding a banner produced a
   second one on line 2, which node rejects outright. `normalizeShebang` rewrites line 1

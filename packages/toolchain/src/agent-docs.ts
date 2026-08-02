@@ -252,7 +252,7 @@ export function sweepAuthoredReferences(
   const responseTypes = new Set<string>(Object.values(cap.responseTypes).flat());
 
   for (const [id, text] of Object.entries(blocks)) {
-    // `acm <word>` invocations (not inside @acm/… package names or paths).
+    // `acm <word>` invocations (not inside @xgentic/… package names or paths).
     for (const match of text.matchAll(/(?<![@\w/-])acm ([a-z][a-z-]*)/g)) {
       if (!commandNames.has(match[1]!))
         problems.push(`${id}: references nonexistent command "acm ${match[1]!}"`);

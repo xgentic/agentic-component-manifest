@@ -9,7 +9,8 @@ is a reviewed inventory change, never a silent drop.
 
 Fixture locations: `packages/conformance/fixtures/testbed/lit/`,
 `packages/conformance/fixtures/testbed/stencil/`,
-`packages/conformance/fixtures/testbed/angular/`.
+`packages/conformance/fixtures/testbed/angular/`,
+`packages/conformance/fixtures/testbed/react/`.
 
 ## Lit — `AcmeDataGrid` (`acme-data-grid`)
 
@@ -73,13 +74,38 @@ Fixture locations: `packages/conformance/fixtures/testbed/lit/`,
 | S17 | `@Component({ formAssociated: true })` | form-associated surfaced as the `x-wc` node |
 | S18 | camelCase serializable props (`selectionMode`, `pageSize`) vs single-word (`dense`) vs complex (`columns`) | implicit dash-cased `x-attribute` (`selection-mode`, `page-size`) derived per Stencil's rule; **absent** when the attribute name equals the property name or the type is property-only (parity with the CEM analyzer — see [stencil-cem-comparison](../../../docs/research/stencil-cem-comparison.md)) |
 
+## React — `AcmeDataGrid` (added by spec 007)
+
+Identity is module + export only; React has no tag name, no selector, and no event
+channel, so several rows below are deliberately **negative** — they pin what the manifest
+must *not* claim. Props resolution is cross-module but syntactic
+([R-07-A](../../007-react-support/research.md)), so R11 pins both halves of that bargain:
+what resolution reaches, and what it honestly declines to guess.
+
+| # | Capability (source construct) | Expected manifest node |
+|---|-------------------------------|------------------------|
+| R1 | `forwardRef` function component, exported | identity: `module` + `export`, `paradigmClass: vdom`; **no `tagName`, no `selector`** (negative assertion) |
+| R2 | ≥ 10 props on the props type | `inputs[]`, source order |
+| R3 | literal-union-typed prop (`'single' \| 'multi' \| 'none'`) | input `type.structured.kind: union` of literals + verbatim `raw` |
+| R4 | generic-bearing reference type (`GridColumn<RowData>[]`) | structured array-of-reference |
+| R5 | function-typed prop (row-class callback) | structured function mapping + `raw` |
+| R6 | deeply-structured object type beyond depth bound | grammar's **opaque fallback** + verbatim `raw` (negative-space rule, mirror of L6) |
+| R7 | optional (`?`) vs required props | `required: true` only on props without `?` |
+| R8 | destructuring defaults incl. one **renamed** binding (`{ density: d = 'comfortable' }`) | input `default` verbatim, attributed to the public prop name |
+| R9 | `on*` callback props (`onSelectionChange`, `onRowActivate`) | remain **inputs**; `events[]` contains no synthesized entry for them (negative — R-07) |
+| R10 | `useImperativeHandle` with ≥ 3 methods incl. one async with parameters | `methods[]` with parameter + return types taken from the resolved handle interface |
+| R11 | props assembled cross-module: `extends` a base in another file, an intersection, and `Omit<…>` — plus one base from a bare package specifier | merged `inputs[]` in the FR-008 order; the unresolvable base recorded verbatim under `x-react.unresolvedProps` and contributing **zero** inputs (negative) |
+| R12 | `@fires` / `@slot` / `@cssprop` / `@csspart` JSDoc | `events[]` (typed payloads), `slots[]` (one unnamed + named), `cssProperties[]`, `cssParts[]` |
+| R13 | `useState`, module-local helpers, a non-exported component in source; one prop deliberately undocumented | all **absent** from the manifest (negative); undocumented prop → `description` **absent** |
+
 ## Shared gate assertions
 
 1. **Byte-match**: `analyze(testbed/<fw>/src) ≡ testbed/<fw>/agentic-component-manifest.json` byte-for-byte;
    `acm.view.yml` matches the Agent View emitter output for the golden.
 2. **Compiles**: each source typechecks under the repo's TypeScript (spec assumption
-   "real, compiling source"); the Angular and Stencil sources typecheck against dev-time
-   framework type stubs checked in with the fixture (`types/angular-core.d.ts`,
+   "real, compiling source"); the Angular, Stencil, and React sources typecheck against
+   dev-time framework type stubs checked in with the fixture (`types/angular-core.d.ts`,
+   `types/react.d.ts`,
    `types/stencil-core.d.ts`) — no runtime framework dependency.
 3. **Inventory totality**: SC-008 test iterates every row above; each row maps to at
    least one machine assertion (presence, shape, or negative).

@@ -17,7 +17,7 @@ than a forward plan — see [plan.md](plan.md) for the decisions behind it.
 - [x] **T006** `cli.ts` maps `RepoOnlyCommandError` to exit 2; `agent-docs`'s
       write/freshness path guards, while `--target` keeps working anywhere
 - [x] **T007** analyzer `emit.ts` sources the schema version through
-      `readSpecPackageVersion()` from `@acm/toolchain`'s public surface
+      `readSpecPackageVersion()` from `@xgentic/acm`'s public surface
 
 ## Phase 2 — `acm init`
 
@@ -36,8 +36,8 @@ than a forward plan — see [plan.md](plan.md) for the decisions behind it.
       `normalizeShebang`, `REQUIRED_ASSETS` guard, `--pack`
 - [x] **T014** `scripts/verify-dist.mjs`: install both tarballs outside the repo and
       drive both CLIs
-- [x] **T015** declare `ajv`/`yaml` on `@acm/toolchain`; drop the unused
-      `@vue/compiler-sfc` from `@acm/analyzer`; make `@acm/discovery-skill` private
+- [x] **T015** declare `ajv`/`yaml` on `@xgentic/acm`; drop the unused
+      `@vue/compiler-sfc` from `@xgentic/acm-analyzer`; make `@xgentic/acm-discovery-skill` private
 - [x] **T016** root scripts `build` / `dist:pack` / `dist:verify`; esbuild devDependency;
       `allowBuilds: esbuild: true`; ignore `dist/`, `deploy/`, `*.tgz`
 - [x] **T017** eslint: ignore `dist/`, give `scripts/**/*.mjs` Node globals

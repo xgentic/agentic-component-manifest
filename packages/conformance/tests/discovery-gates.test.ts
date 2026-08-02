@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -69,6 +69,66 @@ describe("determinism (FR-012, SC-004)", () => {
       expect(second.stderr).toBe(first.stderr);
       expect(second.exitCode).toBe(first.exitCode);
     }
+  });
+});
+
+describe("workspace-linked packages are part of the corpus", () => {
+  const tempRoot = mkdtempSync(path.join(tmpdir(), "acm-linked-corpus-"));
+
+  afterAll(() => rmSync(tempRoot, { recursive: true, force: true }));
+
+  /**
+   * npm, pnpm, and yarn all install a workspace package as a symlink in `node_modules`.
+   * `readdir` reports a link by its own type, so treating only real directories as
+   * packages made a monorepo's own component library — the single most common way a
+   * project ships a Manifest — invisible to discovery.
+   */
+  it("a symlinked package in node_modules is discovered like a real one", async () => {
+    writeFileSync(path.join(tempRoot, "package.json"), JSON.stringify({ name: "link-fixture" }));
+
+    const libDir = path.join(tempRoot, "libs", "ui");
+    mkdirSync(libDir, { recursive: true });
+    writeFileSync(path.join(libDir, "package.json"), JSON.stringify({ name: "@fixture/ui" }));
+    writeFileSync(
+      path.join(libDir, "agentic-component-manifest.json"),
+      JSON.stringify({
+        schemaVersion: "0.1.0",
+        modules: [
+          {
+            path: "src/index.ts",
+            declarations: [
+              {
+                name: "LinkedWidget",
+                identity: {
+                  paradigmClass: "vdom",
+                  module: "@fixture/ui",
+                  export: "LinkedWidget",
+                },
+                description: "A widget reached only through a workspace symlink.",
+              },
+            ],
+            exports: [{ name: "LinkedWidget", declaration: "LinkedWidget" }],
+          },
+        ],
+      }),
+    );
+
+    const scopeDir = path.join(tempRoot, "node_modules", "@fixture");
+    mkdirSync(scopeDir, { recursive: true });
+    symlinkSync(libDir, path.join(scopeDir, "ui"), "dir");
+
+    const { data } = await search("linked widget", { project: tempRoot });
+    expect(data.total).toBe(1);
+    expect(data.results[0]?.name).toBe("LinkedWidget");
+    expect(data.results[0]?.source).toBe("@fixture/ui");
+  });
+
+  it("a dangling symlink is skipped rather than throwing", async () => {
+    const scopeDir = path.join(tempRoot, "node_modules", "@fixture");
+    symlinkSync(path.join(tempRoot, "does-not-exist"), path.join(scopeDir, "ghost"), "dir");
+
+    const { data } = await search("linked widget", { project: tempRoot });
+    expect(data.total).toBe(1); // still just the real one; no crash
   });
 });
 
