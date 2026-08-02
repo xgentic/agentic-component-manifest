@@ -2,7 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
  * A checkable input for a binary choice.
+ * @acmSemantic checkbox - One independent on/off choice; use a radio group for exclusive choices.
  * @slot label - Label content shown next to the checkbox (ng-content select="[label]").
+ * @example Bound checked state
+ * ```html
+ * <tb-checkbox [checked]="consent" (changed)="consent = $event">
+ *   <span label>Email me receipts</span>
+ * </tb-checkbox>
+ * ```
  */
 @Component({
   selector: 'tb-checkbox',

@@ -2,7 +2,12 @@ import { Component, input } from '@angular/core';
 
 /**
  * A round image representing a user or entity.
+ * @acmSemantic avatar - Identifies a person or entity; `alt` is the accessible name.
  * @slot - Fallback content shown when no image is available (e.g. initials).
+ * @example Image with initials fallback
+ * ```html
+ * <tb-avatar src="/ada.png" alt="Ada Lovelace" size="large">AL</tb-avatar>
+ * ```
  */
 @Component({
   selector: 'tb-avatar',

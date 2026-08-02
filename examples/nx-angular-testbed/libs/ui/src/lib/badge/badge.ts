@@ -2,7 +2,12 @@ import { Component, Input } from '@angular/core';
 
 /**
  * A compact label used to display status or a count.
+ * @acmSemantic badge - Annotates a nearby element with a count or status; never interactive.
  * @slot - Default content shown inside the badge.
+ * @example Status tone
+ * ```html
+ * <tb-badge tone="success">Shipped</tb-badge>
+ * ```
  */
 @Component({
   selector: 'tb-badge',

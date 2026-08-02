@@ -1,0 +1,30 @@
+{
+  "name": "vite-react-testbed",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "acm:generate": "pnpm --filter @testbed/ui run acm:generate"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "@xgentic/acm": "^0.1.0",
+    "@xgentic/acm-analyzer": "^0.1.0",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.8.1",
+    "typescript": "~5.9.0",
+    "vite": "^7.2.0",
+    "vitest": "^3.2.0"
+  },
+  "dependencies": {
+    "@testbed/ui": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}

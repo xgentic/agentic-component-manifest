@@ -2,7 +2,14 @@ import { Component, model } from '@angular/core';
 
 /**
  * A tabbed container that shows one panel at a time.
+ * @acmSemantic tabs - Switches between sibling panels; only one panel is visible at a time.
  * @slot - Tab items or panel content.
+ * @example Two-way bound selection
+ * ```html
+ * <tb-tabs [(selectedIndex)]="activeTab">
+ *   <section>Panel content</section>
+ * </tb-tabs>
+ * ```
  */
 @Component({
   selector: 'tb-tabs',

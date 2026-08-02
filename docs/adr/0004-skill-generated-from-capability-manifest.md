@@ -9,7 +9,7 @@ from — resolves the same freshness problem structurally rather than by detecti
 reference) from the installed version, whose single source is the same
 self-description behind `astryx manifest --json`. Generated steering text cannot
 name a command the installed CLI lacks; drift is impossible, not merely caught
-([research](../research/component-discovery-for-agents.md), Meta — Astryx).
+(Meta — Astryx).
 
 We decided the ACM discovery skill is assembled from two block types with different
 rules. **Generated blocks** — the command quick reference, option/default tables,

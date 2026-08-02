@@ -162,7 +162,7 @@ function installOne(
 
 /**
  * Can an agent invoke a bare `acm` from this project? A local install (the documented
- * `@acm/toolchain` devDependency) or anything on PATH counts.
+ * `@xgentic/acm` devDependency) or anything on PATH counts.
  */
 function cliIsResolvable(project: string): boolean {
   if (existsSync(path.join(project, "node_modules/.bin/acm"))) return true;

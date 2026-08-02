@@ -7,7 +7,7 @@
  * validator diagnostic shape.
  */
 
-import { renderDiagnostics, type Diagnostic as ToolchainDiagnostic } from "@acm/toolchain";
+import { renderDiagnostics, type Diagnostic as ToolchainDiagnostic } from "@xgentic/acm";
 
 /** A source location, remapped to the ORIGINAL file for SFC containers. */
 export interface Span {

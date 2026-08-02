@@ -1,13 +1,13 @@
 # Contract: programmatic API and consumer utilities
 
 The subprocess-free surface (spec US5 / FR-009, FR-010). Exported from
-`@acm/toolchain` (re-exported through the package's public `index.ts`; deep imports
+`@xgentic/acm` (re-exported through the package's public `index.ts`; deep imports
 remain non-contractual, matching the toolchain's existing export policy).
 
 ## Discovery functions
 
 ```ts
-import { search, component, capabilities, AcmDiscoveryError } from "@acm/toolchain";
+import { search, component, capabilities, AcmDiscoveryError } from "@xgentic/acm";
 
 // Same result as: acm search button --json
 const hits = await search("button", { project, manifests, type, limit, detail });
@@ -63,8 +63,8 @@ one forced failure per error code — and deep-equals stdout against the API res
 For consumers that spawn the CLI rather than import it:
 
 ```ts
-import { parseResponse, isError, assertResponse } from "@acm/toolchain";
-import type { CLIResult, SearchResponse, ComponentDetailResponse } from "@acm/toolchain";
+import { parseResponse, isError, assertResponse } from "@xgentic/acm";
+import type { CLIResult, SearchResponse, ComponentDetailResponse } from "@xgentic/acm";
 
 const result = parseResponse(stdout);   // parse + envelope-shape validation
 if (isError(result)) {

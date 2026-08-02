@@ -1,0 +1,415 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/components.tsx",
+      "declarations": [
+        {
+          "name": "TextField",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "TextField"
+          },
+          "description": "A labelled text input, declared through an `FC` annotation.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Space between the field and its neighbours, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "tone",
+              "description": "Visual weight — narrower than the base's, and it wins.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "subtle"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "loud"
+                    }
+                  ]
+                },
+                "raw": "'subtle' | 'loud'"
+              },
+              "default": "'subtle'"
+            },
+            {
+              "name": "label",
+              "description": "Text shown above the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--acme-field-radius",
+              "description": "Corner radius of the control.",
+              "default": "4px",
+              "syntax": "<length>"
+            }
+          ]
+        },
+        {
+          "name": "Badge",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "Badge"
+          },
+          "description": "A small count or status marker.",
+          "inputs": [
+            {
+              "name": "text",
+              "description": "Text rendered inside the badge.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "gap",
+              "description": "Space between the field and its neighbours, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dialog",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "Dialog"
+          },
+          "description": "A modal dialog, reached through `React.forwardRef` with a property-assignment handle.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Space between the field and its neighbours, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "tone",
+              "description": "Visual weight of the field.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "title",
+              "description": "Accessible name for the dialog.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "children",
+              "description": "Dialog body content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "dismiss",
+              "description": "Fired when the dialog closes for any reason.",
+              "payload": {
+                "structured": {
+                  "name": "DismissEvent",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "DismissEvent"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "header",
+              "description": "Replaces the default title row."
+            }
+          ],
+          "methods": [
+            {
+              "name": "open",
+              "description": "Opens the dialog and moves focus into it.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "close",
+              "description": "Closes the dialog, returning focus to the invoker.",
+              "parameters": [
+                {
+                  "name": "reason",
+                  "type": {
+                    "structured": {
+                      "name": "DismissEvent",
+                      "module": "./props.js",
+                      "kind": "reference"
+                    },
+                    "raw": "DismissEvent"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "settled",
+              "description": "Resolves once the closing transition has finished.",
+              "parameters": [
+                {
+                  "name": "timeoutMs",
+                  "type": {
+                    "structured": {
+                      "kind": "primitive",
+                      "primitive": "number"
+                    },
+                    "raw": "number"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Surface",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "Surface"
+          },
+          "description": "A raised container, wrapped in both `memo` and `forwardRef`.",
+          "inputs": [
+            {
+              "name": "elevation",
+              "description": "Elevation step, 0–4.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "0"
+            }
+          ],
+          "x-react": {
+            "unresolvedProps": [
+              "React.HTMLAttributes<HTMLDivElement>"
+            ]
+          }
+        },
+        {
+          "name": "Avatar",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "Avatar"
+          },
+          "description": "A user avatar, written as a class component.",
+          "inputs": [
+            {
+              "name": "src",
+              "description": "Image source for the avatar.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "size",
+              "description": "Pixel size of the rendered square.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            }
+          ],
+          "methods": [
+            {
+              "name": "preload",
+              "description": "Preloads the image so the first paint has no flash.",
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Shell",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@acme/react-kit",
+            "export": "default"
+          },
+          "description": "The kit's page shell, exported as the module default.",
+          "inputs": [
+            {
+              "name": "children",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            }
+          ],
+          "slots": [
+            {}
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TextField",
+          "declaration": "TextField"
+        },
+        {
+          "name": "Badge",
+          "declaration": "Badge"
+        },
+        {
+          "name": "Dialog",
+          "declaration": "Dialog"
+        },
+        {
+          "name": "Surface",
+          "declaration": "Surface"
+        },
+        {
+          "name": "Avatar",
+          "declaration": "Avatar"
+        },
+        {
+          "name": "default",
+          "declaration": "Shell"
+        }
+      ]
+    }
+  ]
+}

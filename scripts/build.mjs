@@ -6,12 +6,12 @@
  * normative layer, the toolchain, the skill blocks, the analyzer, the conformance
  * suite. A consumer has exactly two needs, so exactly two packages ship:
  *
- *   @acm/toolchain   the `acm` CLI + the JSON Schema + the Discovery Skill payload
- *                    → consume Manifests, and `acm init` to wire an agent up
- *   @acm/analyzer    the `acm-analyzer` CLI → produce a Manifest from source
+ *   @xgentic/acm            the `acm` CLI + the JSON Schema + the Discovery Skill payload
+ *                           → consume Manifests, and `acm init` to wire an agent up
+ *   @xgentic/acm-analyzer   the `acm-analyzer` CLI → produce a Manifest from source
  *
- * `@acm/spec` and `@acm/discovery-skill` become `assets/` inside the packages that
- * need them; `@acm/conformance` never ships.
+ * `@xgentic/acm-spec` and `@xgentic/acm-discovery-skill` become `assets/` inside the
+ * packages that need them; `@xgentic/acm-conformance` never ships.
  *
  * Each package is self-contained: the analyzer bundles the toolchain modules it uses
  * rather than depending on them, so the two tarballs install in any order with no
@@ -97,7 +97,7 @@ const PACKAGES = [
       // Workspace deps are bundled in, not depended on: what remains is what npm must
       // fetch. `ajv` comes along with the bundled reference validator.
       dependencies: Object.fromEntries(
-        Object.entries(analyzerPkg.dependencies).filter(([n]) => !n.startsWith("@acm/")),
+        Object.entries(analyzerPkg.dependencies).filter(([n]) => !n.startsWith("@xgentic/")),
       ),
     },
     readme: "packages/analyzer/README.md",
@@ -105,11 +105,11 @@ const PACKAGES = [
 ];
 
 /**
- * The analyzer imports `@acm/toolchain` by package name; in the workspace that resolves
+ * The analyzer imports `@xgentic/acm` by package name; in the workspace that resolves
  * to TypeScript source esbuild can bundle directly.
  */
 const workspaceAlias = {
-  "@acm/toolchain": path.join(REPO_ROOT, "packages/toolchain/src/index.ts"),
+  "@xgentic/acm": path.join(REPO_ROOT, "packages/toolchain/src/index.ts"),
 };
 
 /**
@@ -174,7 +174,7 @@ function assertAssetsPresent(outRoot, expected) {
 
 /** The assets each package's code resolves at runtime, by package name. */
 const REQUIRED_ASSETS = {
-  "@acm/toolchain": [
+  "@xgentic/acm": [
     "assets/spec/schema/acm.schema.json",
     "assets/spec/schema/acm.meta.schema.json",
     "assets/skill/blocks/activation.md",
@@ -182,7 +182,7 @@ const REQUIRED_ASSETS = {
     "assets/skill/generated/targets/AGENTS.fragment.md",
     "assets/skill/generated/targets/rules/acm-discovery.md",
   ],
-  "@acm/analyzer": ["assets/spec/schema/acm.schema.json"],
+  "@xgentic/acm-analyzer": ["assets/spec/schema/acm.schema.json"],
 };
 
 const packed = [];

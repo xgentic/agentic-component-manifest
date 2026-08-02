@@ -1,0 +1,2971 @@
+{
+  "schemaVersion": "0.1.0",
+  "modules": [
+    {
+      "path": "src/lib/alert.tsx",
+      "declarations": [
+        {
+          "name": "Alert",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Alert"
+          },
+          "description": "Displays a prominent message about status or a required action.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "type",
+              "description": "Severity of the alert.",
+              "type": {
+                "structured": {
+                  "name": "StatusTone",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "StatusTone"
+              },
+              "default": "'info'"
+            },
+            {
+              "name": "dismissible",
+              "description": "Whether a dismiss control is shown.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "onDismiss",
+              "description": "Called when the alert is dismissed via its dismiss control.",
+              "type": {
+                "structured": {
+                  "parameters": [],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "() => void"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "actions",
+              "description": "Action buttons shown alongside the message."
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-alert-accent",
+              "description": "Accent colour of the leading rule.",
+              "default": "#06c",
+              "syntax": "<color>"
+            }
+          ],
+          "semantics": {
+            "term": "alert",
+            "notes": "Announces an important message in place; does not steal focus."
+          },
+          "examples": [
+            {
+              "title": "Dismissible error",
+              "lang": "tsx",
+              "source": "const failed = (\n<Alert type=\"error\" dismissible onDismiss={() => console.log('dismissed')}>\nCould not save your changes.\n</Alert>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Alert",
+          "declaration": "Alert"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/avatar.tsx",
+      "declarations": [
+        {
+          "name": "Avatar",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Avatar"
+          },
+          "description": "Represents a person or entity as an image or initials.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "src",
+              "description": "Image source; falls back to initials when absent.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "name",
+              "description": "Accessible name for the depicted person or entity.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "size",
+              "description": "Size of the avatar.",
+              "type": {
+                "structured": {
+                  "name": "ControlSize",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "ControlSize"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "shape",
+              "description": "Shape of the avatar.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "circle"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "square"
+                    }
+                  ]
+                },
+                "raw": "'circle' | 'square'"
+              },
+              "default": "'circle'"
+            }
+          ],
+          "semantics": {
+            "term": "avatar",
+            "notes": "Identifies a person or entity; `name` is the accessible name."
+          },
+          "examples": [
+            {
+              "title": "Image with initials fallback",
+              "lang": "tsx",
+              "source": "const who = <Avatar name=\"Ada Lovelace\" src=\"/ada.png\" size=\"large\" shape=\"circle\" />;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Avatar",
+          "declaration": "Avatar"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/badge.tsx",
+      "declarations": [
+        {
+          "name": "Badge",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Badge"
+          },
+          "description": "A compact count or status marker attached to another element.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "tone",
+              "description": "Colour of the badge.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "name": "StatusTone",
+                      "module": "./props.js",
+                      "kind": "reference"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "neutral"
+                    }
+                  ]
+                },
+                "raw": "StatusTone | 'neutral'"
+              },
+              "default": "'neutral'"
+            },
+            {
+              "name": "solid",
+              "description": "Whether the badge renders as a filled pill rather than an outline.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "slots": [
+            {}
+          ],
+          "semantics": {
+            "term": "badge",
+            "notes": "Annotates a nearby element with a count or status; never interactive."
+          },
+          "examples": [
+            {
+              "title": "Status marker",
+              "lang": "tsx",
+              "source": "const shipped = <Badge tone=\"success\" solid>Shipped</Badge>;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Badge",
+          "declaration": "Badge"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/button.tsx",
+      "declarations": [
+        {
+          "name": "Button",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Button"
+          },
+          "description": "Triggers a single action when activated.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "variant",
+              "description": "Visual style of the button.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "primary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "secondary"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "ghost"
+                    }
+                  ]
+                },
+                "raw": "'primary' | 'secondary' | 'ghost'"
+              },
+              "default": "'primary'"
+            },
+            {
+              "name": "size",
+              "description": "Size of the button.",
+              "type": {
+                "structured": {
+                  "name": "ControlSize",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "ControlSize"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the button is disabled.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "onPress",
+              "description": "Called when the button is activated by pointer or keyboard.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "MouseEvent",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(event: MouseEvent) => void"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "icon",
+              "description": "Leading icon rendered before the label."
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-button-radius",
+              "description": "Corner radius of the button.",
+              "default": "6px",
+              "syntax": "<length>"
+            }
+          ],
+          "semantics": {
+            "term": "button",
+            "notes": "Triggers the action named by its label; not for navigation."
+          },
+          "examples": [
+            {
+              "title": "Primary action",
+              "lang": "tsx",
+              "source": "const save = <Button variant=\"primary\" onPress={() => console.log('saved')}>Save</Button>;"
+            },
+            {
+              "title": "Disabled secondary",
+              "lang": "tsx",
+              "source": "const cancel = <Button variant=\"secondary\" size=\"small\" disabled>Cancel</Button>;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Button",
+          "declaration": "Button"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/card.tsx",
+      "declarations": [
+        {
+          "name": "Card",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Card"
+          },
+          "description": "Groups related content on a raised surface.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "title",
+              "description": "Heading shown at the top of the card.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "elevation",
+              "description": "Elevation step, 0–3; higher casts a deeper shadow.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "1"
+            },
+            {
+              "name": "interactive",
+              "description": "Whether the card responds to pointer interaction.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "header",
+              "description": "Replaces the default title row."
+            },
+            {
+              "name": "footer",
+              "description": "Actions shown at the bottom of the card."
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-card-radius",
+              "description": "Corner radius of the card.",
+              "default": "8px",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "body",
+              "description": "The card's content region."
+            }
+          ],
+          "semantics": {
+            "term": "card",
+            "notes": "Groups related content as one unit; the title names the group."
+          },
+          "examples": [
+            {
+              "title": "Interactive summary card",
+              "lang": "tsx",
+              "source": "const summary = (\n<Card title=\"Invoice #1042\" elevation={2} interactive>\nDue in 14 days.\n</Card>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Card",
+          "declaration": "Card"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/checkbox.tsx",
+      "declarations": [
+        {
+          "name": "Checkbox",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Checkbox"
+          },
+          "description": "A single on/off choice.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "label",
+              "description": "Text shown above the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "hint",
+              "description": "Explanatory text shown below the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "error",
+              "description": "Validation message; presence puts the field in its error state.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the control rejects input.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "required",
+              "description": "Whether the control must be filled before submission.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            },
+            {
+              "name": "checked",
+              "description": "Whether the box is ticked.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "indeterminate",
+              "description": "Whether the box shows the mixed state.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "onCheckedChange",
+              "description": "Called with the new checked state when the box is toggled.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "boolean"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(checked: boolean) => void"
+              }
+            }
+          ],
+          "semantics": {
+            "term": "checkbox",
+            "notes": "One independent on/off choice; use a radio group for exclusive choices."
+          },
+          "examples": [
+            {
+              "title": "Consent checkbox",
+              "lang": "tsx",
+              "source": "const consent = (\n<Checkbox label=\"Email me receipts\" required onCheckedChange={(on) => console.log(on)} />\n);"
+            },
+            {
+              "title": "Mixed \"select all\" state",
+              "lang": "tsx",
+              "source": "const selectAll = <Checkbox label=\"Select all\" indeterminate />;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Checkbox",
+          "declaration": "Checkbox"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/combobox.tsx",
+      "declarations": [
+        {
+          "name": "Combobox",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Combobox"
+          },
+          "description": "A text input paired with a filterable list of options, optionally loaded on demand.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "label",
+              "description": "Text shown above the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "hint",
+              "description": "Explanatory text shown below the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the control rejects input.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "required",
+              "description": "Whether the control must be filled before submission.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            },
+            {
+              "name": "options",
+              "description": "Options shown when no loader is supplied.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "name": "ComboboxOption",
+                    "kind": "reference"
+                  }
+                },
+                "raw": "ComboboxOption[]"
+              },
+              "default": "[]"
+            },
+            {
+              "name": "value",
+              "description": "Currently chosen value.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "inputValue",
+              "description": "Text typed into the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "multiple",
+              "description": "Whether the list allows more than one choice.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "filterable",
+              "description": "Whether the control filters its options as the user types.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "name": "noResultsMessage",
+              "description": "Message shown when no option matches the query.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "'No matches'"
+            },
+            {
+              "name": "loadOptions",
+              "description": "Fetches options for a query; makes the control async.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    }
+                  ],
+                  "return": {
+                    "name": "Promise",
+                    "kind": "reference"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(query: string) => Promise<ComboboxOption[]>"
+              }
+            },
+            {
+              "name": "onValueChange",
+              "description": "Called with the chosen value when the selection changes.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(value: string) => void"
+              }
+            },
+            {
+              "name": "onInputValueChange",
+              "description": "Called with the typed text on every keystroke.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(text: string) => void"
+              }
+            }
+          ],
+          "slots": [
+            {
+              "name": "empty",
+              "description": "Replaces the default no-results message."
+            }
+          ],
+          "methods": [
+            {
+              "name": "focus",
+              "description": "Moves keyboard focus into the text input.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "open",
+              "description": "Opens the option list.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "close",
+              "description": "Closes the option list without changing the selection.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "reload",
+              "description": "Re-runs `loadOptions` for the current query.",
+              "parameters": [
+                {
+                  "name": "query",
+                  "type": {
+                    "structured": {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    },
+                    "raw": "string"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-combobox-list-max-height",
+              "description": "Maximum height of the option list.",
+              "default": "18rem",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "list",
+              "description": "The option list container."
+            }
+          ],
+          "semantics": {
+            "term": "combobox",
+            "notes": "Text input paired with a list of suggestions; the input owns the value."
+          },
+          "examples": [
+            {
+              "title": "Static options",
+              "lang": "tsx",
+              "source": "const currency = (\n<Combobox\nlabel=\"Currency\"\noptions={[\n{ value: 'chf', label: 'Swiss franc' },\n{ value: 'eur', label: 'Euro', disabled: true },\n]}\nonValueChange={(value) => console.log(value)}\n/>\n);"
+            },
+            {
+              "title": "Async loading",
+              "lang": "tsx",
+              "source": "const remote = (\n<Combobox\nlabel=\"Customer\"\nfilterable\nnoResultsMessage=\"No customers match that name\"\nloadOptions={async (query) => [{ value: query, label: query }]}\nonInputValueChange={(text) => console.log(text)}\n/>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Combobox",
+          "declaration": "Combobox"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/data-table.tsx",
+      "declarations": [
+        {
+          "name": "DataTable",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "DataTable"
+          },
+          "description": "A sortable, selectable, paginated table for tabular data.\n\nThe kit's most complex component: generic column definitions, an imperative handle,\nprojected header and toolbar content, and callback props for every state change.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "columns",
+              "description": "Column definitions, in display order.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "name": "TableColumn",
+                    "kind": "reference"
+                  }
+                },
+                "raw": "TableColumn<TableRow>[]"
+              },
+              "required": true
+            },
+            {
+              "name": "rows",
+              "description": "Rows to render.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "name": "TableRow",
+                    "kind": "reference"
+                  }
+                },
+                "raw": "TableRow[]"
+              },
+              "required": true
+            },
+            {
+              "name": "density",
+              "description": "Vertical density of the rows.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "compact"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "comfortable"
+                    }
+                  ]
+                },
+                "raw": "'compact' | 'comfortable'"
+              },
+              "default": "'comfortable'"
+            },
+            {
+              "name": "selectionMode",
+              "description": "How many rows may be selected at once.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "single"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "multi"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "none"
+                    }
+                  ]
+                },
+                "raw": "'single' | 'multi' | 'none'"
+              },
+              "default": "'single'"
+            },
+            {
+              "name": "selection",
+              "description": "Ids of the currently selected rows.",
+              "type": {
+                "structured": {
+                  "kind": "array",
+                  "items": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  }
+                },
+                "raw": "readonly string[]"
+              }
+            },
+            {
+              "name": "rowClass",
+              "description": "Resolver returning a CSS class for a given row.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "TableRow",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(row: TableRow) => string"
+              }
+            },
+            {
+              "name": "emptyMessage",
+              "description": "Message shown when `rows` is empty.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "'No rows to show'"
+            },
+            {
+              "name": "onSelectionChange",
+              "description": "Called when the selected row set changes.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "array",
+                      "items": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(ids: readonly string[]) => void"
+              }
+            },
+            {
+              "name": "onRowActivate",
+              "description": "Called when a row is activated by double-click or Enter.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "TableRow",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(row: TableRow) => void"
+              }
+            },
+            {
+              "name": "onSortChange",
+              "description": "Called when the user changes the active column sort.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "SortChange",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(change: SortChange) => void"
+              }
+            },
+            {
+              "name": "pageSize",
+              "description": "Rows shown per page.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "25"
+            },
+            {
+              "name": "page",
+              "description": "Zero-based index of the visible page.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "0"
+            },
+            {
+              "name": "onPageChange",
+              "description": "Called with the new page index when the user paginates.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "number"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(page: number) => void"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "toolbar",
+              "description": "Controls shown above the table."
+            },
+            {
+              "name": "empty",
+              "description": "Replaces the default empty-state message."
+            }
+          ],
+          "methods": [
+            {
+              "name": "focusFirstCell",
+              "description": "Moves keyboard focus to the first focusable cell.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "selectAllVisible",
+              "description": "Selects every row on the current page.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "clearSelection",
+              "description": "Clears the selection without emitting a change.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "scrollToRow",
+              "description": "Scrolls a row into view; resolves once the scroll settles.",
+              "parameters": [
+                {
+                  "name": "rowId",
+                  "type": {
+                    "structured": {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    },
+                    "raw": "string"
+                  }
+                },
+                {
+                  "name": "behavior",
+                  "type": {
+                    "structured": {
+                      "kind": "union",
+                      "members": [
+                        {
+                          "kind": "literal",
+                          "value": "auto"
+                        },
+                        {
+                          "kind": "literal",
+                          "value": "smooth"
+                        }
+                      ]
+                    },
+                    "raw": "'auto' | 'smooth'"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-table-border",
+              "description": "Colour of the cell borders.",
+              "default": "#e2e2e2",
+              "syntax": "<color>"
+            },
+            {
+              "name": "--tb-table-row-height",
+              "description": "Height of a data row.",
+              "default": "36px",
+              "syntax": "<length>"
+            },
+            {
+              "name": "--tb-table-accent",
+              "description": "Accent colour for selected rows.",
+              "default": "#06c",
+              "syntax": "<color>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "header",
+              "description": "The column header row."
+            },
+            {
+              "name": "body",
+              "description": "The scrollable row container."
+            }
+          ],
+          "semantics": {
+            "term": "grid",
+            "notes": "Two-dimensional tabular data with selectable, activatable rows."
+          },
+          "examples": [
+            {
+              "title": "Typed columns and rows",
+              "lang": "tsx",
+              "source": "const columns = [\n{ id: 'name', header: 'Name', get: (row) => row.name, sortable: true },\n{ id: 'due', header: 'Due', get: (row) => row.due, width: '8rem' },\n];\nconst rows = [{ id: '1', name: 'Invoice #1042', due: '2026-08-14' }];\nconst table = <DataTable columns={columns} rows={rows} />;"
+            },
+            {
+              "title": "Multi-select with pagination",
+              "lang": "tsx",
+              "source": "const paged = (\n<DataTable\ncolumns={[]}\nrows={[]}\nselectionMode=\"multi\"\ndensity=\"compact\"\npageSize={50}\npage={2}\nonPageChange={(next) => console.log(next)}\nonSelectionChange={(ids) => console.log(ids.length)}\nonSortChange={(change) => console.log(change.columnId, change.direction)}\n/>\n);"
+            },
+            {
+              "title": "Empty state and projected toolbar",
+              "lang": "tsx",
+              "source": "const empty = (\n<DataTable columns={[]} rows={[]} emptyMessage=\"No invoices yet\">\nToolbar content\n</DataTable>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "DataTable",
+          "declaration": "DataTable"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/dialog.tsx",
+      "declarations": [
+        {
+          "name": "Dialog",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Dialog"
+          },
+          "description": "A modal dialog that traps focus while open.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "title",
+              "description": "Accessible name for the dialog.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "open",
+              "description": "Whether the dialog is currently shown.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              }
+            },
+            {
+              "name": "size",
+              "description": "Width preset of the dialog panel.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "small"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "medium"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "large"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "fullscreen"
+                    }
+                  ]
+                },
+                "raw": "'small' | 'medium' | 'large' | 'fullscreen'"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "dismissOnBackdrop",
+              "description": "Whether clicking the backdrop dismisses the dialog.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "name": "dismissOnEscape",
+              "description": "Whether pressing Escape dismisses the dialog.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "true"
+            },
+            {
+              "name": "onDismiss",
+              "description": "Called with the reason when the dialog closes.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "name": "DismissReason",
+                      "kind": "reference"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(reason: DismissReason) => void"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "header",
+              "description": "Replaces the default title row."
+            },
+            {
+              "name": "footer",
+              "description": "Action buttons shown at the bottom of the panel."
+            }
+          ],
+          "methods": [
+            {
+              "name": "open",
+              "description": "Opens the dialog and moves focus into it.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "close",
+              "description": "Closes the dialog, returning focus to the invoker.",
+              "parameters": [
+                {
+                  "name": "reason",
+                  "type": {
+                    "structured": {
+                      "name": "DismissReason",
+                      "kind": "reference"
+                    },
+                    "raw": "DismissReason"
+                  }
+                }
+              ],
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "settled",
+              "description": "Resolves once the closing transition has finished.",
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<void>"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-dialog-backdrop",
+              "description": "Colour of the backdrop.",
+              "default": "rgb(0 0 0 / 0.4)",
+              "syntax": "<color>"
+            },
+            {
+              "name": "--tb-dialog-radius",
+              "description": "Corner radius of the panel.",
+              "default": "12px",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "panel",
+              "description": "The dialog panel itself."
+            },
+            {
+              "name": "backdrop",
+              "description": "The scrim behind the panel."
+            }
+          ],
+          "semantics": {
+            "term": "dialog",
+            "notes": "Modal surface that traps focus; use alertdialog for destructive confirmations."
+          },
+          "examples": [
+            {
+              "title": "Confirmation dialog",
+              "lang": "tsx",
+              "source": "const confirm = (\n<Dialog\ntitle=\"Delete invoice?\"\nopen\nsize=\"small\"\ndismissOnBackdrop={false}\nonDismiss={(reason) => console.log(reason.reason)}\n>\nThis cannot be undone.\n</Dialog>\n);"
+            },
+            {
+              "title": "Fullscreen editor",
+              "lang": "tsx",
+              "source": "const editor = (\n<Dialog title=\"Edit invoice\" size=\"fullscreen\" dismissOnEscape={false}>\nForm goes here\n</Dialog>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Dialog",
+          "declaration": "Dialog"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/form.tsx",
+      "declarations": [
+        {
+          "name": "Form",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Form"
+          },
+          "description": "Groups form fields, collects their values, and coordinates validation.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "label",
+              "description": "Accessible name for the form region.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "layout",
+              "description": "How field labels sit relative to their controls.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "stacked"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "inline"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "grid"
+                    }
+                  ]
+                },
+                "raw": "'stacked' | 'inline' | 'grid'"
+              },
+              "default": "'stacked'"
+            },
+            {
+              "name": "validateOn",
+              "description": "When validation runs.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "submit"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "blur"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "change"
+                    }
+                  ]
+                },
+                "raw": "'submit' | 'blur' | 'change'"
+              },
+              "default": "'submit'"
+            },
+            {
+              "name": "initialValues",
+              "description": "Initial values, keyed by field name.",
+              "type": {
+                "structured": {
+                  "kind": "record",
+                  "key": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  },
+                  "valueType": {
+                    "kind": "primitive",
+                    "primitive": "string"
+                  }
+                },
+                "raw": "Record<string, string>"
+              }
+            },
+            {
+              "name": "onValuesChange",
+              "description": "Called whenever a field's value changes.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "record",
+                      "key": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      },
+                      "valueType": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(values: Record<string, string>) => void"
+              }
+            },
+            {
+              "name": "submitting",
+              "description": "Whether the form is mid-submission; disables its controls.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "onSubmit",
+              "description": "Called with the collected values when the form is submitted and valid.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "record",
+                      "key": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      },
+                      "valueType": {
+                        "kind": "primitive",
+                        "primitive": "string"
+                      }
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(values: Record<string, string>) => void"
+              }
+            },
+            {
+              "name": "onReset",
+              "description": "Called when the user resets the form.",
+              "type": {
+                "structured": {
+                  "parameters": [],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "() => void"
+              }
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "actions",
+              "description": "Submit and cancel controls, shown after the fields."
+            }
+          ],
+          "methods": [
+            {
+              "name": "validate",
+              "description": "Runs validation and returns the result.",
+              "return": {
+                "structured": {
+                  "name": "Promise",
+                  "kind": "reference"
+                },
+                "raw": "Promise<ValidationResult>"
+              }
+            },
+            {
+              "name": "submit",
+              "description": "Submits the form as though the submit control were activated.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "reset",
+              "description": "Restores every field to its initial value.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "focusFirstError",
+              "description": "Moves focus to the first field with an error.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-form-field-gap",
+              "description": "Space between fields.",
+              "default": "12px",
+              "syntax": "<length>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "fields",
+              "description": "The container the fields render into.\nThe controlled vocabulary has no term for a field group, so this component carries no\n`@acmSemantic` — an absent classification is honest, a wrong one is not."
+            }
+          ],
+          "examples": [
+            {
+              "title": "Composing fields",
+              "lang": "tsx",
+              "source": "const signup = (\n<Form\nlabel=\"Sign up\"\nlayout=\"stacked\"\nvalidateOn=\"blur\"\ninitialValues={{ email: '' }}\nonSubmit={(values) => console.log(values.email)}\n>\nField components go here\n</Form>\n);"
+            },
+            {
+              "title": "Submitting state",
+              "lang": "tsx",
+              "source": "const busy = (\n<Form label=\"Sign up\" submitting onReset={() => console.log('reset')}>\nFields are disabled while submitting.\n</Form>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Form",
+          "declaration": "Form"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/spinner.tsx",
+      "declarations": [
+        {
+          "name": "Spinner",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Spinner"
+          },
+          "description": "Indicates that work is in progress and its duration is unknown.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "size",
+              "description": "Size of the spinner.",
+              "type": {
+                "structured": {
+                  "name": "ControlSize",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "ControlSize"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "label",
+              "description": "Text announced to assistive technology while the spinner is visible.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "default": "'Loading'"
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-spinner-color",
+              "description": "Stroke colour of the spinner.",
+              "default": "currentColor",
+              "syntax": "<color>"
+            }
+          ],
+          "semantics": {
+            "term": "progressbar",
+            "notes": "Indeterminate progress; use a determinate meter when a percentage is known."
+          },
+          "examples": [
+            {
+              "title": "Inline loading state",
+              "lang": "tsx",
+              "source": "const busy = <Spinner size=\"small\" label=\"Loading results\" />;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Spinner",
+          "declaration": "Spinner"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/tabs.tsx",
+      "declarations": [
+        {
+          "name": "Tabs",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Tabs"
+          },
+          "description": "A tabbed container that shows one panel at a time.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "selectedIndex",
+              "description": "Index of the active tab.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "0"
+            },
+            {
+              "name": "onSelectedIndexChange",
+              "description": "Called with the new index when the active tab changes.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "number"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(index: number) => void"
+              }
+            },
+            {
+              "name": "orientation",
+              "description": "Orientation of the tab strip.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "horizontal"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "vertical"
+                    }
+                  ]
+                },
+                "raw": "'horizontal' | 'vertical'"
+              },
+              "default": "'horizontal'"
+            }
+          ],
+          "slots": [
+            {},
+            {
+              "name": "tablist",
+              "description": "The tab triggers, rendered above the active panel."
+            }
+          ],
+          "semantics": {
+            "term": "tabs",
+            "notes": "Switches between sibling panels; only one panel is visible at a time."
+          },
+          "examples": [
+            {
+              "title": "Controlled selection",
+              "lang": "tsx",
+              "source": "const tabs = (\n<Tabs selectedIndex={1} onSelectedIndexChange={(i) => console.log(i)}>\nPanel content\n</Tabs>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tabs",
+          "declaration": "Tabs"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/text-field.tsx",
+      "declarations": [
+        {
+          "name": "TextField",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "TextField"
+          },
+          "description": "A labelled single-line text input.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "label",
+              "description": "Text shown above the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "hint",
+              "description": "Explanatory text shown below the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "error",
+              "description": "Validation message; presence puts the field in its error state.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "disabled",
+              "description": "Whether the control rejects input.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "required",
+              "description": "Whether the control must be filled before submission.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "boolean"
+                },
+                "raw": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "name": "value",
+              "description": "Current value of the control.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "placeholder",
+              "description": "Placeholder shown while the control is empty.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "type",
+              "description": "Input mode of the control.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "text"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "email"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "password"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "search"
+                    }
+                  ]
+                },
+                "raw": "'text' | 'email' | 'password' | 'search'"
+              },
+              "default": "'text'"
+            },
+            {
+              "name": "size",
+              "description": "Size of the control.",
+              "type": {
+                "structured": {
+                  "name": "ControlSize",
+                  "module": "./props.js",
+                  "kind": "reference"
+                },
+                "raw": "ControlSize"
+              },
+              "default": "'medium'"
+            },
+            {
+              "name": "onValueChange",
+              "description": "Called on every keystroke with the new value.",
+              "type": {
+                "structured": {
+                  "parameters": [
+                    {
+                      "kind": "primitive",
+                      "primitive": "string"
+                    }
+                  ],
+                  "return": {
+                    "kind": "primitive",
+                    "primitive": "void"
+                  },
+                  "kind": "function"
+                },
+                "raw": "(value: string) => void"
+              }
+            }
+          ],
+          "methods": [
+            {
+              "name": "focus",
+              "description": "Moves keyboard focus into the control.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "clear",
+              "description": "Clears the control and notifies listeners.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            },
+            {
+              "name": "selectAll",
+              "description": "Selects the control's current contents.",
+              "return": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "void"
+                },
+                "raw": "void"
+              }
+            }
+          ],
+          "cssProperties": [
+            {
+              "name": "--tb-field-border",
+              "description": "Border colour in the resting state.",
+              "default": "#ccc",
+              "syntax": "<color>"
+            }
+          ],
+          "cssParts": [
+            {
+              "name": "input",
+              "description": "The underlying input element."
+            }
+          ],
+          "semantics": {
+            "term": "textbox",
+            "notes": "Collects one line of free text; the label names what is collected."
+          },
+          "examples": [
+            {
+              "title": "Required email field",
+              "lang": "tsx",
+              "source": "const email = (\n<TextField\nlabel=\"Email\"\ntype=\"email\"\nrequired\nhint=\"We only use this for receipts.\"\nonValueChange={(next) => console.log(next)}\n/>\n);"
+            },
+            {
+              "title": "Search variant in an error state",
+              "lang": "tsx",
+              "source": "const search = <TextField label=\"Search\" type=\"search\" error=\"No results for that term.\" />;"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "TextField",
+          "declaration": "TextField"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/tooltip.tsx",
+      "declarations": [
+        {
+          "name": "Tooltip",
+          "identity": {
+            "paradigmClass": "vdom",
+            "module": "@testbed/ui",
+            "export": "Tooltip"
+          },
+          "description": "Shows a short explanatory label when its trigger is hovered or focused.",
+          "inputs": [
+            {
+              "name": "gap",
+              "description": "Outer margin, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "pad",
+              "description": "Inner padding, in 4px grid units.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              }
+            },
+            {
+              "name": "testId",
+              "description": "Stable hook for test automation.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "className",
+              "description": "Extra class names appended to the root element.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              }
+            },
+            {
+              "name": "children",
+              "description": "Default content.",
+              "type": {
+                "structured": {
+                  "name": "ReactNode",
+                  "module": "react",
+                  "kind": "reference"
+                },
+                "raw": "ReactNode"
+              }
+            },
+            {
+              "name": "content",
+              "description": "Text shown in the tooltip bubble.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "string"
+                },
+                "raw": "string"
+              },
+              "required": true
+            },
+            {
+              "name": "placement",
+              "description": "Preferred side of the trigger to render on.",
+              "type": {
+                "structured": {
+                  "kind": "union",
+                  "members": [
+                    {
+                      "kind": "literal",
+                      "value": "top"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "right"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "bottom"
+                    },
+                    {
+                      "kind": "literal",
+                      "value": "left"
+                    }
+                  ]
+                },
+                "raw": "'top' | 'right' | 'bottom' | 'left'"
+              },
+              "default": "'top'"
+            },
+            {
+              "name": "openDelay",
+              "description": "Delay before the tooltip appears, in milliseconds.",
+              "type": {
+                "structured": {
+                  "kind": "primitive",
+                  "primitive": "number"
+                },
+                "raw": "number"
+              },
+              "default": "200"
+            }
+          ],
+          "slots": [
+            {}
+          ],
+          "semantics": {
+            "term": "tooltip",
+            "notes": "Supplementary label for its trigger; never the only source of information."
+          },
+          "examples": [
+            {
+              "title": "Wrapping a trigger",
+              "lang": "tsx",
+              "source": "const hint = (\n<Tooltip content=\"Deletes the invoice permanently\" placement=\"right\" openDelay={400}>\nDelete\n</Tooltip>\n);"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "Tooltip",
+          "declaration": "Tooltip"
+        }
+      ]
+    }
+  ]
+}

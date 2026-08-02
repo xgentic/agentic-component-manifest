@@ -8,10 +8,10 @@ mechanics, authored judgment)
 **Specs**: [004 — Component Discovery CLI](../../specs/004-component-discovery-cli/spec.md)
 (machine contract), [005 — Agent Discovery Skill](../../specs/005-agent-discovery-skill/spec.md)
 (steering layer)
-**Evidence**: [industry research](../research/component-discovery-for-agents.md),
+**Evidence**: industry research on how design systems expose components to AI agents,
 primarily the Meta Astryx reference model
 **Tool architecture**: [steering-layer generator](../architecture/steering-layer-generator.md)
-— bound design of `acm agent-docs` and `@acm/discovery-skill`, with the decision log
+— bound design of `acm agent-docs` and `@xgentic/acm-discovery-skill`, with the decision log
 of the 2026-07-21 design review
 
 ## 1. Reference model

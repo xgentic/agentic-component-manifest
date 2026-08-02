@@ -54,9 +54,6 @@ instructions. Discovery order for consumers: `acm` field in package.json →
   inherits
 - [AGENTS.md](AGENTS.md): build commands and invariants for coding agents working on
   this repository
-- [Research — component discovery for agents](docs/research/component-discovery-for-agents.md):
-  industry survey of how design systems expose components to AI agents (CLI, MCP,
-  llms.txt, skills) and the layered architecture ACM adopts
 
 ## Examples
 
@@ -67,6 +64,13 @@ instructions. Discovery order for consumers: `acm` field in package.json →
 - [Adversarial fixtures](packages/conformance/fixtures/adversarial/): controlled
   inputs, polymorphic components, scoped slots, headless components, form-associated
   elements
+- [Stress testbeds](packages/conformance/fixtures/testbed/): one maximally complex
+  DataGrid-class component per framework (Lit, Angular, Stencil, React) as real
+  compiling source with byte-pinned goldens
+- [nx-angular-testbed](examples/nx-angular-testbed/): Nx workspace testing whether an
+  agent discovers components instead of inventing them
+- [vite-react-testbed](examples/vite-react-testbed/): the React counterpart, whose
+  component library carries complex components (DataTable, Combobox, Dialog, Form)
 - [Conformance quickstart](specs/001-acm-schema-foundation/quickstart.md): runnable
   end-to-end validation walkthrough
 
@@ -85,3 +89,4 @@ instructions. Discovery order for consumers: `acm` field in package.json →
 - [Feature spec 006 — distribution and `acm init`](specs/006-distribution-and-init/spec.md)
 - [`acm init` contract](specs/006-distribution-and-init/contracts/init-cli.md)
 - [Packaging contract](specs/006-distribution-and-init/contracts/packaging.md)
+- [Feature spec 007 — React support](specs/007-react-support/spec.md)

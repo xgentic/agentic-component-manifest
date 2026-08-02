@@ -12,7 +12,7 @@ amended 2026-07-22), [ADR 0004](../../docs/adr/0004-skill-generated-from-capabil
 search + agent-driven retrieval ladder), the system-level
 [agent-discovery architecture proposal](../../docs/proposals/agent-discovery-architecture.md),
 and the tool-level [steering-layer generator architecture](../../docs/architecture/steering-layer-generator.md)
-(the bound design of `acm agent-docs` and `@acm/discovery-skill`, incl. the
+(the bound design of `acm agent-docs` and `@xgentic/acm-discovery-skill`, incl. the
 2026-07-21 design-review decision log D1–D8). These stand in for this feature's
 Phase 0 research and Phase 1 design artifacts; this plan restates the bindings and
 maps them to the Constitution and to the task decomposition in [tasks.md](./tasks.md).
@@ -73,12 +73,12 @@ timestamps, ordering fully specified — mirrors spec 004 FR-012); the resident 
 description ≤ 100 tokens and the on-demand body ≤ 2,000 tokens under the repo-standard
 gauge `ceil(UTF-8 bytes / 4)` (400 / 8,000 bytes; architecture G5/D7); `ACM-D-*` codes,
 response-type discriminators, and the `acm agent-docs` command/`--target` names are
-contract once shipped; `@acm/discovery-skill` versions in **lockstep** with
-`@acm/toolchain` (D3) so "which CLI does this skill describe" answers itself.
+contract once shipped; `@xgentic/acm-discovery-skill` versions in **lockstep** with
+`@xgentic/acm` (D3) so "which CLI does this skill describe" answers itself.
 
 **Scale/Scope**: 1 new toolchain command (`agent-docs`, `json: false`); 1 generator
 module (`agent-docs.ts`) + drift/registry/cli wiring; 1 new workspace package
-(`@acm/discovery-skill`) with 6 authored blocks, 5 generated blocks, and 4 targets;
+(`@xgentic/acm-discovery-skill`) with 6 authored blocks, 5 generated blocks, and 4 targets;
 1 new conformance gate file + 1 seeded proof + doc-index updates.
 
 ## Constitution Check
@@ -148,7 +148,7 @@ packages/toolchain/src/
 ├── capability.ts         # existing (spec 004) — consumed in-process, unchanged
 └── index.ts              # existing public surface — unchanged
 
-packages/discovery-skill/                 # NEW: @acm/discovery-skill (version lockstep)
+packages/discovery-skill/                 # NEW: @xgentic/acm-discovery-skill (version lockstep)
 ├── package.json
 ├── README.md                             # per-ecosystem install matrix (FR-006)
 ├── blocks/                               # Authored Blocks — hand-edited prose
@@ -176,7 +176,7 @@ packages/conformance/tests/
 **Structure Decision**: the generator is a toolchain command (it reuses the capability
 manifest and the `drift --write` plumbing that already live in `packages/toolchain`);
 the *product* it writes — the canonical blocks and per-ecosystem packagings — lives in a
-dedicated `@acm/discovery-skill` package so the `skills add` unit is clean and publishes
+dedicated `@xgentic/acm-discovery-skill` package so the `skills add` unit is clean and publishes
 in lockstep with the toolchain (D2/D3). Gates live in `packages/conformance` beside the
 spec-004 discovery gates and reuse the same corpus fixture for the loop check.
 

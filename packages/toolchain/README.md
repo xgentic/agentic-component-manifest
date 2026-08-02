@@ -1,4 +1,4 @@
-# @acm/toolchain
+# @xgentic/acm
 
 The `acm` CLI: the consumer half of the [Agentic Component Manifest](https://github.com/xgentic/agentic-component-manifest).
 It ships the reference toolchain, the ACM JSON Schema, and the **Discovery Skill** — the
@@ -6,7 +6,7 @@ steering layer that teaches an AI coding agent to find real components instead o
 inventing APIs.
 
 ```sh
-npm install --save-dev @acm/toolchain
+npm install --save-dev @xgentic/acm
 npx acm init
 ```
 
@@ -91,7 +91,7 @@ convenience. `acm coverage` and `acm drift` are repo-development commands and re
 run outside a checkout of the ACM repository.
 
 To **produce** a Manifest from component source, use
-[`@acm/analyzer`](https://www.npmjs.com/package/@acm/analyzer).
+[`@xgentic/acm-analyzer`](https://www.npmjs.com/package/@xgentic/acm-analyzer).
 
 ## Untrusted data
 

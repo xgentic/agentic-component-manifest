@@ -1,11 +1,11 @@
-# @acm/discovery-skill
+# @xgentic/acm-discovery-skill
 
 The **Discovery Skill**: the steering layer that wires the `acm` discovery CLI
 (`search`, `component`, `capabilities`) into AI coding agents as their
 component-discovery workflow (ADR 0003/0004, spec 005).
 
 This is the skill's **authoring home**, not a published package. The built skill ships
-inside [`@acm/toolchain`](../toolchain/README.md) (as `assets/skill/`), and consumers
+inside [`@xgentic/acm`](../toolchain/README.md) (as `assets/skill/`), and consumers
 install it with one command:
 
 ```sh
@@ -35,6 +35,6 @@ One canonical source, four packagings — all assembled from the same blocks:
 - Shared blocks are embedded between `<!-- acm:block … -->` markers and are
   byte-identical across every target, gate-verified.
 
-The skill versions in **lockstep** with `@acm/toolchain` by construction — it ships
+The skill versions in **lockstep** with `@xgentic/acm` by construction — it ships
 inside it: skill `X.Y.Z` describes exactly CLI `X.Y.Z`. At runtime,
 `acm capabilities --json` is the source of truth on any skew.

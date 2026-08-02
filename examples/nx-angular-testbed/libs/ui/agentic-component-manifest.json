@@ -77,6 +77,17 @@
               "name": "actions",
               "description": "Action buttons shown alongside the message (ng-content select=\"[actions]\")."
             }
+          ],
+          "semantics": {
+            "term": "alert",
+            "notes": "Announces an important message in place; does not steal focus."
+          },
+          "examples": [
+            {
+              "title": "Dismissible error with actions",
+              "lang": "html",
+              "source": "<tb-alert type=\"error\" [dismissible]=\"true\" (dismissed)=\"onDismiss()\">\nCould not save your changes.\n<tb-button actions variant=\"ghost\">Retry</tb-button>\n</tb-alert>"
+            }
           ]
         }
       ],
@@ -154,6 +165,17 @@
             {
               "description": "Fallback content shown when no image is available (e.g. initials)."
             }
+          ],
+          "semantics": {
+            "term": "avatar",
+            "notes": "Identifies a person or entity; `alt` is the accessible name."
+          },
+          "examples": [
+            {
+              "title": "Image with initials fallback",
+              "lang": "html",
+              "source": "<tb-avatar src=\"/ada.png\" alt=\"Ada Lovelace\" size=\"large\">AL</tb-avatar>"
+            }
           ]
         }
       ],
@@ -219,6 +241,17 @@
           "slots": [
             {
               "description": "Default content shown inside the badge."
+            }
+          ],
+          "semantics": {
+            "term": "badge",
+            "notes": "Annotates a nearby element with a count or status; never interactive."
+          },
+          "examples": [
+            {
+              "title": "Status tone",
+              "lang": "html",
+              "source": "<tb-badge tone=\"success\">Shipped</tb-badge>"
             }
           ]
         }
@@ -327,6 +360,22 @@
               "name": "icon",
               "description": "Leading icon rendered before the label (ng-content select=\"[icon]\")."
             }
+          ],
+          "semantics": {
+            "term": "button",
+            "notes": "Triggers the action named by its label; not for navigation."
+          },
+          "examples": [
+            {
+              "title": "Primary action",
+              "lang": "html",
+              "source": "<tb-button variant=\"primary\" (press)=\"save()\">Save</tb-button>"
+            },
+            {
+              "title": "Disabled secondary with a leading icon",
+              "lang": "html",
+              "source": "<tb-button variant=\"secondary\" size=\"small\" [disabled]=\"true\">\n<svg icon></svg>\nCancel\n</tb-button>"
+            }
           ]
         }
       ],
@@ -392,6 +441,17 @@
               "name": "footer",
               "description": "Footer content shown below the body (ng-content select=\"[footer]\")."
             }
+          ],
+          "semantics": {
+            "term": "card",
+            "notes": "Groups related content as one unit."
+          },
+          "examples": [
+            {
+              "title": "Header, body, and footer",
+              "lang": "html",
+              "source": "<tb-card [elevation]=\"2\">\n<h3 header>Invoice #1042</h3>\nDue in 14 days.\n<tb-button footer variant=\"primary\">Pay now</tb-button>\n</tb-card>"
+            }
           ]
         }
       ],
@@ -443,6 +503,17 @@
             {
               "name": "label",
               "description": "Label content shown next to the checkbox (ng-content select=\"[label]\")."
+            }
+          ],
+          "semantics": {
+            "term": "checkbox",
+            "notes": "One independent on/off choice; use a radio group for exclusive choices."
+          },
+          "examples": [
+            {
+              "title": "Bound checked state",
+              "lang": "html",
+              "source": "<tb-checkbox [checked]=\"consent\" (changed)=\"consent = $event\">\n<span label>Email me receipts</span>\n</tb-checkbox>"
             }
           ]
         }
@@ -504,6 +575,17 @@
               },
               "default": "'Loading'"
             }
+          ],
+          "semantics": {
+            "term": "progressbar",
+            "notes": "Indeterminate progress; use a determinate meter when a percentage is known."
+          },
+          "examples": [
+            {
+              "title": "Inline loading state",
+              "lang": "html",
+              "source": "<tb-spinner size=\"small\" label=\"Loading results\"></tb-spinner>"
+            }
           ]
         }
       ],
@@ -544,6 +626,17 @@
           "slots": [
             {
               "description": "Tab items or panel content."
+            }
+          ],
+          "semantics": {
+            "term": "tabs",
+            "notes": "Switches between sibling panels; only one panel is visible at a time."
+          },
+          "examples": [
+            {
+              "title": "Two-way bound selection",
+              "lang": "html",
+              "source": "<tb-tabs [(selectedIndex)]=\"activeTab\">\n<section>Panel content</section>\n</tb-tabs>"
             }
           ]
         }
@@ -610,6 +703,17 @@
             {
               "name": "label",
               "description": "Field label shown above the input (ng-content select=\"[label]\")."
+            }
+          ],
+          "semantics": {
+            "term": "textbox",
+            "notes": "Collects one line of free text; the label names what is collected."
+          },
+          "examples": [
+            {
+              "title": "Two-way bound value",
+              "lang": "html",
+              "source": "<tb-text-field [(value)]=\"email\" placeholder=\"you@example.com\">\n<span label>Email</span>\n</tb-text-field>"
             }
           ]
         }
@@ -679,6 +783,17 @@
           "slots": [
             {
               "description": "Element that triggers the tooltip on hover or focus."
+            }
+          ],
+          "semantics": {
+            "term": "tooltip",
+            "notes": "Supplementary label for its trigger; never the only source of information."
+          },
+          "examples": [
+            {
+              "title": "Wrapping a trigger",
+              "lang": "html",
+              "source": "<tb-tooltip text=\"Deletes the invoice permanently\" placement=\"right\">\n<tb-button variant=\"ghost\">Delete</tb-button>\n</tb-tooltip>"
             }
           ]
         }

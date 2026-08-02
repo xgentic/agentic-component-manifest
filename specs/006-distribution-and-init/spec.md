@@ -15,9 +15,9 @@ discovery skill and knows how to use it in the project".
 ## Problem
 
 `deploy/` held five tarballs, one per workspace package. That mirrors how the repository
-is *authored*, not what a consumer installs. Two of the five (`@acm/spec`,
-`@acm/discovery-skill`) are data other packages need rather than things anyone installs
-directly, and one (`@acm/conformance`) is the test suite, which must never ship.
+is *authored*, not what a consumer installs. Two of the five (`@xgentic/acm-spec`,
+`@xgentic/acm-discovery-skill`) are data other packages need rather than things anyone installs
+directly, and one (`@xgentic/acm-conformance`) is the test suite, which must never ship.
 
 Worse, none of the five actually worked when installed. Three coupled defects:
 
@@ -25,8 +25,8 @@ Worse, none of the five actually worked when installed. Three coupled defects:
    resolved `packages/spec/schema/…`, `packages/discovery-skill/…`, and
    `packages/conformance/fixtures/witness` through it. The analyzer read
    `../../spec/package.json`. None of those paths exist in an installed package.
-2. **Undeclared dependencies.** `@acm/toolchain` declared none while importing `ajv`,
-   `yaml`, and `json-schema-to-typescript`; `@acm/analyzer` declared `@vue/compiler-sfc`,
+2. **Undeclared dependencies.** `@xgentic/acm` declared none while importing `ajv`,
+   `yaml`, and `json-schema-to-typescript`; `@xgentic/acm-analyzer` declared `@vue/compiler-sfc`,
    which nothing imports.
 3. **A dead entry guard.** `packages/analyzer/src/cli.ts` compared `process.argv[1]` to
    `import.meta.url` to decide whether it was the entry point. Invoked through npm's
@@ -41,8 +41,8 @@ would work in their project before asking an agent to rely on it.
 
 ### User Story 1 - A consumer installs two packages, not five (Priority: P1)
 
-Someone building a component library installs `@acm/analyzer` to derive a Manifest from
-their source, and someone consuming component libraries installs `@acm/toolchain` to
+Someone building a component library installs `@xgentic/acm-analyzer` to derive a Manifest from
+their source, and someone consuming component libraries installs `@xgentic/acm` to
 search them. Neither has to know that the schema, the normative spec, the skill blocks,
 and the conformance fixtures are separate directories upstream.
 
@@ -51,7 +51,7 @@ in either order, into a project outside this repository, and both CLIs work ther
 
 ### User Story 2 - One command wires an agent up (Priority: P1)
 
-A developer adds `@acm/toolchain` to a project and runs `acm init`. The Discovery Skill
+A developer adds `@xgentic/acm` to a project and runs `acm init`. The Discovery Skill
 lands wherever their agent host reads it — `.claude/skills/`, a managed region in
 `AGENTS.md`, `.cursor/rules/` — without them knowing which file goes where. Re-running is
 safe. A file they have edited is never silently overwritten.
@@ -86,8 +86,8 @@ not a failure.
 
 ## Requirements *(mandatory)*
 
-- **FR-001** Exactly two packages ship: `@acm/toolchain` (the `acm` CLI, the JSON Schema,
-  the Discovery Skill) and `@acm/analyzer` (the `acm-analyzer` CLI).
+- **FR-001** Exactly two packages ship: `@xgentic/acm` (the `acm` CLI, the JSON Schema,
+  the Discovery Skill) and `@xgentic/acm-analyzer` (the `acm-analyzer` CLI).
 - **FR-002** Each shipped package is self-contained: no workspace dependencies, and a
   declared dependency set that is exactly what npm must fetch.
 - **FR-003** Every asset the shipped code reads resolves through one module that probes
@@ -124,7 +124,7 @@ not a failure.
   conformance suite, the drift generator, the AGENTS.md invariants, and every
   `specs/*/contracts/*.md`; the packaging change delivers what was asked without that
   churn.
-- Renaming the published packages. `@acm/toolchain` is already the install target named
+- Renaming the published packages. `@xgentic/acm` is already the install target named
   in the skill's own gated `corpus-preamble` block.
 - Publishing to a registry. `dist:pack` produces tarballs; adding `publishConfig` is a
   later decision.

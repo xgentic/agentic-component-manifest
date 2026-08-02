@@ -1,10 +1,10 @@
 {
-  "name": "@acm/discovery-skill",
+  "name": "@xgentic/acm-discovery-skill",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "The ACM Discovery Skill: steers AI agents through the acm discovery CLI (search → component detail) with typed envelopes and the NS-DATA-1 untrusted-data posture. Generated from the CLI's capability manifest; ships inside @acm/toolchain and is installed by `acm init`.",
+  "description": "The ACM Discovery Skill: steers AI agents through the acm discovery CLI (search → component detail) with typed envelopes and the NS-DATA-1 untrusted-data posture. Generated from the CLI's capability manifest; ships inside @xgentic/acm and is installed by `acm init`.",
   "files": [
     "blocks",
     "generated",

@@ -1,0 +1,280 @@
+schemaVersion: "0.1.0"
+modules:
+  - path: src/data-grid.tsx
+    declarations:
+      - name: AcmeDataGrid
+        identity:
+          paradigmClass: vdom
+          module: "@acme/react-grid"
+          export: AcmeDataGrid
+        description: "A themable, sortable, selectable data grid as a JSX function component.\n\nThe maximally complex React capability surface: props assembled across modules,\nliteral-union / generic / function / beyond-depth types, destructuring defaults,\ncallback props that stay inputs, an imperative handle, and internal state that never\nreaches the manifest."
+        inputs:
+          - name: gap
+            description: "Space between the grid and its neighbours, in grid units."
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+          - name: pad
+            description: "Inner padding of the grid body, in grid units."
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+          - name: testId
+            description: Stable hook for test automation.
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+          - name: density
+            description: Visual density of the rows.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: compact
+                  - kind: literal
+                    value: comfortable
+              raw: "'compact' | 'comfortable'"
+            default: "'comfortable'"
+          - name: label
+            description: Accessible label for the grid region.
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+          - name: columns
+            description: "Column definitions, in display order."
+            type:
+              structured:
+                kind: array
+                items:
+                  name: GridColumn
+                  module: "./support.js"
+                  kind: reference
+              raw: "GridColumn<RowData>[]"
+            required: true
+          - name: rows
+            description: Rows to render.
+            type:
+              structured:
+                kind: array
+                items:
+                  name: RowData
+                  module: "./support.js"
+                  kind: reference
+              raw: "RowData[]"
+            required: true
+          - name: selectionMode
+            description: How many rows may be selected at once.
+            type:
+              structured:
+                kind: union
+                members:
+                  - kind: literal
+                    value: single
+                  - kind: literal
+                    value: multi
+                  - kind: literal
+                    value: none
+              raw: "'single' | 'multi' | 'none'"
+            default: "'single'"
+          - name: pageSize
+            description: Rows per page.
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+            default: "25"
+          - name: rowClass
+            description: Resolver returning a CSS class for a given row.
+            type:
+              structured:
+                parameters:
+                  - name: RowData
+                    module: "./support.js"
+                    kind: reference
+                return:
+                  kind: primitive
+                  primitive: string
+                kind: function
+              raw: "(row: RowData) => string"
+          - name: renderConfig
+            description: Opaque render configuration nested beyond the structured-type depth bound.
+            type:
+              structured:
+                kind: object
+                fields:
+                  - name: a
+                    type:
+                      kind: object
+                      fields:
+                        - name: b
+                          type:
+                            kind: object
+                            fields:
+                              - name: c
+                                type:
+                                  kind: object
+                                  fields:
+                                    - name: d
+                                      type:
+                                        kind: object
+                                        fields:
+                                          - name: e
+                                            type:
+                                              kind: opaque
+              raw: "{ a: { b: { c: { d: { e: { f: string } } } } } }"
+          - name: onSortChange
+            description: Called when the active column sort changes.
+            type:
+              structured:
+                parameters:
+                  - name: SortEvent
+                    module: "./support.js"
+                    kind: reference
+                return:
+                  kind: primitive
+                  primitive: void
+                kind: function
+              raw: "(event: SortEvent) => void"
+          - name: onRowActivate
+            description: Called when a row is activated by pointer or keyboard.
+            type:
+              structured:
+                parameters:
+                  - name: RowActivateEvent
+                    module: "./support.js"
+                    kind: reference
+                return:
+                  kind: primitive
+                  primitive: void
+                kind: function
+              raw: "(event: RowActivateEvent) => void"
+          - name: emptyMessage
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+          - name: virtualizeAfter
+            description: Maximum number of rows to render before virtualizing.
+            type:
+              structured:
+                kind: primitive
+                primitive: number
+              raw: number
+          - name: children
+            description: "Grid body content, rendered into each cell."
+            type:
+              structured:
+                name: ReactNode
+                module: react
+                kind: reference
+              raw: ReactNode
+          - name: caption
+            description: Caption announced to assistive technology.
+            type:
+              structured:
+                kind: primitive
+                primitive: string
+              raw: string
+        events:
+          - name: sort-change
+            description: Fired when the active column sort changes.
+            payload:
+              structured:
+                name: SortEvent
+                kind: reference
+              raw: SortEvent
+          - name: row-activate
+            description: Fired when a row is activated.
+            payload:
+              structured:
+                name: RowActivateEvent
+                kind: reference
+              raw: RowActivateEvent
+        slots:
+          - {}
+          - name: header
+            description: Header renderer above the column row.
+          - name: toolbar
+            description: Toolbar shown above the grid.
+          - name: footer
+            description: Footer shown below the grid.
+        methods:
+          - name: focusFirstCell
+            description: Moves keyboard focus to the first focusable cell.
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+          - name: selectAllVisible
+            description: Selects every row currently in view.
+            return:
+              structured:
+                kind: primitive
+                primitive: void
+              raw: void
+          - name: scrollToRow
+            description: Scrolls the given row into view and resolves once the scroll settles.
+            parameters:
+              - name: rowId
+                type:
+                  structured:
+                    kind: primitive
+                    primitive: string
+                  raw: string
+              - name: behavior
+                type:
+                  structured:
+                    kind: union
+                    members:
+                      - kind: literal
+                        value: auto
+                      - kind: literal
+                        value: smooth
+                  raw: "'auto' | 'smooth'"
+            return:
+              structured:
+                name: Promise
+                kind: reference
+              raw: "Promise<void>"
+        cssProperties:
+          - name: "--acme-grid-border"
+            description: Grid border color.
+            default: "#ccc"
+            syntax: "<color>"
+          - name: "--acme-grid-row-height"
+            description: Height of a data row.
+            default: "36px"
+            syntax: "<length>"
+          - name: "--acme-grid-accent"
+            description: Accent color for selection.
+            default: "#06c"
+            syntax: "<color>"
+          - name: "--acme-grid-gap"
+            description: Gap between grid cells.
+            default: "4px"
+            syntax: "<length>"
+        cssParts:
+          - name: body
+            description: The scrollable row container.
+          - name: header
+            description: The column header row.
+          - name: footer
+            description: The footer region.
+        x-react:
+          unresolvedProps:
+            - "HTMLAttributes<HTMLDivElement>"
+    exports:
+      - name: AcmeDataGrid
+        declaration: AcmeDataGrid
